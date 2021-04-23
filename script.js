@@ -1,18 +1,3 @@
-/*To Do:
-Include all data points.
-Refine match scores.
-Make categories of the table collapsible or split it onto multiple pages.
-Add clickable suggestions.
-Ability to change weights.
-Get advice on weights.
-Store college list and chosen weights somehow.
-Pick a website color
-Add match score descriptions
-add header with an icon
-add inputs above the table for: SAT/ACT/none, want financial aid
-maybe use: datatables.net but make a pretty table
-*/
-
 function loadJSON(link) {//load local or external json
   return new Promise(function (resolve, reject) {
     var xhr = new XMLHttpRequest();
