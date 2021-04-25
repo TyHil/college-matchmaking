@@ -10,6 +10,7 @@ The College Matchmaking website.
 - [ ] Ability to change weights.  
 - [ ] Store college list and chosen weights somehow.  
 - [ ] Pick a website color.  
+  - Considering #00E8FC to #228CDB gradient.  
 - [ ] Make website icons.  
 - [ ] Add match score descriptions.  
 - [ ] add header with an icon, name, and donation page.  
