@@ -1,3 +1,5 @@
+highlightColors = ["#E67C73", "#F9AD66", "#FFD666", "#AFCF6F", "#57BB8A"];
+
 function loadJSON(link) {//load local or external json
   return new Promise(function (resolve, reject) {
     var xhr = new XMLHttpRequest();
@@ -65,6 +67,7 @@ for (let i = 0; i < scoreNames.length; i++) {//load all scores
 }
 
 var colleges;//users list of colleges
+var collegesData = {};//locally stored college data
 var collegesLoaded = loadJSON("./UserData/colleges.json").then(response => {
   colleges = JSON.parse(response);
 }, error => {
@@ -89,10 +92,62 @@ function generateLink(college, score) {
   return "https://webapi.tylerghill.repl.co/match/" + college + "/?datas=" + datas.slice(0, -1) + "&orders=" + orders.slice(0, -1) + "&weights=" + weights.slice(0, -1);
 }
 
+function updateRowMatchScores(college) {
+  var floatScore;
+  for (var i = 0; i < scoreNames.length; i++) {//update match scores
+    var scoreTot = 0;
+    var weightSumTot = 0;
+    for (const category in scores[i]) {
+      var scoreCat = 0;
+      var weightSumCat = 0;
+      for (const key in scores[i][category][1]) {
+        const data = collegesData[college][key];
+        if (data != "NULL") {
+          var scoreDat = 0;
+          const weight = scores[i][category][1][key][0];
+          var range = scores[i][category][1][key][1];
+          var scoreVals = [1, 2, 3, 4, 5];
+          if (range.length == 3) {//custom score ordering defined
+            scoreVals = scores[i][category][1][key][2];
+          }
+          if (range[1].length == 2) {//min and max defined
+            range = [range[0], (2 * range[0] + range[1]) / 3, (range[0] + 2 * range[1]) / 3, range[1]]
+          }
+          if (data <= range[0]) {
+            scoreDat = scoreVals[0];
+          }
+          for (var j = 0; j < 3; j++) {
+            if (range[i] < data && data <= range[i + 1]) {
+              scoreDat = scoreVals[i + 1];
+            }
+          }
+          if (range[3] < data) {
+            scoreDat = scoreVals[4];
+          }
+          scoreCat += scoreDat * weight;
+          weightSumCat += weight;
+          document.getElementById(college).getElementsByClassName(key)[0].style.backgroundColor = highlightColors[scoreDat - 1];//cell highlights
+        }
+      }
+      scoreTot += scoreCat / Math.max(weightSumCat, 1) * scores[i][category][0];
+      weightSumTot += scores[i][category][0];
+    }
+    var score;
+    if (i == 0) {
+      floatScore = (scoreTot / weightSumTot - 1) / 4;
+      score = (scoreTot / weightSumTot - 1) / 4;
+    } else {
+      score = ((scoreTot / weightSumTot - 1) / 4 + 4 * floatScore) / 5;//4:1
+    }
+    document.getElementById(college).getElementsByClassName(scoreNames[i])[0].innerHTML = Math.round(score * 10000) / 100 + "%";
+    document.getElementById(college).getElementsByClassName(scoreNames[i])[0].style.backgroundColor = highlightColors[Math.trunc(score * 5)];
+  }
+}
+
 function updateRowData(college) {
   loadJSON("https://webapi.tylerghill.repl.co/college/" + college).then(response => {//main data
     response = JSON.parse(response);
-    //collegesData[college] = response;
+    collegesData[college] = response;
     for (const category in headers) {//update data in table
       if (category == "Notes") {
         document.getElementById(college).getElementsByClassName("Notes")[0].innerHTML = colleges[college];
@@ -119,47 +174,7 @@ function updateRowData(college) {
         }
       }
     }
-
-    for (var i = 0; i < scoreNames.length; i++) {//update match scores
-      var scoreTot = 0;
-      var weightSumTot = 0;
-      for (const category in scores[i]) {
-        var scoreCat = 0;
-        var weightSumCat = 0;
-        var weight = scores[i][category][0];
-        for (const key in scores[i][category][1]) {
-          const data = response[key];
-          if (data != "NULL") {
-            var scoreDat = 0;
-            const range = scores[i][category][1][key];
-            var scoreVals = [1, 2, 3, 4, 5];
-            if (range.length == 3) {//custom score ordering defined
-              scoreVals = range[2];
-            }
-            if (range[1].length == 2) {//min and max defined
-              scoreDat = Math.min(Math.max(4 * (data - range[1][0]) / (range[1][1] - range[1][0]) + 1, 1), 5);
-            } else {//ranges defined
-              if (data <= range[1][0]) {
-                scoreDat = scoreVals[0];
-              }
-              for (var j = 0; j < 3; j++) {
-                if (range[1][i] < data && data <= range[1][i + 1]) {
-                  scoreDat = scoreVals[i + 1];
-                }
-              }
-              if (range[1][3] < data) {
-                scoreDat = scoreVals[4];
-              }
-            }
-            scoreCat += scoreDat * range[0];
-            weightSumCat += range[0];
-          }
-        }
-        scoreTot += scoreCat / Math.max(weightSumCat, 1) * scores[i][category][0];
-        weightSumTot += scores[i][category][0];
-      }
-      document.getElementById(college).getElementsByClassName(scoreNames[i])[0].innerHTML = Math.round((scoreTot / weightSumTot - 1) / 4 * 10000) / 100 + "%";
-    }
+    updateRowMatchScores(college);
   }, error => {
     console.error("Load " + college + " Data Failed!", error);
   });
