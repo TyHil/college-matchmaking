@@ -1,8 +1,23 @@
+//Firebase configuration
+let firebaseConfig = {
+  apiKey: "AIzaSyB-vU0SztGZ7O1pcoEw50FM481-AAEJP7g",
+  authDomain: "collegematchmaking.firebaseapp.com",
+  databaseURL: "https://collegematchmaking-default-rtdb.firebaseio.com",
+  projectId: "collegematchmaking",
+  storageBucket: "collegematchmaking.appspot.com",
+  messagingSenderId: "129151756657",
+  appId: "1:129151756657:web:b4e806d1996dc46b3c2ed0",
+};
+//Firebase initialization
+firebase.initializeApp(firebaseConfig);
+firebase.analytics();
+const databaseRef = firebase.database().ref();
+
 highlightColors = ["#E67C73", "#F9AD66", "#FFD666", "#AFCF6F", "#57BB8A"];
 
 function loadJSON(link) {//load local or external json
   return new Promise(function (resolve, reject) {
-    var xhr = new XMLHttpRequest();
+    let xhr = new XMLHttpRequest();
     //xhr.overrideMimeType("application/json");
     xhr.open("GET", link, true);
     xhr.onreadystatechange = function () {
@@ -19,23 +34,23 @@ function loadJSON(link) {//load local or external json
   });
 }
 
-var allLoaded = [];//when headers and scores loaded
+let allLoaded = [];//when headers and scores loaded
 
-var headers;
-var headersLoaded = loadJSON("./headers.json").then(response => {//load headers for table from headers.json
+let headers;
+let headersLoaded = loadJSON("./headers.json").then(response => {//load headers for table from headers.json
   headers = JSON.parse(response);
-  var table = document.getElementById("table");
-  var categorytr = document.createElement("tr");
-  var datatr = document.createElement("tr");
+  let table = document.getElementById("table");
+  let categorytr = document.createElement("tr");
+  let datatr = document.createElement("tr");
   for (const category in headers) {
-    var categoryth = document.createElement("th");
+    let categoryth = document.createElement("th");
     categoryth.innerHTML = category;
     if (Array.isArray(headers[category])) {
       categoryth.rowSpan = 2;
     } else {
-      var length = 0;
+      let length = 0;
       for (const key in headers[category]) {
-        var datath = document.createElement("th");
+        let datath = document.createElement("th");
         datath.innerHTML = key;
         datath.classList.add(category);
         datath.classList.add(headers[category][key][0]);
@@ -54,11 +69,11 @@ var headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
 });
 allLoaded.push(headersLoaded);
 
-var scores = [];//scores float, sail, and swim scores.
-var scoreNames = ["FloatScore", "SailScore", "SwimScore"];
+let scores = [];//scores float, sail, and swim scores.
+let scoreNames = ["FloatScore", "SailScore", "SwimScore"];
 
 for (let i = 0; i < scoreNames.length; i++) {//load all scores
-  var scoreLoaded = loadJSON("./UserData/" + scoreNames[i] + ".json").then(response => {
+  let scoreLoaded = loadJSON("./UserData/" + scoreNames[i] + ".json").then(response => {
     scores[i] = JSON.parse(response);
   }, error => {
     console.error("Load " + scoreNames[i] + " Failed!", error);
@@ -66,20 +81,20 @@ for (let i = 0; i < scoreNames.length; i++) {//load all scores
   allLoaded.push(scoreLoaded);
 }
 
-var colleges;//users list of colleges
-var collegesData = {};//locally stored college data
-var collegesLoaded = loadJSON("./UserData/colleges.json").then(response => {
+let colleges;//users list of colleges
+let collegesData = {};//locally stored college data
+let collegesLoaded = loadJSON("./UserData/colleges.json").then(response => {
   colleges = JSON.parse(response);
 }, error => {
   console.error("Load College List Failed!", error);
 });
 allLoaded.push(collegesLoaded);
 
-function generateLink(college, score) {
-  var link = "https://webapi.tylerghill.repl.co/match/";
-  var datas = "";
-  var orders = "";
-  var weights = "";
+/*function generateLink(college, score) {
+  let link = "https://webapi.tylerghill.repl.co/match/";
+  let datas = "";
+  let orders = "";
+  let weights = "";
   for (const category in scores[score]) {
     for (const key in scores[score][category]) {
       if (scores[score][category][key][1] != 0) {
@@ -90,23 +105,23 @@ function generateLink(college, score) {
     }
   }
   return "https://webapi.tylerghill.repl.co/match/" + college + "/?datas=" + datas.slice(0, -1) + "&orders=" + orders.slice(0, -1) + "&weights=" + weights.slice(0, -1);
-}
+}*/
 
 function updateRowMatchScores(college) {
-  var floatScore;
-  for (var i = 0; i < scoreNames.length; i++) {//update match scores
-    var scoreTot = 0;
-    var weightSumTot = 0;
+  let floatScore;
+  for (let i = 0; i < scoreNames.length; i++) {//update match scores
+    let scoreTot = 0;
+    let weightSumTot = 0;
     for (const category in scores[i]) {
-      var scoreCat = 0;
-      var weightSumCat = 0;
+      let scoreCat = 0;
+      let weightSumCat = 0;
       for (const key in scores[i][category][1]) {
-        const data = collegesData[college][key];
-        if (data != "NULL") {
-          var scoreDat = 0;
+        if (key in collegesData[college]) {
+          const data = collegesData[college][key];
+          let scoreDat = 0;
           const weight = scores[i][category][1][key][0];
-          var range = scores[i][category][1][key][1];
-          var scoreVals = [1, 2, 3, 4, 5];
+          let range = scores[i][category][1][key][1];
+          let scoreVals = [1, 2, 3, 4, 5];
           if (range.length == 3) {//custom score ordering defined
             scoreVals = scores[i][category][1][key][2];
           }
@@ -116,7 +131,7 @@ function updateRowMatchScores(college) {
           if (data <= range[0]) {
             scoreDat = scoreVals[0];
           }
-          for (var j = 0; j < 3; j++) {
+          for (let j = 0; j < 3; j++) {
             if (range[i] < data && data <= range[i + 1]) {
               scoreDat = scoreVals[i + 1];
             }
@@ -132,7 +147,7 @@ function updateRowMatchScores(college) {
       scoreTot += scoreCat / Math.max(weightSumCat, 1) * scores[i][category][0];
       weightSumTot += scores[i][category][0];
     }
-    var score;
+    let score;
     if (i == 0) {
       floatScore = (scoreTot / weightSumTot - 1) / 4;
       score = (scoreTot / weightSumTot - 1) / 4;
@@ -145,19 +160,18 @@ function updateRowMatchScores(college) {
 }
 
 function updateRowData(college) {
-  loadJSON("https://webapi.tylerghill.repl.co/college/" + college).then(response => {//main data
-    response = JSON.parse(response);
-    collegesData[college] = response;
-    for (const category in headers) {//update data in table
-      if (category == "Notes") {
-        document.getElementById(college).getElementsByClassName("Notes")[0].innerHTML = colleges[college];
-      } else {
-        for (const key in headers[category]) {
-          if (headers[category][key][0] in response) {
-            var fill = response[headers[category][key][0]];
-            if (fill == "NULL") {//format numbers
-              fill = "No Data";
-            } else {
+  databaseRef.child("/colleges/" + college).get().then((snapshot) => {//main data
+    if (snapshot.exists()) {
+      let response = snapshot.val();//JSON.parse(response);
+      collegesData[college] = response;
+      for (const category in headers) {//update data in table
+        if (category == "Notes") {
+          document.getElementById(college).getElementsByClassName("Notes")[0].innerHTML = colleges[college];
+        } else if (category != "Actions") {
+          for (const key in headers[category]) {
+            let fill = "No Data";
+            if (headers[category][key][0] in response) {//format numbers
+              fill = response[headers[category][key][0]];
               if (headers[category][key][1] == "Integer" || headers[category][key][1] == "$") {
                 fill = fill.toLocaleString();
                 if (headers[category][key][1] == "$") {
@@ -173,19 +187,21 @@ function updateRowData(college) {
           }
         }
       }
+      updateRowMatchScores(college);
+    } else {
+      console.log("No data available");
     }
-    updateRowMatchScores(college);
-  }, error => {
-    console.error("Load " + college + " Data Failed!", error);
+  }).catch((error) => {
+    console.error(error);
   });
 }
 
 function addRowToTable(college) {
-  var tr = document.createElement("tr");
+  let tr = document.createElement("tr");
   tr.setAttribute("id", college);
   for (const category in headers) {
     if (category == "Actions") {
-      var td = document.createElement("td");
+      let td = document.createElement("td");
       td.classList.add(category);
       remove = document.createElement("img");
       remove.classList.add("removeicon");
@@ -197,7 +213,7 @@ function addRowToTable(college) {
       td.appendChild(remove);
       tr.appendChild(td);
     } else if (category == "Notes") {
-      var td = document.createElement("td");
+      let td = document.createElement("td");
       td.classList.add(category);
       td.contentEditable = "true";
       td.addEventListener("keyup", function () {
@@ -206,7 +222,7 @@ function addRowToTable(college) {
       tr.appendChild(td);
     } else {
       for (const key in headers[category]) {
-        var td = document.createElement("td");
+        let td = document.createElement("td");
         td.classList.add(category);
         td.classList.add(headers[category][key][0]);
         tr.appendChild(td);
@@ -227,7 +243,7 @@ document.getElementById("textinput").addEventListener("keyup", function (event) 
   if (this.value != "") {
     document.getElementById("suggestions").innerHTML = "Loading...";
     loadJSON("https://webapi.tylerghill.repl.co/closeststr/" + this.value + "/10").then(response => {
-      var response = JSON.parse(response);
+      response = JSON.parse(response);
       if (event.keyCode === 13) {
         if (document.getElementById(response[0][0]) == null) {
           document.getElementById("suggestions").innerHTML = "";
