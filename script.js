@@ -90,23 +90,6 @@ let collegesLoaded = loadJSON("./UserData/colleges.json").then(response => {
 });
 allLoaded.push(collegesLoaded);
 
-/*function generateLink(college, score) {
-  let link = "https://webapi.tylerghill.repl.co/match/";
-  let datas = "";
-  let orders = "";
-  let weights = "";
-  for (const category in scores[score]) {
-    for (const key in scores[score][category]) {
-      if (scores[score][category][key][1] != 0) {
-        datas += key + ",";
-        orders += scores[score][category][key][0] + ",";
-        weights += scores[score][category][key][1] + ",";
-      }
-    }
-  }
-  return "https://webapi.tylerghill.repl.co/match/" + college + "/?datas=" + datas.slice(0, -1) + "&orders=" + orders.slice(0, -1) + "&weights=" + weights.slice(0, -1);
-}*/
-
 function updateRowMatchScores(college) {
   let floatScore;
   for (let i = 0; i < scoreNames.length; i++) {//update match scores
@@ -122,17 +105,18 @@ function updateRowMatchScores(college) {
           const weight = scores[i][category][1][key][0];
           let range = scores[i][category][1][key][1];
           let scoreVals = [1, 2, 3, 4, 5];
-          if (range.length == 3) {//custom score ordering defined
+          if (scores[i][category][1][key].length == 3) {//custom score ordering defined
             scoreVals = scores[i][category][1][key][2];
           }
-          if (range[1].length == 2) {//min and max defined
-            range = [range[0], (2 * range[0] + range[1]) / 3, (range[0] + 2 * range[1]) / 3, range[1]]
+          if (range.length == 2) {//min and max defined
+            let width = (range[1] - range[0])/5
+            range = [range[0] + width, range[0] + 2 * width, range[1] - 2 * width, range[1] - width];
           }
           if (data <= range[0]) {
             scoreDat = scoreVals[0];
           }
           for (let j = 0; j < 3; j++) {
-            if (range[i] < data && data <= range[i + 1]) {
+            if (range[j] < data && data <= range[j + 1]) {
               scoreDat = scoreVals[i + 1];
             }
           }
@@ -141,7 +125,9 @@ function updateRowMatchScores(college) {
           }
           scoreCat += scoreDat * weight;
           weightSumCat += weight;
-          document.getElementById(college).getElementsByClassName(key)[0].style.backgroundColor = highlightColors[scoreDat - 1];//cell highlights
+          if (i == 0) {
+            document.getElementById(college).getElementsByClassName(key)[0].style.backgroundColor = highlightColors[scoreDat - 1];//cell highlights
+          }
         }
       }
       scoreTot += scoreCat / Math.max(weightSumCat, 1) * scores[i][category][0];
@@ -155,7 +141,7 @@ function updateRowMatchScores(college) {
       score = ((scoreTot / weightSumTot - 1) / 4 + 4 * floatScore) / 5;//4:1
     }
     document.getElementById(college).getElementsByClassName(scoreNames[i])[0].innerHTML = Math.round(score * 10000) / 100 + "%";
-    document.getElementById(college).getElementsByClassName(scoreNames[i])[0].style.backgroundColor = highlightColors[Math.trunc(score * 5)];
+    document.getElementById(college).getElementsByClassName(scoreNames[i])[0].style.backgroundColor = highlightColors[Math.trunc(score * 5)];//score highlight
   }
 }
 
@@ -239,25 +225,102 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
   }
 });
 
-document.getElementById("textinput").addEventListener("keyup", function (event) {//text box suggestion generator
-  if (this.value != "") {
-    document.getElementById("suggestions").innerHTML = "Loading...";
-    loadJSON("https://webapi.tylerghill.repl.co/closeststr/" + this.value + "/10").then(response => {
-      response = JSON.parse(response);
-      if (event.keyCode === 13) {
-        if (document.getElementById(response[0][0]) == null) {
-          document.getElementById("suggestions").innerHTML = "";
-          colleges[response[0][0]] = "";
-          addRowToTable(response[0][0]);
-        } else {
-          window.alert("College already exists.");
-        }
-      } else {
-        document.getElementById("suggestions").innerHTML = "Suggestions: " + JSON.stringify(response);
-      }
-    }, error => {
-      document.getElementById("suggestions").innerHTML = "Failed.";
-      console.error("Load Suggestions Failed!", error);
-    });
+/*Jaro-Winkler String Similarity Algorithm
+Generate a score for the similarity of 2 strings
+https://medium.com/@sumn2u/string-similarity-comparision-in-js-with-examples-4bae35f13968*/
+function JaroWrinker(s1, s2) {
+  var m = 0;
+  if (s1.length === 0 || s2.length === 0) {//Exit early if either are empty.
+    return 0;
   }
-});
+  if (s1 === s2) {//Exit early if they're an exact match.
+    return 1;
+  }
+  var range = (Math.floor(Math.max(s1.length, s2.length) / 2)) - 1, s1Matches = new Array(s1.length), s2Matches = new Array(s2.length);
+  for (i = 0; i < s1.length; i++) {
+    var low = (i >= range) ? i - range : 0,
+      high = (i + range <= s2.length) ? (i + range) : (s2.length - 1);
+    for (j = low; j <= high; j++) {
+      if (s1Matches[i] !== true && s2Matches[j] !== true && s1[i] === s2[j]) {
+        ++m;
+        s1Matches[i] = s2Matches[j] = true;
+        break;
+      }
+    }
+  }
+  if (m === 0) {//Exit early if no matches were found.
+    return 0;
+  }
+  var k = n_trans = 0;//Count the transpositions.
+  for (i = 0; i < s1.length; i++) {
+    if (s1Matches[i] === true) {
+      for (j = k; j < s2.length; j++) {
+        if (s2Matches[j] === true) {
+          k = j + 1;
+          break;
+        }
+      }
+      if (s1[i] !== s2[j]) {
+        ++n_trans;
+      }
+    }
+  }
+  var weight = (m / s1.length + m / s2.length + (m - (n_trans / 2)) / m) / 3,
+    l = 0,
+    p = 0.1;
+  if (weight > 0.7) {
+    while (s1[l] === s2[l] && l < 4) {
+      ++l;
+    }
+    weight = weight + l * p * (1 - weight);
+  }
+  return weight;
+}
+
+let search;
+document.getElementById("textinput").addEventListener("click", function () {
+  databaseRef.child("/search").get().then((snapshot) => {//load search data
+    if (snapshot.exists()) {
+      search = snapshot.val();
+      for (let i = 0; i < search.length; i++) {
+        for (let j = search[i].length - 1; j > 1; j--) {
+          search.push([search[i][0], search[i][j]]);
+          search[i].splice(j, 1);//search[i][i];
+        }
+      }
+      document.getElementById("textinput").addEventListener("keyup", function (event) {//text box suggestion generator
+        if (this.value != "") {///add if different from last value
+          let suggestions = document.getElementById("suggestions");
+          suggestions.innerHTML = "Loading...";
+          let results = JSON.parse(JSON.stringify(search));
+          for (var i = 0; i < results.length; i++) {
+            results[i].push(JaroWrinker(this.value, results[i][1]));
+          }
+          results.sort(function (a, b) {//Sort results
+            if (a[2] > b[2]) {
+              return -1;
+            } if (a[2] < b[2]) {
+              return 1;
+            }
+            return 0;
+          });
+          if (event.keyCode === 13) {
+            if (document.getElementById(results[0][0]) == null) {
+              suggestions.innerHTML = "";
+              colleges[results[0][0]] = "";
+              addRowToTable(results[0][0]);
+            } else {
+              window.alert("College already exists.");
+            }
+          } else {
+            suggestions.innerHTML = results.slice(0, 10);
+          }
+        }
+      });
+    } else {
+      console.log("No data available");
+    }
+  }).catch((error) => {
+    console.error(error);
+  });
+}, { once: true });
