@@ -7,11 +7,29 @@ table, th, td {
   border: 1px solid black;
   border-collapse: collapse;
 }
+th, td {
+  padding: 4px;
+}
 .removeicon {
   cursor: pointer;
   width: 20px;
   margin-right: 3px;
   margin-left: 3px;
+}
+#table th h2 {
+  font-size: 20px;
+  line-height: 20px;
+  margin: 0;
+}
+#table th h3 {
+  font-size: 14px;
+  line-height: 14px;
+  margin: 0;
+}
+#table th p {
+  font-size: 10px;
+  line-height: 16px;
+  margin: 0;
 }
 
 /*Header*/
@@ -144,4 +162,30 @@ table, th, td {
 }
 #userinfo a:hover {
   background-color: #ddd;
+}
+
+/*Sliders*/
+.slider {
+  -webkit-appearance: none;
+  width: 100px;
+  height: 10px;
+  border-radius: 4px;
+  background: #d3d3d3;
+  outline: none;
+}
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #61cae3, #3489c9);
+  cursor: pointer;
+}
+.slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #61cae3, #3489c9);
+  cursor: pointer;
 }

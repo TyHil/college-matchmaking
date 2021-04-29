@@ -13,61 +13,66 @@ firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 const databaseRef = firebase.database().ref();
 let ui = new firebaseui.auth.AuthUI(firebase.auth());
+
+function singedIn(loadData) {
+  loggedIn = 1;
+  document.getElementById("login").style.display = "none";
+  img = document.createElement("img");
+  img.id = "userimg";
+  img.src = firebase.auth().currentUser.photoURL;
+  img.addEventListener("click", () => {
+    let userinfo = document.getElementById("userinfo");
+    if (userinfo.style.display == "flex") {
+      userinfo.style.display = "none";
+    } else {
+      userinfo.style.display = "flex";
+    }
+  });
+  document.addEventListener('click', function (event) {
+    let userinfo = document.getElementById("userinfo");
+    if (!userinfo.contains(event.target) && !document.getElementById("userimg").contains(event.target)) {
+      userinfo.style.display = "none";
+    }
+  });
+  let userinfo = document.getElementById("userinfo");
+  document.getElementById("headerright").appendChild(img);
+  userinfo.getElementsByTagName("h2")[0].innerHTML = firebase.auth().currentUser.displayName;
+  document.getElementById("logout").addEventListener("click", function () {
+    firebase.auth().signOut().then(() => {
+      location.reload();
+    }).catch((error) => {
+      console.error(error);
+    });
+  });
+  if (loadData) {
+    let scoresLoaded = loadFirebaseJSON("/users/" + firebase.auth().currentUser.uid).then(response => {
+      for (const college in colleges) {
+        document.getElementById(college).remove();
+      }
+      colleges = response["colleges"];
+      collegesData = {};
+      for (const college in colleges) {
+        addRowToTable(college);
+      }
+      scores[0] = response[scoreNames[0]];
+    }, error => {
+      console.error("Load User Data Failed!", error);
+    });
+    allLoaded.push(scoresLoaded);
+  }
+}
+
 let uiConfig = {
   callbacks: {
     signInSuccessWithAuthResult: function (authResult) {//User successfully signed in.
-      modal.style.display = "none";
-      document.getElementById("login").style.display = "none";
-      img = document.createElement("img");
-      img.id = "userimg";
-      img.src = firebase.auth().currentUser.photoURL;
-      img.addEventListener("click", () => {
-        let userinfo = document.getElementById("userinfo");
-        if (userinfo.style.display == "flex") {
-          userinfo.style.display = "none";
-        } else {
-          userinfo.style.display = "flex";
-        }
-      });
-      document.addEventListener('click', function (event) {
-        let userinfo = document.getElementById("userinfo");
-        if (!userinfo.contains(event.target) && !document.getElementById("userimg").contains(event.target)) {
-          userinfo.style.display = "none";
-        }
-      });
-      let userinfo = document.getElementById("userinfo");
-      document.getElementById("headerright").appendChild(img);
-      userinfo.getElementsByTagName("h2")[0].innerHTML = firebase.auth().currentUser.displayName;
-      document.getElementById("logout").addEventListener("click", function () {
-        firebase.auth().signOut().then(() => {
-          location.reload();
-        }).catch((error) => {
-          console.error(error);
-        });
-      });
+      document.getElementById("loginmodal").style.display = "none";
       if (authResult.additionalUserInfo.isNewUser) {
         writeUserData();
-      } else {
-        let scoresLoaded = loadFirebaseJSON("/users/" + firebase.auth().currentUser.uid).then(response => {
-          for (const college in colleges) {
-            document.getElementById(college).remove();
-          }
-          colleges = response["colleges"];
-          collegesData = {};
-          for (const college in colleges) {
-            addRowToTable(college);
-          }
-          for (let i = 0; i < scoreNames.length; i++) {
-            scores[i] = response[scoreNames[i]];
-          }
-        }, error => {
-          console.error("Load User Data Failed!", error);
-        });
-        allLoaded.push(scoresLoaded);
       }
+      signedIn(!authResult.additionalUserInfo.isNewUser);
     },
     uiShown: function () { // The widget is rendered.
-      document.getElementById("loginbox").getElementsByTagName("p")[0].innerHTML = "Sign In or Sign Up";
+      document.getElementById("loginmodal").getElementsByTagName("h1")[0].innerHTML = "Sign In or Sign Up";
     }
   },
   signInFlow: 'popup',
@@ -85,26 +90,42 @@ function writeUserData() {
   firebase.database().ref('/users/' + firebase.auth().currentUser.uid).set({
     colleges: colleges,
     FloatScore: scores[0],
-    SailScore: scores[1],
-    SwimScore: scores[2]
   });
 }
 
-let modal = document.getElementsByClassName("modal")[0];
+let loginmodal = document.getElementById("loginmodal");
 document.getElementById("login").addEventListener("click", event => {
   if (!ui.isPendingRedirect()) {
-    modal.style.display = "block";
+    loginmodal.style.display = "block";
     ui.start('#firebaseui-auth-container', uiConfig);
   }
 });
-document.getElementsByClassName("modal")[0].getElementsByClassName("close")[0].onclick = function () {
-  modal.style.display = "none";
+loginmodal.getElementsByClassName("close")[0].onclick = function () {
+  loginmodal.style.display = "none";
 }
 window.onclick = function (e) {
-  if (e.target == modal) {
-    modal.style.display = "none";
+  if (e.target == loginmodal) {
+    loginmodal.style.display = "none";
   }
 }
+
+let loggedIn = 0;
+firebase.auth().onAuthStateChanged(function (user) {
+  if (user) {
+    singedIn(1);
+  } else {
+    let intromodal = document.getElementById("intromodal");
+    intromodal.style.display = "block";
+    intromodal.getElementsByClassName("close")[0].onclick = function () {
+      intromodal.style.display = "none";
+    }
+    window.onclick = function (e) {
+      if (e.target == intromodal) {
+        intromodal.style.display = "none";
+      }
+    }
+  }
+});
 
 highlightColors = ["#E67C73", "#F9AD66", "#FFD666", "#AFCF6F", "#57BB8A"];
 
@@ -151,14 +172,18 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
   let datatr = document.createElement("tr");
   for (const category in headers) {
     let categoryth = document.createElement("th");
-    categoryth.innerHTML = category;
+    let h2 = document.createElement("h2");
+    h2.innerHTML = category
+    categoryth.appendChild(h2);
     if (Array.isArray(headers[category])) {
       categoryth.rowSpan = 2;
     } else {
       let length = 0;
       for (const key in headers[category]) {
         let datath = document.createElement("th");
-        datath.innerHTML = key;
+        let h3 = document.createElement("h3");
+        h3.innerHTML = key
+        datath.appendChild(h3);
         datath.classList.add(category);
         datath.classList.add(headers[category][key][0]);
         datatr.appendChild(datath);
@@ -231,19 +256,21 @@ function updateRowMatchScores(college) {
             scoreDat = scoreVals[4];
           }
           scoreCat += scoreDat * weight;
-          weightSumCat += weight;
+          weightSumCat += 5 * weight;
           if (i == 0) {
             document.getElementById(college).getElementsByClassName(key)[0].style.backgroundColor = highlightColors[scoreDat - 1];//cell highlights
           }
         }
       }
-      scoreTot += scoreCat / Math.max(weightSumCat, 1) * scores[i][category][0];
+      if (weightSumCat != 0) {
+        scoreTot += scoreCat / weightSumCat * scores[i][category][0];
+      }
       weightSumTot += scores[i][category][0];
     }
     let score;
     if (i == 0) {
-      floatScore = (scoreTot / weightSumTot - 1) / 4;
-      score = (scoreTot / weightSumTot - 1) / 4;
+      score = scoreTot / weightSumTot;//- 1) / 4;
+      floatScore = score;
     } else {
       score = ((scoreTot / weightSumTot - 1) / 4 + 4 * floatScore) / 5;//4:1
     }
@@ -257,7 +284,7 @@ function updateRowData(college) {
     collegesData[college] = response;
     for (const category in headers) {//update data in table
       if (category == "Notes") {
-        document.getElementById(college).getElementsByClassName("Notes")[0].innerHTML = colleges[college];
+        document.getElementById(college).getElementsByClassName("Notes")[0].getElementsByTagName("textarea")[0].value = colleges[college];
       } else if (category != "Actions") {
         for (const key in headers[category]) {
           let fill = "No Data";
@@ -303,10 +330,15 @@ function addRowToTable(college) {
     } else if (category == "Notes") {
       let td = document.createElement("td");
       td.classList.add(category);
-      td.contentEditable = "true";
-      td.addEventListener("keyup", function () {
-        colleges[college] = this.innerHTML;
+      let textarea = document.createElement("textarea");
+      textarea.maxlength = "10";
+      textarea.addEventListener("blur", function () {
+        colleges[college] = this.value;
+        if (loggedIn) {
+          writeUserData();
+        }
       });
+      td.appendChild(textarea);
       tr.appendChild(td);
     } else {
       for (const key in headers[category]) {
@@ -321,10 +353,68 @@ function addRowToTable(college) {
   updateRowData(college);
 }
 
-Promise.all(allLoaded).then(function () {//when headers, scores, and colleges are loaded
+function createSlider() {
+
+}
+
+function loadTableData() {
   for (const college in colleges) {
     addRowToTable(college);
   }
+  for (const category in scores[0]) {
+    let range = document.createElement("input");
+    range.type = "range";
+    range.min = "0";
+    range.max = "5"
+    range.value = scores[0][category][0];
+    range.classList.add("slider");
+    range.addEventListener("change", function () {
+      scores[0][category][0] = parseInt(this.value);
+      for (const college in colleges) {
+        updateRowMatchScores(college);
+      }
+      if (loggedIn) {
+        writeUserData();
+      }
+    });
+    range.addEventListener("input", function () {
+      this.parentElement.getElementsByTagName("p")[0].innerHTML = "Weight: " + this.value;
+    });
+    let categoryth = document.getElementsByClassName(category)[0];
+    let weight = document.createElement("p");
+    weight.innerHTML = "Weight: " + scores[0][category][0];
+    categoryth.appendChild(weight);
+    categoryth.appendChild(range);
+    for (const key in scores[0][category][1]) {
+      let range = document.createElement("input");
+      range.type = "range";
+      range.min = "0";
+      range.max = "5"
+      range.value = scores[0][category][1][key][0];
+      range.classList.add("slider");
+      range.addEventListener("change", function () {
+        scores[0][category][1][key][0] = parseInt(this.value);
+        for (const college in colleges) {
+          updateRowMatchScores(college);
+        }
+        if (loggedIn) {
+          writeUserData();
+        }
+      });
+      range.addEventListener("input", function () {
+        let h3 = this.parentElement.getElementsByTagName("p")[0].innerHTML = "Weight: " + this.value;
+      });
+      let datath = document.getElementsByClassName(key)[0];
+      let weight = document.createElement("p");
+      weight.innerHTML = "Weight: " + scores[0][category][1][key][0];
+      datath.appendChild(weight);
+      datath.appendChild(range);
+    }
+  }
+}
+
+Promise.all(allLoaded).then(function () {//when headers, scores, and colleges are loaded
+  loadTableData();
 });
 
 /*Jaro-Winkler String Similarity Algorithm
@@ -383,41 +473,41 @@ let search;
 document.getElementById("textinput").addEventListener("click", function () {
   loadFirebaseJSON("/search").then(response => {
     search = response;
-      for (let i = 0; i < search.length; i++) {
-        for (let j = search[i].length - 1; j > 1; j--) {
-          search.push([search[i][0], search[i][j]]);
-          search[i].splice(j, 1);
+    for (let i = 0; i < search.length; i++) {
+      for (let j = search[i].length - 1; j > 1; j--) {
+        search.push([search[i][0], search[i][j]]);
+        search[i].splice(j, 1);
+      }
+    }
+    document.getElementById("textinput").addEventListener("keyup", function (event) {//text box suggestion generator
+      if (this.value != "") {///add if different from last value
+        let suggestions = document.getElementById("suggestions");
+        suggestions.innerHTML = "Loading...";
+        let results = JSON.parse(JSON.stringify(search));
+        for (let i = 0; i < results.length; i++) {
+          results[i].push(JaroWrinker(this.value, results[i][1]));
+        }
+        results.sort(function (a, b) {//Sort results
+          if (a[2] > b[2]) {
+            return -1;
+          } if (a[2] < b[2]) {
+            return 1;
+          }
+          return 0;
+        });
+        if (event.keyCode === 13) {
+          if (document.getElementById(results[0][0]) == null) {
+            suggestions.innerHTML = "";
+            colleges[results[0][0]] = "";
+            addRowToTable(results[0][0]);
+          } else {
+            window.alert("College already exists.");
+          }
+        } else {
+          suggestions.innerHTML = results.slice(0, 10);
         }
       }
-      document.getElementById("textinput").addEventListener("keyup", function (event) {//text box suggestion generator
-        if (this.value != "") {///add if different from last value
-          let suggestions = document.getElementById("suggestions");
-          suggestions.innerHTML = "Loading...";
-          let results = JSON.parse(JSON.stringify(search));
-          for (let i = 0; i < results.length; i++) {
-            results[i].push(JaroWrinker(this.value, results[i][1]));
-          }
-          results.sort(function (a, b) {//Sort results
-            if (a[2] > b[2]) {
-              return -1;
-            } if (a[2] < b[2]) {
-              return 1;
-            }
-            return 0;
-          });
-          if (event.keyCode === 13) {
-            if (document.getElementById(results[0][0]) == null) {
-              suggestions.innerHTML = "";
-              colleges[results[0][0]] = "";
-              addRowToTable(results[0][0]);
-            } else {
-              window.alert("College already exists.");
-            }
-          } else {
-            suggestions.innerHTML = results.slice(0, 10);
-          }
-        }
-      });
+    });
   }, error => {
     console.error("Load Search Data Failed!", error);
   });
