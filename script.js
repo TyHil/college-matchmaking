@@ -12,6 +12,99 @@ let firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 const databaseRef = firebase.database().ref();
+let ui = new firebaseui.auth.AuthUI(firebase.auth());
+let uiConfig = {
+  callbacks: {
+    signInSuccessWithAuthResult: function (authResult) {//User successfully signed in.
+      modal.style.display = "none";
+      document.getElementById("login").style.display = "none";
+      img = document.createElement("img");
+      img.id = "userimg";
+      img.src = firebase.auth().currentUser.photoURL;
+      img.addEventListener("click", () => {
+        let userinfo = document.getElementById("userinfo");
+        if (userinfo.style.display == "flex") {
+          userinfo.style.display = "none";
+        } else {
+          userinfo.style.display = "flex";
+        }
+      });
+      document.addEventListener('click', function (event) {
+        let userinfo = document.getElementById("userinfo");
+        if (!userinfo.contains(event.target) && !document.getElementById("userimg").contains(event.target)) {
+          userinfo.style.display = "none";
+        }
+      });
+      let userinfo = document.getElementById("userinfo");
+      document.getElementById("headerright").appendChild(img);
+      userinfo.getElementsByTagName("h2")[0].innerHTML = firebase.auth().currentUser.displayName;
+      document.getElementById("logout").addEventListener("click", function () {
+        firebase.auth().signOut().then(() => {
+          location.reload();
+        }).catch((error) => {
+          console.error(error);
+        });
+      });
+      if (authResult.additionalUserInfo.isNewUser) {
+        writeUserData();
+      } else {
+        let scoresLoaded = loadFirebaseJSON("/users/" + firebase.auth().currentUser.uid).then(response => {
+          for (const college in colleges) {
+            document.getElementById(college).remove();
+          }
+          colleges = response["colleges"];
+          collegesData = {};
+          for (const college in colleges) {
+            addRowToTable(college);
+          }
+          for (let i = 0; i < scoreNames.length; i++) {
+            scores[i] = response[scoreNames[i]];
+          }
+        }, error => {
+          console.error("Load User Data Failed!", error);
+        });
+        allLoaded.push(scoresLoaded);
+      }
+    },
+    uiShown: function () { // The widget is rendered.
+      document.getElementById("loginbox").getElementsByTagName("p")[0].innerHTML = "Sign In or Sign Up";
+    }
+  },
+  signInFlow: 'popup',
+  signInOptions: [
+    firebase.auth.EmailAuthProvider.PROVIDER_ID,
+    firebase.auth.GoogleAuthProvider.PROVIDER_ID
+  ],
+  // Terms of service url.
+  tosUrl: '<your-tos-url>',
+  // Privacy policy url.
+  privacyPolicyUrl: '<your-privacy-policy-url>'
+};
+
+function writeUserData() {
+  firebase.database().ref('/users/' + firebase.auth().currentUser.uid).set({
+    colleges: colleges,
+    FloatScore: scores[0],
+    SailScore: scores[1],
+    SwimScore: scores[2]
+  });
+}
+
+let modal = document.getElementsByClassName("modal")[0];
+document.getElementById("login").addEventListener("click", event => {
+  if (!ui.isPendingRedirect()) {
+    modal.style.display = "block";
+    ui.start('#firebaseui-auth-container', uiConfig);
+  }
+});
+document.getElementsByClassName("modal")[0].getElementsByClassName("close")[0].onclick = function () {
+  modal.style.display = "none";
+}
+window.onclick = function (e) {
+  if (e.target == modal) {
+    modal.style.display = "none";
+  }
+}
 
 highlightColors = ["#E67C73", "#F9AD66", "#FFD666", "#AFCF6F", "#57BB8A"];
 
@@ -31,6 +124,20 @@ function loadJSON(link) {//load local or external json
       reject(Error("Network Error"));
     };
     xhr.send(null);
+  });
+}
+
+function loadFirebaseJSON(link) {
+  return new Promise(function (resolve, reject) {
+    databaseRef.child(link).get().then((snapshot) => {
+      if (snapshot.exists()) {
+        resolve(snapshot.val());
+      } else {
+        reject("No data available");
+      }
+    }).catch((error) => {
+      reject(error);
+    });
   });
 }
 
@@ -109,7 +216,7 @@ function updateRowMatchScores(college) {
             scoreVals = scores[i][category][1][key][2];
           }
           if (range.length == 2) {//min and max defined
-            let width = (range[1] - range[0])/5
+            let width = (range[1] - range[0]) / 5
             range = [range[0] + width, range[0] + 2 * width, range[1] - 2 * width, range[1] - width];
           }
           if (data <= range[0]) {
@@ -146,39 +253,34 @@ function updateRowMatchScores(college) {
 }
 
 function updateRowData(college) {
-  databaseRef.child("/colleges/" + college).get().then((snapshot) => {//main data
-    if (snapshot.exists()) {
-      let response = snapshot.val();//JSON.parse(response);
-      collegesData[college] = response;
-      for (const category in headers) {//update data in table
-        if (category == "Notes") {
-          document.getElementById(college).getElementsByClassName("Notes")[0].innerHTML = colleges[college];
-        } else if (category != "Actions") {
-          for (const key in headers[category]) {
-            let fill = "No Data";
-            if (headers[category][key][0] in response) {//format numbers
-              fill = response[headers[category][key][0]];
-              if (headers[category][key][1] == "Integer" || headers[category][key][1] == "$") {
-                fill = fill.toLocaleString();
-                if (headers[category][key][1] == "$") {
-                  fill = "$" + fill;
-                }
-              } else if (headers[category][key][1] == "%") {
-                fill = Math.round(fill * 10000) / 100 + "%";
-              } else if (headers[category][key][1] == "Degree") {
-                fill = Math.round(fill * 100) / 100 + "°F";
+  loadFirebaseJSON("/colleges/" + college).then(response => {
+    collegesData[college] = response;
+    for (const category in headers) {//update data in table
+      if (category == "Notes") {
+        document.getElementById(college).getElementsByClassName("Notes")[0].innerHTML = colleges[college];
+      } else if (category != "Actions") {
+        for (const key in headers[category]) {
+          let fill = "No Data";
+          if (headers[category][key][0] in response) {//format numbers
+            fill = response[headers[category][key][0]];
+            if (headers[category][key][1] == "Integer" || headers[category][key][1] == "$") {
+              fill = fill.toLocaleString();
+              if (headers[category][key][1] == "$") {
+                fill = "$" + fill;
               }
+            } else if (headers[category][key][1] == "%") {
+              fill = Math.round(fill * 10000) / 100 + "%";
+            } else if (headers[category][key][1] == "Degree") {
+              fill = Math.round(fill * 100) / 100 + "°F";
             }
-            document.getElementById(college).getElementsByClassName(headers[category][key][0])[0].innerHTML = fill;
           }
+          document.getElementById(college).getElementsByClassName(headers[category][key][0])[0].innerHTML = fill;
         }
       }
-      updateRowMatchScores(college);
-    } else {
-      console.log("No data available");
     }
-  }).catch((error) => {
-    console.error(error);
+    updateRowMatchScores(college);
+  }, error => {
+    console.error("Load " + college + " Data Failed!", error);
   });
 }
 
@@ -229,16 +331,16 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
 Generate a score for the similarity of 2 strings
 https://medium.com/@sumn2u/string-similarity-comparision-in-js-with-examples-4bae35f13968*/
 function JaroWrinker(s1, s2) {
-  var m = 0;
+  let m = 0;
   if (s1.length === 0 || s2.length === 0) {//Exit early if either are empty.
     return 0;
   }
   if (s1 === s2) {//Exit early if they're an exact match.
     return 1;
   }
-  var range = (Math.floor(Math.max(s1.length, s2.length) / 2)) - 1, s1Matches = new Array(s1.length), s2Matches = new Array(s2.length);
+  let range = (Math.floor(Math.max(s1.length, s2.length) / 2)) - 1, s1Matches = new Array(s1.length), s2Matches = new Array(s2.length);
   for (i = 0; i < s1.length; i++) {
-    var low = (i >= range) ? i - range : 0,
+    let low = (i >= range) ? i - range : 0,
       high = (i + range <= s2.length) ? (i + range) : (s2.length - 1);
     for (j = low; j <= high; j++) {
       if (s1Matches[i] !== true && s2Matches[j] !== true && s1[i] === s2[j]) {
@@ -251,7 +353,7 @@ function JaroWrinker(s1, s2) {
   if (m === 0) {//Exit early if no matches were found.
     return 0;
   }
-  var k = n_trans = 0;//Count the transpositions.
+  let k = n_trans = 0;//Count the transpositions.
   for (i = 0; i < s1.length; i++) {
     if (s1Matches[i] === true) {
       for (j = k; j < s2.length; j++) {
@@ -265,7 +367,7 @@ function JaroWrinker(s1, s2) {
       }
     }
   }
-  var weight = (m / s1.length + m / s2.length + (m - (n_trans / 2)) / m) / 3,
+  let weight = (m / s1.length + m / s2.length + (m - (n_trans / 2)) / m) / 3,
     l = 0,
     p = 0.1;
   if (weight > 0.7) {
@@ -279,13 +381,12 @@ function JaroWrinker(s1, s2) {
 
 let search;
 document.getElementById("textinput").addEventListener("click", function () {
-  databaseRef.child("/search").get().then((snapshot) => {//load search data
-    if (snapshot.exists()) {
-      search = snapshot.val();
+  loadFirebaseJSON("/search").then(response => {
+    search = response;
       for (let i = 0; i < search.length; i++) {
         for (let j = search[i].length - 1; j > 1; j--) {
           search.push([search[i][0], search[i][j]]);
-          search[i].splice(j, 1);//search[i][i];
+          search[i].splice(j, 1);
         }
       }
       document.getElementById("textinput").addEventListener("keyup", function (event) {//text box suggestion generator
@@ -293,7 +394,7 @@ document.getElementById("textinput").addEventListener("click", function () {
           let suggestions = document.getElementById("suggestions");
           suggestions.innerHTML = "Loading...";
           let results = JSON.parse(JSON.stringify(search));
-          for (var i = 0; i < results.length; i++) {
+          for (let i = 0; i < results.length; i++) {
             results[i].push(JaroWrinker(this.value, results[i][1]));
           }
           results.sort(function (a, b) {//Sort results
@@ -317,10 +418,7 @@ document.getElementById("textinput").addEventListener("click", function () {
           }
         }
       });
-    } else {
-      console.log("No data available");
-    }
-  }).catch((error) => {
-    console.error(error);
+  }, error => {
+    console.error("Load Search Data Failed!", error);
   });
 }, { once: true });

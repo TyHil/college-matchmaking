@@ -8,15 +8,40 @@
     <link href="style.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
+    <div id="header">
+      <a href="index.html" id="logo">
+        <img src="icons/collegematchmaking.svg" alt="Logo">
+        <h1>College Matchmaking</h1>
+      </a>
+      <div id="headerright">
+        <a href="">Donate</a>
+        <a id="login">Sign Up/Log in</a>
+      </div>
+    </div>
+
     <table id="table"></table>
     <input type="text" id="textinput">
     <p id="suggestions"></p>
-    <!-- The core Firebase JS SDK is always required and must be listed first -->
+
+    <div class="modal" id="loginbox">
+      <div class="content">
+        <span class="close">&times;</span>
+        <p>Loading...</p>
+        <div id="firebaseui-auth-container"></div>
+      </div>
+    </div>
+
+    <div id="userinfo">
+      <h2></h2>
+      <a id="logout">Log Out</a>
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/8.4.2/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.4.2/firebase-database.js"></script>
-    <!-- TODO: Add SDKs for Firebase products that you want to use
-        https://firebase.google.com/docs/web/setup#available-libraries -->
     <script src="https://www.gstatic.com/firebasejs/8.4.2/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.4.2/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css" />
     <script src="script.js"></script>
   </body>
 </html>
