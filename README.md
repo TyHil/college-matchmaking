@@ -18,6 +18,6 @@ The College Matchmaking website.
   - [ ] FLOAT, SAIL, and SWIM icons.
 - [ ] Add match score descriptions.
 - [x] Add header with an icon, name, and donation page.
-  - [ ] Donate button (through stripes).
+  - [x] Donate button (through donorbox).
 - [ ] Add inputs above the table for: SAT/ACT/none, want financial aid.
 - [ ] maybe use: datatables.net but make a pretty table.

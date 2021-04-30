@@ -14,7 +14,7 @@
         <h1>College Matchmaking</h1>
       </a>
       <div id="headerright">
-        <a href="">Donate</a>
+        <a class="custom-dbox-popup" href="https://donorbox.org/college-matchmaking-donation">Donate</a>
         <a id="login">Sign Up/Log in</a>
       </div>
     </div>
@@ -41,7 +41,22 @@
 
     <div id="userinfo">
       <h2></h2>
+      <h3></h3>
+      <a id="reset">Reset Match Scores</a>
       <a id="logout">Log Out</a>
+      <a id="delete">Delete Account</a>
+    </div>
+
+    <div class="modal" id="confirmmodal">
+      <div class="content">
+        <span class="close">&times;</span>
+        <h1>Confirm</h1>
+        <p>This will</p>
+        <div class="buttons">
+          <a id="cancel">Cancel</a>
+          <a id="confirm" class="mainmodalbtn">Confirm</a>
+        </div>
+      </div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.4.2/firebase-app.js"></script>
@@ -50,6 +65,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.4.2/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.js"></script>
     <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css" />
+    <script type="text/javascript" defer src="https://donorbox.org/install-popup-button.js"></script>
     <script src="script.js"></script>
   </body>
 </html>

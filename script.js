@@ -1,3 +1,5 @@
+//Donation button configuration
+window.DonorBox = { widgetLinkClassName: 'custom-dbox-popup' }
 //Firebase configuration
 let firebaseConfig = {
   apiKey: "AIzaSyB-vU0SztGZ7O1pcoEw50FM481-AAEJP7g",
@@ -37,12 +39,77 @@ function singedIn(loadData) {
   let userinfo = document.getElementById("userinfo");
   document.getElementById("headerright").appendChild(img);
   userinfo.getElementsByTagName("h2")[0].innerHTML = firebase.auth().currentUser.displayName;
+  userinfo.getElementsByTagName("h3")[0].innerHTML = firebase.auth().currentUser.email;
+  document.getElementById("reset").addEventListener("click", function () {
+    let confirmmodal = document.getElementById("confirmmodal");
+    confirmmodal.getElementsByTagName("h1")[0].innerHTML = "Confirm Match Score Reset";
+    confirmmodal.getElementsByTagName("p")[0].innerHTML = "This will remove all customization from your match scores and return them to their default state.";
+    confirmmodal.style.display = "block";
+    document.getElementById("confirm").onclick = function () {
+      let score0Loaded = loadJSON("./UserData/" + scoreNames[0] + ".json").then(response => {
+        scores[0] = JSON.parse(response);
+        writeUserData();
+        setSliders();
+        for (const college in colleges) {
+          updateRowMatchScores(college);
+        }
+      }, error => {
+        console.error("Load " + scoreNames[0] + " Failed!", error);
+      });
+      confirmmodal.style.display = "none";
+    };
+    document.getElementById("cancel").addEventListener("click", function () {
+      document.getElementById("confirm").onclick = '';
+      confirmmodal.style.display = "none";
+    }, { once: true });
+    confirmmodal.getElementsByClassName("close")[0].addEventListener("click", function () {
+      document.getElementById("confirm").onclick = '';
+      confirmmodal.style.display = "none";
+    });
+    window.onclick = function (e) {
+      if (e.target == confirmmodal) {
+        document.getElementById("confirm").onclick = '';
+        confirmmodal.style.display = "none";
+      }
+    }
+  });
   document.getElementById("logout").addEventListener("click", function () {
     firebase.auth().signOut().then(() => {
       location.reload();
     }).catch((error) => {
       console.error(error);
     });
+  });
+  document.getElementById("delete").addEventListener("click", function () {
+    let confirmmodal = document.getElementById("confirmmodal");
+    confirmmodal.getElementsByTagName("h1")[0].innerHTML = "Confirm Delete Account";
+    confirmmodal.getElementsByTagName("p")[0].innerHTML = "This delete your account with College Matchmaking and all of it's associated data.";
+    confirmmodal.style.display = "block";
+    document.getElementById("confirm").onclick = function () {
+      firebase.auth().currentUser.reauthenticateWithPopup(new firebase.auth.GoogleAuthProvider())
+        .then((UserCredential) => {
+          firebase.database().ref('/users/' + firebase.auth().currentUser.uid).remove();
+          firebase.auth().currentUser.delete().then(function () {
+            location.reload();
+          }).catch(function (error) {
+            console.error(error);
+          });
+        });
+    };
+    document.getElementById("cancel").addEventListener("click", function () {
+      document.getElementById("confirm").onclick = '';
+      confirmmodal.style.display = "none";
+    }, { once: true });
+    confirmmodal.getElementsByClassName("close")[0].addEventListener("click", function () {
+      document.getElementById("confirm").onclick = '';
+      confirmmodal.style.display = "none";
+    });
+    window.onclick = function (e) {
+      if (e.target == confirmmodal) {
+        document.getElementById("confirm").onclick = '';
+        confirmmodal.style.display = "none";
+      }
+    }
   });
   if (loadData) {
     let scoresLoaded = loadFirebaseJSON("/users/" + firebase.auth().currentUser.uid).then(response => {
@@ -353,11 +420,21 @@ function addRowToTable(college) {
   updateRowData(college);
 }
 
-function createSlider() {
-
+function setSliders() {
+  for (const category in scores[0]) {
+    let cell = document.getElementsByClassName(category)[0];
+    cell.getElementsByClassName("slider")[0].value = scores[0][category][0];
+    cell.getElementsByClassName("weight")[0].innerHTML = "Weight: " + scores[0][category][0];
+    for (const key in scores[0][category][1]) {
+      let cell = document.getElementsByClassName(key)[0];
+      cell.getElementsByClassName("slider")[0].value = scores[0][category][1][key][0];
+      cell.getElementsByClassName("weight")[0].innerHTML = "Weight: " + scores[0][category][1][key][0];
+    }
+  }
 }
 
-function loadTableData() {
+
+Promise.all(allLoaded).then(function () {//when headers, scores, and colleges are loaded
   for (const college in colleges) {
     addRowToTable(college);
   }
@@ -382,6 +459,7 @@ function loadTableData() {
     });
     let categoryth = document.getElementsByClassName(category)[0];
     let weight = document.createElement("p");
+    weight.classList.add("weight");
     weight.innerHTML = "Weight: " + scores[0][category][0];
     categoryth.appendChild(weight);
     categoryth.appendChild(range);
@@ -406,15 +484,13 @@ function loadTableData() {
       });
       let datath = document.getElementsByClassName(key)[0];
       let weight = document.createElement("p");
+      weight.classList.add("weight");
       weight.innerHTML = "Weight: " + scores[0][category][1][key][0];
       datath.appendChild(weight);
       datath.appendChild(range);
     }
   }
-}
-
-Promise.all(allLoaded).then(function () {//when headers, scores, and colleges are loaded
-  loadTableData();
+  setSliders();
 });
 
 /*Jaro-Winkler String Similarity Algorithm
@@ -480,7 +556,7 @@ document.getElementById("textinput").addEventListener("click", function () {
       }
     }
     document.getElementById("textinput").addEventListener("keyup", function (event) {//text box suggestion generator
-      if (this.value != "") {///add if different from last value
+      if (this.value != "") {
         let suggestions = document.getElementById("suggestions");
         suggestions.innerHTML = "Loading...";
         let results = JSON.parse(JSON.stringify(search));
