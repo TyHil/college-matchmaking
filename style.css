@@ -133,10 +133,10 @@ th, td {
   from {top:-300px; opacity:0}
   to {top:50; opacity:1}
 }
-.modal .buttons {
+.modal .buttonbox {
   float: right;
 }
-.modal .buttons a {
+.modal .buttons {
   color: black;
   text-align: center;
   padding: 5px;
@@ -148,7 +148,7 @@ th, td {
   margin-left: 2px;
   cursor: pointer;
 }
-.modal a:hover {
+.modal .buttons:hover {
   background-color: #ddd;
 }
 .modal .mainmodalbtn {
@@ -214,4 +214,16 @@ th, td {
   border-radius: 50%;
   background: linear-gradient(90deg, #61cae3, #3489c9);
   cursor: pointer;
+}
+.weight {
+  float: left;
+}
+.plus {
+  width: 10px;
+  float: right;
+  cursor: pointer;
+}
+.scorecontrol {
+  width: 100px;
+  margin: auto;
 }

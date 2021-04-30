@@ -3,7 +3,7 @@ The College Matchmaking website.
 ## Documentation
 [JSON Documentation](https://docs.google.com/document/d/1eRywNeOZg6bmokPfr1w0Q88CdCXvMOuLnuUajdLSmAc/edit?usp=sharing)
 ## Todo
-- [ ] Password reset.
+- [ ] Add overrides.
 - [x] Actually store changed user data.
   - [ ] Allow users to change ranges and score ranges.
 - [ ] Add info to intro popup.

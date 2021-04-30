@@ -21,7 +21,11 @@ function singedIn(loadData) {
   document.getElementById("login").style.display = "none";
   img = document.createElement("img");
   img.id = "userimg";
-  img.src = firebase.auth().currentUser.photoURL;
+  if (firebase.auth().currentUser.photoURL == null) {
+    img.src = "icons/profile.svg";
+  } else {
+    img.src = firebase.auth().currentUser.photoURL;
+  }
   img.addEventListener("click", () => {
     let userinfo = document.getElementById("userinfo");
     if (userinfo.style.display == "flex") {
@@ -80,7 +84,7 @@ function singedIn(loadData) {
       console.error(error);
     });
   });
-  document.getElementById("delete").addEventListener("click", function () {
+  document.getElementById("deleteaccnt").addEventListener("click", function () {
     let confirmmodal = document.getElementById("confirmmodal");
     confirmmodal.getElementsByTagName("h1")[0].innerHTML = "Confirm Delete Account";
     confirmmodal.getElementsByTagName("p")[0].innerHTML = "This delete your account with College Matchmaking and all of it's associated data.";
@@ -336,10 +340,10 @@ function updateRowMatchScores(college) {
     }
     let score;
     if (i == 0) {
-      score = scoreTot / weightSumTot;//- 1) / 4;
+      score = scoreTot / weightSumTot;
       floatScore = score;
     } else {
-      score = ((scoreTot / weightSumTot - 1) / 4 + 4 * floatScore) / 5;//4:1
+      score = ((scoreTot / weightSumTot - 1) / 4 + 4 * floatScore) / 5;
     }
     document.getElementById(college).getElementsByClassName(scoreNames[i])[0].innerHTML = Math.round(score * 10000) / 100 + "%";
     document.getElementById(college).getElementsByClassName(scoreNames[i])[0].style.backgroundColor = highlightColors[Math.trunc(score * 5)];//score highlight
@@ -433,19 +437,34 @@ function setSliders() {
   }
 }
 
+function createSlider(nameClass, val) {
+  let div = document.createElement("div");
+  div.classList.add("scorecontrol");
+  let weight = document.createElement("p");
+  weight.classList.add("weight");
+  weight.innerHTML = "Weight: " + val;
+  div.appendChild(weight);
+  let range = document.createElement("input");
+  range.type = "range";
+  range.min = "0";
+  range.max = "5"
+  range.value = val;
+  range.classList.add("slider");
+  range.addEventListener("input", function () {
+    this.parentElement.getElementsByTagName("p")[0].innerHTML = "Weight: " + this.value;
+  });
+  div.appendChild(range);
+  div.style.width = "100px";
+  document.getElementsByClassName(nameClass)[0].appendChild(div);
+  return range;
+}
 
 Promise.all(allLoaded).then(function () {//when headers, scores, and colleges are loaded
   for (const college in colleges) {
     addRowToTable(college);
   }
   for (const category in scores[0]) {
-    let range = document.createElement("input");
-    range.type = "range";
-    range.min = "0";
-    range.max = "5"
-    range.value = scores[0][category][0];
-    range.classList.add("slider");
-    range.addEventListener("change", function () {
+    createSlider(category, scores[0][category][0]).addEventListener("change", function () {
       scores[0][category][0] = parseInt(this.value);
       for (const college in colleges) {
         updateRowMatchScores(college);
@@ -454,22 +473,8 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
         writeUserData();
       }
     });
-    range.addEventListener("input", function () {
-      this.parentElement.getElementsByTagName("p")[0].innerHTML = "Weight: " + this.value;
-    });
-    let categoryth = document.getElementsByClassName(category)[0];
-    let weight = document.createElement("p");
-    weight.classList.add("weight");
-    weight.innerHTML = "Weight: " + scores[0][category][0];
-    categoryth.appendChild(weight);
-    categoryth.appendChild(range);
     for (const key in scores[0][category][1]) {
-      let range = document.createElement("input");
-      range.type = "range";
-      range.min = "0";
-      range.max = "5"
-      range.value = scores[0][category][1][key][0];
-      range.classList.add("slider");
+      let range = createSlider(key, scores[0][category][1][key][0]);
       range.addEventListener("change", function () {
         scores[0][category][1][key][0] = parseInt(this.value);
         for (const college in colleges) {
@@ -479,15 +484,13 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
           writeUserData();
         }
       });
-      range.addEventListener("input", function () {
-        let h3 = this.parentElement.getElementsByTagName("p")[0].innerHTML = "Weight: " + this.value;
+      let plus = document.createElement("img");
+      plus.classList.add("plus");
+      plus.src = "icons/plus.svg";
+      plus.addEventListener("click", function() {
+        console.log("hey");///add range changes here
       });
-      let datath = document.getElementsByClassName(key)[0];
-      let weight = document.createElement("p");
-      weight.classList.add("weight");
-      weight.innerHTML = "Weight: " + scores[0][category][1][key][0];
-      datath.appendChild(weight);
-      datath.appendChild(range);
+      document.getElementsByClassName(key)[0].getElementsByClassName("scorecontrol")[0].insertBefore(plus, range);
     }
   }
   setSliders();
