@@ -343,7 +343,7 @@ function updateRowMatchScores(college) {
       score = scoreTot / weightSumTot;
       floatScore = score;
     } else {
-      score = ((scoreTot / weightSumTot - 1) / 4 + 4 * floatScore) / 5;
+      score = (scoreTot / weightSumTot + 4 * floatScore) / 5;
     }
     document.getElementById(college).getElementsByClassName(scoreNames[i])[0].innerHTML = Math.round(score * 10000) / 100 + "%";
     document.getElementById(college).getElementsByClassName(scoreNames[i])[0].style.backgroundColor = highlightColors[Math.trunc(score * 5)];//score highlight
