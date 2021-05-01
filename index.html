@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
-    <title>College Matchmaking</title>
-    <link rel="icon" href="icons/collegematchmaking.svg">
-    <link href="style.css" rel="stylesheet" type="text/css" />
-  </head>
-  <body>
-    <div id="header">
-      <a href="index.html" id="logo">
-        <img src="icons/collegematchmaking.svg" alt="Logo">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>College Matchmaking</title>
+	<link rel="icon" href="icons/collegematchmaking.svg">
+	<link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+	<div id="header">
+		<a href="index.html" id="logo">
+			<img src="icons/collegematchmaking.svg" alt="Logo">
         <h1>College Matchmaking</h1>
       </a>
       <div id="headerright">
@@ -22,6 +24,20 @@
     <table id="table"></table>
     <input type="text" id="textinput">
     <p id="suggestions"></p>
+
+    <div class="popup datachange">
+      <h2>Temp</h2>
+      <h3>Loadme</h3>
+      <select class="shortlong">
+        <option value="short">Short Range</option>
+        <option value="long">Long Range</option>
+      </select>
+      <input type="range" min="1" max="5" class="slider vert">
+      <input type="range" min="1" max="5" class="slider vert">
+      <input type="range" min="1" max="5" class="slider vert">
+      <input type="range" min="1" max="5" class="slider vert">
+      <input type="range" min="1" max="5" class="slider vert">
+    </div>
 
     <div class="modal" id="intromodal">
       <div class="content">
@@ -39,7 +55,7 @@
       </div>
     </div>
 
-    <div id="userinfo">
+    <div class="popup" id="userinfo">
       <h2></h2>
       <h3></h3>
       <a id="reset">Reset Match Scores</a>

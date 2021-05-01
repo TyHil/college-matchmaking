@@ -34,9 +34,9 @@ function singedIn(loadData) {
       userinfo.style.display = "flex";
     }
   });
-  document.addEventListener('click', function (event) {
+  document.addEventListener('click', function (e) {
     let userinfo = document.getElementById("userinfo");
-    if (!userinfo.contains(event.target) && !document.getElementById("userimg").contains(event.target)) {
+    if (!userinfo.contains(e.target) && !document.getElementById("userimg").contains(e.target)) {
       userinfo.style.display = "none";
     }
   });
@@ -70,12 +70,12 @@ function singedIn(loadData) {
       document.getElementById("confirm").onclick = '';
       confirmmodal.style.display = "none";
     });
-    window.onclick = function (e) {
+    document.addEventListener('click', function (e) {
       if (e.target == confirmmodal) {
         document.getElementById("confirm").onclick = '';
         confirmmodal.style.display = "none";
       }
-    }
+    });
   });
   document.getElementById("logout").addEventListener("click", function () {
     firebase.auth().signOut().then(() => {
@@ -108,12 +108,12 @@ function singedIn(loadData) {
       document.getElementById("confirm").onclick = '';
       confirmmodal.style.display = "none";
     });
-    window.onclick = function (e) {
+    document.addEventListener('click', function (e) {
       if (e.target == confirmmodal) {
         document.getElementById("confirm").onclick = '';
         confirmmodal.style.display = "none";
       }
-    }
+    });
   });
   if (loadData) {
     let scoresLoaded = loadFirebaseJSON("/users/" + firebase.auth().currentUser.uid).then(response => {
@@ -174,11 +174,33 @@ document.getElementById("login").addEventListener("click", event => {
 loginmodal.getElementsByClassName("close")[0].onclick = function () {
   loginmodal.style.display = "none";
 }
-window.onclick = function (e) {
-  if (e.target == loginmodal) {
-    loginmodal.style.display = "none";
+document.addEventListener('click', function (e) {
+  for (modal of document.getElementsByClassName("modal")) {
+    if (e.target == modal) {
+      modal.style.display = "none";
+    }
   }
-}
+  let plusBool = 0;
+  for (plus of document.getElementsByClassName("plus")) {
+    if (plus.contains(e.target)) {
+      plusBool = 1;
+    }
+  }
+  let datachangeBool = 0;
+  for (datachange of document.getElementsByClassName("datachange")) {
+    if (datachange.contains(e.target)) {
+      datachangeBool = 1;
+    }
+  }
+  if (!datachangeBool && !plusBool) {
+    for (datachange of document.getElementsByClassName("datachange")) {
+      datachange.remove();
+    }
+    for (const college in colleges) {
+      updateRowMatchScores(college);
+    }
+  }
+});
 
 let loggedIn = 0;
 firebase.auth().onAuthStateChanged(function (user) {
@@ -189,11 +211,6 @@ firebase.auth().onAuthStateChanged(function (user) {
     intromodal.style.display = "block";
     intromodal.getElementsByClassName("close")[0].onclick = function () {
       intromodal.style.display = "none";
-    }
-    window.onclick = function (e) {
-      if (e.target == intromodal) {
-        intromodal.style.display = "none";
-      }
     }
   }
 });
@@ -312,7 +329,7 @@ function updateRowMatchScores(college) {
             scoreVals = scores[i][category][1][key][2];
           }
           if (range.length == 2) {//min and max defined
-            let width = (range[1] - range[0]) / 5
+            let width = (range[1] - range[0]) / 5;
             range = [range[0] + width, range[0] + 2 * width, range[1] - 2 * width, range[1] - width];
           }
           if (data <= range[0]) {
@@ -487,8 +504,88 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
       let plus = document.createElement("img");
       plus.classList.add("plus");
       plus.src = "icons/plus.svg";
-      plus.addEventListener("click", function() {
-        console.log("hey");///add range changes here
+      plus.addEventListener("click", function () {///add range changes here
+        const weight = scores[0][category][1][key][0];
+        //let range = scores[i][category][1][key][1];
+        let scoreVals = [1, 2, 3, 4, 5];
+        if (scores[0][category][1][key].length == 3) {//custom score ordering defined
+          scoreVals = scores[0][category][1][key][2];
+        }
+        /*if (range.length == 2) {//min and max defined
+          let width = (range[1] - range[0]) / 5;
+          range = [range[0] + width, range[0] + 2 * width, range[1] - 2 * width, range[1] - width];
+        }*/
+
+
+        let datachange = document.createElement("datachange");
+        datachange.classList.add("popup");
+        datachange.classList.add("datachange");
+
+        let body = document.body;
+        let html = document.documentElement;
+        datachange.style.top = this.getBoundingClientRect().y + this.height + 10 + (window.pageYOffset || html.scrollTop || body.scrollTop || 0) + "px";
+        datachange.style.left = this.getBoundingClientRect().x + (window.pageXOffset || html.scrollLeft || body.scrollLeft || 0) + "px";
+
+        let h2 = document.createElement("h2");
+        h2.innerHTML = "Change Range";
+        datachange.appendChild(h2);
+        let h3 = document.createElement("h3");
+        h3.innerHTML = "Redefine what makes a good score.";
+        datachange.appendChild(h3);
+        let dropDown = document.createElement("select");
+        dropDown.classList.add("shortlong");
+        let short = document.createElement("option");
+        short.value = "short";
+        short.innerHTML = "Short Range";
+        if (range.length == 2) {
+          short.selected = "selceted";
+        }
+        dropDown.appendChild(short);
+        let long = document.createElement("option");
+        long.value = "long";
+        long.innerHTML = "Long Range";
+        if (range.length == 5) {
+          long.selected = "selceted";
+        }
+        dropDown.appendChild(long);
+        ///add dropdown change ablility
+        datachange.appendChild(dropDown);
+        for (let i = 0; i < scores[0][category][1][key][1].length; i++) {
+          let rangeVal = document.createElement("input");
+          rangeVal.type = "number";
+          rangeVal.classList.add("rangeval");
+          rangeVal.value = scores[0][category][1][key][1][i];
+          rangeVal.addEventListener("change", function () {
+            console.log("rangeVal change: ", this.value);
+            scores[0][category][1][key][1][i] = parseInt(this.value);
+          });
+          datachange.appendChild(rangeVal);
+        }
+        for (let i = 0; i < 5; i++) {
+          let scoreSlider = document.createElement("input");
+          scoreSlider.type = "range";
+          scoreSlider.min = "1";
+          scoreSlider.max = "5";
+          scoreSlider.classList.add("slider");
+          scoreSlider.classList.add("vert");
+          scoreSlider.value = scoreVals[i];
+          scoreSlider.addEventListener("change", function () {
+            console.log("scoreSlider change: ", this.value);
+            if (scores[0][category][1][key].length == 2) {
+              let defaultScores = [1, 2, 3, 4, 5];
+              defaultScores[i] = parseInt(this.value);
+              scores[0][category][1][key][2] = defaultScores;
+            } else {
+              scores[0][category][1][key][2][i] = parseInt(this.value);
+              if (scores[0][category][1][key][2] == [1, 2, 3, 4, 5]) {
+                scores[0][category][1][key][2].pop();
+              }
+            }
+          });
+          datachange.appendChild(scoreSlider);
+        }
+        document.body.appendChild(datachange);
+        datachange.style.display = "block";
       });
       document.getElementsByClassName(key)[0].getElementsByClassName("scorecontrol")[0].insertBefore(plus, range);
     }
