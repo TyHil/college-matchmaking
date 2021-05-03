@@ -5,11 +5,11 @@ The College Matchmaking website.
 ## Todo
 - [ ] Add overrides.
 - [x] Actually store changed user data.
-  - [ ] Allow users to change ranges and score ranges.
+  - [x] Allow users to change ranges and score ranges.
 - [ ] Add info to intro popup.
 - [ ] Include all data points.
 - [ ] Refine match scores.
-- [ ] Make categories of the table collapsible or split it onto multiple pages.
+- [ ] Make categories of the table collapsible or split it onto multiple pages or split the table onto multiple lines so it scrolls vertically.
 - [x] Ability to change weights.
 - [x] Store college list and chosen weights somehow.
 - [x] Pick a website color.

@@ -180,24 +180,34 @@ document.addEventListener('click', function (e) {
       modal.style.display = "none";
     }
   }
-  let plusBool = 0;
-  for (plus of document.getElementsByClassName("plus")) {
-    if (plus.contains(e.target)) {
-      plusBool = 1;
+  let datachanges = document.getElementsByClassName("datachange");
+  if (datachanges.length != 0) {
+    let plusBool = 0;
+    for (const plus of document.getElementsByClassName("plus")) {
+      if (plus.contains(e.target)) {
+        plusBool = 1;
+      }
     }
-  }
-  let datachangeBool = 0;
-  for (datachange of document.getElementsByClassName("datachange")) {
-    if (datachange.contains(e.target)) {
-      datachangeBool = 1;
+    let sliderBool = 0;
+    for (const slider of document.querySelectorAll('.slider:not(.vert)')) {
+      if (slider.contains(e.target)) {
+        sliderBool = 1;
+      }
     }
-  }
-  if (!datachangeBool && !plusBool) {
-    for (datachange of document.getElementsByClassName("datachange")) {
-      datachange.remove();
+    let datachangeBool = 0;
+    for (const datachange of datachanges) {
+      if (datachange.contains(e.target)) {
+        datachangeBool = 1;
+      }
     }
-    for (const college in colleges) {
-      updateRowMatchScores(college);
+    if (!datachangeBool && !sliderBool && !plusBool) {
+      while (datachanges.length) {
+        datachanges[0].remove();
+      }
+      writeUserData();
+      for (const college in colleges) {
+        updateRowMatchScores(college);
+      }
     }
   }
 });
@@ -504,27 +514,20 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
       let plus = document.createElement("img");
       plus.classList.add("plus");
       plus.src = "icons/plus.svg";
-      plus.addEventListener("click", function () {///add range changes here
-        const weight = scores[0][category][1][key][0];
-        //let range = scores[i][category][1][key][1];
+      plus.addEventListener("click", function () {
         let scoreVals = [1, 2, 3, 4, 5];
         if (scores[0][category][1][key].length == 3) {//custom score ordering defined
           scoreVals = scores[0][category][1][key][2];
         }
-        /*if (range.length == 2) {//min and max defined
-          let width = (range[1] - range[0]) / 5;
-          range = [range[0] + width, range[0] + 2 * width, range[1] - 2 * width, range[1] - width];
-        }*/
 
-
-        let datachange = document.createElement("datachange");
+        let datachange = document.createElement("div");
         datachange.classList.add("popup");
         datachange.classList.add("datachange");
 
         let body = document.body;
         let html = document.documentElement;
-        datachange.style.top = this.getBoundingClientRect().y + this.height + 10 + (window.pageYOffset || html.scrollTop || body.scrollTop || 0) + "px";
-        datachange.style.left = this.getBoundingClientRect().x + (window.pageXOffset || html.scrollLeft || body.scrollLeft || 0) + "px";
+        datachange.style.top = this.getBoundingClientRect().y + this.height + 30 + (window.pageYOffset || html.scrollTop || body.scrollTop || 0) + "px";
+        datachange.style.left = this.parentElement.getBoundingClientRect().x + (window.pageXOffset || html.scrollLeft || body.scrollLeft || 0) + "px";
 
         let h2 = document.createElement("h2");
         h2.innerHTML = "Change Range";
@@ -532,35 +535,102 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
         let h3 = document.createElement("h3");
         h3.innerHTML = "Redefine what makes a good score.";
         datachange.appendChild(h3);
-        let dropDown = document.createElement("select");
-        dropDown.classList.add("shortlong");
+        let dropdown = document.createElement("select");
+        dropdown.classList.add("dropdown");
         let short = document.createElement("option");
         short.value = "short";
         short.innerHTML = "Short Range";
-        if (range.length == 2) {
+        if (scores[0][category][1][key][1].length == 2) {
           short.selected = "selceted";
         }
-        dropDown.appendChild(short);
+        dropdown.appendChild(short);
         let long = document.createElement("option");
         long.value = "long";
         long.innerHTML = "Long Range";
-        if (range.length == 5) {
+        if (scores[0][category][1][key][1].length == 4) {
           long.selected = "selceted";
         }
-        dropDown.appendChild(long);
-        ///add dropdown change ablility
-        datachange.appendChild(dropDown);
-        for (let i = 0; i < scores[0][category][1][key][1].length; i++) {
+        dropdown.appendChild(long);
+        dropdown.addEventListener("change", function () {
+          let rangeVals = this.parentElement.getElementsByClassName("rangeval");
+          let range = scores[0][category][1][key][1];
+          if (this.value == "long") {
+            range[0] = Math.min(range[0], range[1]);
+            range[1] = Math.max(range[0], range[1]);
+            let width = (range[1] - range[0]) / 5;
+            range = [range[0] + width, range[0] + 2 * width, range[1] - 2 * width, range[1] - width];
+            scores[0][category][1][key][1] = range;
+            for (let i = 0; i < 4; i++) {
+              rangeVals[i].value = Math.round(range[i] * 100) / 100;
+              if (i > 0) {
+                rangeVals[i].min = range[i - 1];
+              }
+              if (i < 3) {
+                rangeVals[i].max = range[i + 1];
+              }
+              rangeVals[i].style.display = "inline";
+            }
+          } else if (this.value == "short") {
+            let width = (range[3] - range[0]) / 3;
+            range = [range[0] - width, range[3] + width];
+            scores[0][category][1][key][1] = range;
+            for (let i = 0; i < 2; i++) {
+              rangeVals[i].value = Math.round(range[i] * 100) / 100;
+            }
+            rangeVals[0].max = range[1];
+            rangeVals[1].min = range[0];
+            rangeVals[1].max = "";
+            for (let i = 2; i < 4; i++) {
+              rangeVals[i].style.display = "none";
+            }
+          }
+        });
+        datachange.appendChild(dropdown);
+        let breakline1 = document.createElement("div");
+        breakline1.classList.add("break");
+        datachange.appendChild(breakline1);
+        for (let i = 0; i < 4; i++) {
           let rangeVal = document.createElement("input");
           rangeVal.type = "number";
+          rangeVal.step = "any";
+          rangeVal.size = "8";
           rangeVal.classList.add("rangeval");
-          rangeVal.value = scores[0][category][1][key][1][i];
+          if (i < scores[0][category][1][key][1].length) {
+            rangeVal.value = scores[0][category][1][key][1][i];
+          } else {
+            rangeVal.style.display = "none";
+          }
+          if (i > 0 && i < scores[0][category][1][key][1].length) {
+            rangeVal.min = scores[0][category][1][key][1][i - 1];
+          }
+          if (i < 3 && i < scores[0][category][1][key][1].length - 1) {
+            rangeVal.max = scores[0][category][1][key][1][i + 1];
+          }
           rangeVal.addEventListener("change", function () {
-            console.log("rangeVal change: ", this.value);
+            if (this.min != "" && this.min != undefined) {
+              console.log("min ", this.value);
+              this.value = Math.max(this.value, this.min);
+            }
+            if (this.max != "" && this.max != undefined) {
+              console.log("max ", this.value);
+              this.value = Math.min(this.value, this.max);
+            }
             scores[0][category][1][key][1][i] = parseInt(this.value);
+            let rangeVals = this.parentElement.getElementsByClassName("rangeval");
+            for (let i = 0; i < 4; i++) {
+              if (i > 0 && i < scores[0][category][1][key][1].length) {
+                rangeVals[i].min = scores[0][category][1][key][1][i - 1];
+              }
+              if (i < 3 && i < scores[0][category][1][key][1].length - 1) {
+                rangeVals[i].max = scores[0][category][1][key][1][i + 1];
+              }
+            }
           });
           datachange.appendChild(rangeVal);
         }
+        let breakline2 = document.createElement("div");
+        breakline2.classList.add("break");
+        datachange.appendChild(breakline2);
         for (let i = 0; i < 5; i++) {
           let scoreSlider = document.createElement("input");
           scoreSlider.type = "range";
@@ -570,22 +640,27 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
           scoreSlider.classList.add("vert");
           scoreSlider.value = scoreVals[i];
           scoreSlider.addEventListener("change", function () {
-            console.log("scoreSlider change: ", this.value);
             if (scores[0][category][1][key].length == 2) {
               let defaultScores = [1, 2, 3, 4, 5];
               defaultScores[i] = parseInt(this.value);
               scores[0][category][1][key][2] = defaultScores;
             } else {
               scores[0][category][1][key][2][i] = parseInt(this.value);
-              if (scores[0][category][1][key][2] == [1, 2, 3, 4, 5]) {
-                scores[0][category][1][key][2].pop();
+              let equals = 1;
+              for (let j = 0; j < 5; j++) {
+                if ([1, 2, 3, 4, 5][j] != scores[0][category][1][key][2][j]) {
+                  equals = 0;
+                }
+              }
+              if (equals) {
+                scores[0][category][1][key].pop();
               }
             }
           });
           datachange.appendChild(scoreSlider);
         }
+        ///
         document.body.appendChild(datachange);
-        datachange.style.display = "block";
       });
       document.getElementsByClassName(key)[0].getElementsByClassName("scorecontrol")[0].insertBefore(plus, range);
     }
