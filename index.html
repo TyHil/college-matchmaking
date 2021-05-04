@@ -13,61 +13,62 @@
 	<div id="header">
 		<a href="index.html" id="logo">
 			<img src="icons/collegematchmaking.svg" alt="Logo">
-        <h1>College Matchmaking</h1>
-      </a>
-      <div id="headerright">
-        <a class="custom-dbox-popup" href="https://donorbox.org/college-matchmaking-donation">Donate</a>
-        <a id="login">Sign Up/Log in</a>
+      <h1>College Matchmaking</h1>
+    </a>
+    <div id="headerright">
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSdk4faLZq9uO6MXK0sra3D18xwSo15c5RcnGX4WilClYqbnGQ/viewform?usp=sf_link" target="_blank">Spreadsheet</a>
+      <a class="custom-dbox-popup" href="https://donorbox.org/college-matchmaking-donation">Donate</a>
+      <a id="login">Sign Up/Log in</a>
+    </div>
+  </div>
+
+  <table id="table"></table>
+  <input type="text" id="textinput">
+  <p id="suggestions"></p>
+
+  <div class="modal" id="genericmodal">
+    <div class="content">
+      <span class="close">&times;</span>
+      <h1>Welcome</h1>
+      <p>Put a bunch of intro material here</p>
+    </div>
+  </div>
+  
+  <div class="modal" id="loginmodal">
+    <div class="content">
+      <span class="close">&times;</span>
+      <h1>Loading...</h1>
+      <div id="firebaseui-auth-container"></div>
+    </div>
+  </div>
+
+  <div class="popup" id="userinfo">
+    <h2></h2>
+    <h3></h3>
+    <a id="reset">Reset Match Scores</a>
+    <a id="logout">Log Out</a>
+    <a id="deleteaccnt">Delete Account</a>
+  </div>
+
+  <div class="modal" id="confirmmodal">
+    <div class="content">
+      <span class="close">&times;</span>
+      <h1>Confirm</h1>
+      <p>This will</p>
+      <div class="buttonbox">
+        <a id="cancel" class="buttons">Cancel</a>
+        <a id="confirm" class="buttons mainmodalbtn">Confirm</a>
       </div>
     </div>
+  </div>
 
-    <table id="table"></table>
-    <input type="text" id="textinput">
-    <p id="suggestions"></p>
-
-    <div class="modal" id="intromodal">
-      <div class="content">
-        <span class="close">&times;</span>
-        <h1>Welcome</h1>
-        <p>Put a bunch of intro material here</p>
-      </div>
-    </div>
-    
-    <div class="modal" id="loginmodal">
-      <div class="content">
-        <span class="close">&times;</span>
-        <h1>Loading...</h1>
-        <div id="firebaseui-auth-container"></div>
-      </div>
-    </div>
-
-    <div class="popup" id="userinfo">
-      <h2></h2>
-      <h3></h3>
-      <a id="reset">Reset Match Scores</a>
-      <a id="logout">Log Out</a>
-      <a id="deleteaccnt">Delete Account</a>
-    </div>
-
-    <div class="modal" id="confirmmodal">
-      <div class="content">
-        <span class="close">&times;</span>
-        <h1>Confirm</h1>
-        <p>This will</p>
-        <div class="buttonbox">
-          <a id="cancel" class="buttons">Cancel</a>
-          <a id="confirm" class="buttons mainmodalbtn">Confirm</a>
-        </div>
-      </div>
-    </div>
-
-    <script src="https://www.gstatic.com/firebasejs/8.4.2/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.4.2/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.4.2/firebase-analytics.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.4.2/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.js"></script>
-    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css" />
-    <script type="text/javascript" defer src="https://donorbox.org/install-popup-button.js"></script>
-    <script src="script.js"></script>
-  </body>
+  <script src="https://www.gstatic.com/firebasejs/8.4.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.4.2/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.4.2/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.4.2/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.js"></script>
+  <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css" />
+  <script type="text/javascript" defer src="https://donorbox.org/install-popup-button.js"></script>
+  <script src="script.js"></script>
+</body>
 </html>

@@ -58,7 +58,7 @@ function singedIn(loadData) {
           updateRowMatchScores(college);
         }
       }, error => {
-        console.error("Load " + scoreNames[0] + " Failed!", error);
+        console.error("Load " + scoreNames[0] + " Score Failed!", error);
       });
       confirmmodal.style.display = "none";
     };
@@ -160,7 +160,7 @@ let uiConfig = {
 function writeUserData() {
   firebase.database().ref('/users/' + firebase.auth().currentUser.uid).set({
     colleges: colleges,
-    FloatScore: scores[0],
+    FLOAT: scores[0],
   });
 }
 
@@ -217,13 +217,15 @@ firebase.auth().onAuthStateChanged(function (user) {
   if (user) {
     singedIn(1);
   } else {
-    let intromodal = document.getElementById("intromodal");
-    intromodal.style.display = "block";
-    intromodal.getElementsByClassName("close")[0].onclick = function () {
-      intromodal.style.display = "none";
-    }
+    let genericmodal = document.getElementById("genericmodal");
+    genericmodal.style.display = "block";
+    genericmodal.getElementsByTagName("h1")[0].innerHTML = "Welcome";
+    genericmodal.getElementsByTagName("p")[0].innerHTML = "Put a bunch of intro material here";
   }
 });
+document.getElementById("genericmodal").getElementsByClassName("close")[0].onclick = function () {
+  document.getElementById("genericmodal").style.display = "none";
+}
 
 highlightColors = ["#E67C73", "#F9AD66", "#FFD666", "#AFCF6F", "#57BB8A"];
 
@@ -262,6 +264,7 @@ function loadFirebaseJSON(link) {
 
 let allLoaded = [];//when headers and scores loaded
 
+let scoreModalInfo = ["Without considering likelihood of getting accepted, does this college have the things you are looking for? The FLOAT score is great to use when you do not yet know your test scores, you are just getting started looking at colleges, or you do not feel like facing reality yet. Think about your FLOAT score as an low-stress way to start browsing for colleges. It calculates match without considering anything on the Acceptance tab. No need to enter your test scores or GPA.", "Imagine that a college matches your needs and is easy to get into. Smooth sailing for you! The SAIL score considers overall match (the same things considered as part of your FLOAT score), but it also takes into account the likelihood of you getting accepted. For schools with similar FLOAT scores, you will see higher SAIL scores the easier it will be for you to get accepted. The SAIL score also assumes that you will not mind sailing past your peers as an above average student at your new college.  This score might also reflect a better chance at merit-based aid and/or admission into honors programs.", "The SWIM score considers overall match and likelihood of getting accepted but assumes that may not want to be the smartest kid in class. You want to be inspired by your brilliant peers. You are not afraid of a sink-or-swim mentality at a challenging college. Your SWIM score will bump up your FLOAT score at schools where you match the average profile. It lowers for schools where you would be significantly above or below average, based on your academic record and scores."];
 let headers;
 let headersLoaded = loadJSON("./headers.json").then(response => {//load headers for table from headers.json
   headers = JSON.parse(response);
@@ -269,6 +272,29 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
   let categorytr = document.createElement("tr");
   let datatr = document.createElement("tr");
   for (const category in headers) {
+    if (category != "Actions" && category != "Info") {
+      let button = document.createElement("a");
+      button.classList.add("hidebutton");
+      button.classList.add("clicked");
+      let text = document.createElement("span");
+      text.innerHTML = category;
+      button.appendChild(text);
+      button.addEventListener("click", function () {
+        let cats = document.getElementsByClassName(category);
+        if (cats[0].style.display == "none") {
+          button.classList.add("clicked");
+          for (const cat of cats) {
+            cat.style.display = "table-cell";
+          }
+        } else {
+          button.classList.remove("clicked");
+          for (const cat of cats) {
+            cat.style.display = "none";
+          }
+        }
+      });
+      document.body.insertBefore(button, table);
+    }
     let categoryth = document.createElement("th");
     let h2 = document.createElement("h2");
     h2.innerHTML = category
@@ -279,6 +305,20 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
       let length = 0;
       for (const key in headers[category]) {
         let datath = document.createElement("th");
+        for (let i = 0; i < 3; i++) {
+          if (key == scoreNames[i]) {
+            let img = document.createElement("img");
+            img.src = "icons/" + scoreNames[i] + ".svg";
+            img.classList.add("scoreicon");
+            img.addEventListener("click", function () {
+              let genericmodal = document.getElementById("genericmodal");
+              genericmodal.style.display = "block";
+              genericmodal.getElementsByTagName("h1")[0].innerHTML = scoreNames[i] + " Score";
+              genericmodal.getElementsByTagName("p")[0].innerHTML = scoreModalInfo[i];
+            });
+            datath.appendChild(img);
+          }
+        }
         let h3 = document.createElement("h3");
         h3.innerHTML = key
         datath.appendChild(h3);
@@ -300,13 +340,13 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
 allLoaded.push(headersLoaded);
 
 let scores = [];//scores float, sail, and swim scores.
-let scoreNames = ["FloatScore", "SailScore", "SwimScore"];
+let scoreNames = ["FLOAT", "SAIL", "SWIM"];
 
-for (let i = 0; i < scoreNames.length; i++) {//load all scores
-  let scoreLoaded = loadJSON("./UserData/" + scoreNames[i] + ".json").then(response => {
+for (let i = 0; i < 3; i++) {//load all scores
+  let scoreLoaded = loadJSON(((i == 0) ? "UserData/" : "") + scoreNames[i] + ".json").then(response => {
     scores[i] = JSON.parse(response);
   }, error => {
-    console.error("Load " + scoreNames[i] + " Failed!", error);
+    console.error("Load " + scoreNames[i] + " Score Failed!", error);
   });
   allLoaded.push(scoreLoaded);
 }
@@ -322,7 +362,7 @@ allLoaded.push(collegesLoaded);
 
 function updateRowMatchScores(college) {
   let floatScore;
-  for (let i = 0; i < scoreNames.length; i++) {//update match scores
+  for (let i = 0; i < 3; i++) {//update match scores
     let scoreTot = 0;
     let weightSumTot = 0;
     for (const category in scores[i]) {
@@ -608,11 +648,9 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
           }
           rangeVal.addEventListener("change", function () {
             if (this.min != "" && this.min != undefined) {
-              console.log("min ", this.value);
               this.value = Math.max(this.value, this.min);
             }
             if (this.max != "" && this.max != undefined) {
-              console.log("max ", this.value);
               this.value = Math.min(this.value, this.max);
             }
             scores[0][category][1][key][1][i] = parseInt(this.value);
@@ -659,7 +697,6 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
           });
           datachange.appendChild(scoreSlider);
         }
-        ///
         document.body.appendChild(datachange);
       });
       document.getElementsByClassName(key)[0].getElementsByClassName("scorecontrol")[0].insertBefore(plus, range);

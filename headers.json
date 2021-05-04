@@ -4,9 +4,9 @@
     "Name": ["Name", "String"]
   },
   "Scores": {
-    "FLOAT": ["FloatScore", ""],
-    "SAIL": ["SailScore", ""],
-    "SWIM": ["SwimScore", ""]
+    "FLOAT": ["FLOAT", ""],
+    "SAIL": ["SAIL", ""],
+    "SWIM": ["SWIM", ""]
   },
   "Size": {
     "Undergraduate Population": ["Undergraduates", "Integer"]

@@ -2,6 +2,36 @@ body {
   margin: 0;
 }
 
+/*Table Buttons*/
+.hidebutton {
+  font-size: 14px;
+  margin: 2px;
+  cursor: pointer;
+  background-image: linear-gradient(90deg, #61cae3, #3489c9);
+	border-radius: 4px;
+	padding: 2px;
+	position: relative;
+  text-decoration: none;
+  width: fit-content;
+  display: inline-block;
+  align-items: center;
+  justify-content: center;
+}
+.hidebutton span {
+  padding: 4px;
+	align-items: center;
+	background: #fff;
+	border-radius: 4px;
+	display: flex;
+	justify-content: center;
+	height: 100%;
+	transition: background .2s ease;
+	width: fit-content;
+}
+.hidebutton.clicked span {
+	background: transparent;
+}
+
 /*Table*/
 table, th, td {
   border: 1px solid black;
@@ -15,6 +45,10 @@ th, td {
   width: 20px;
   margin-right: 3px;
   margin-left: 3px;
+}
+.scoreicon {
+  width: 40px;
+  cursor: pointer;
 }
 #table th h2 {
   font-size: 20px;
@@ -42,7 +76,7 @@ th, td {
 }
 #header #logo img {
   width: 35px;
-  margin: 5px 10px 5px 5px;
+  margin: 5px;
 }
 #header a {
   color: black;
@@ -64,6 +98,7 @@ th, td {
   padding: 0px;
 }
 #header #logo h1 {
+  margin: 0 10px 0 5px;
   font-size: 25px;
   line-height: 0;
 }
@@ -94,7 +129,6 @@ th, td {
 .modal {
   display: none;
   position: fixed; 
-  padding-top: 50px;
   left: 0; 
   top: 0;
   width: 100%;
@@ -106,9 +140,11 @@ th, td {
   position: relative;
   background-color: white;
   padding: 20px;
-  margin: auto;
+  margin: 0 auto;
   width: fit-content;
+  max-width: 75%;
   border-radius: 8px;
+  top: 15%;
   -webkit-animation-name: animatetop;
   -webkit-animation-duration: 0.4s;
   animation-name: animatetop;
@@ -127,11 +163,11 @@ th, td {
 }
 @-webkit-keyframes animatetop {
   from {top:-300px; opacity:0} 
-  to {top:50; opacity:1}
+  to {top:15%; opacity:1}
 }
 @keyframes animatetop {
   from {top:-300px; opacity:0}
-  to {top:50; opacity:1}
+  to {top:15%; opacity:1}
 }
 .modal .buttonbox {
   float: right;
