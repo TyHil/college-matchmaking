@@ -3,7 +3,7 @@
   "Info": {
     "Name": ["Name", "String"]
   },
-  "Scores": {
+  "Match Scores": {
     "FLOAT": ["FLOAT", ""],
     "SAIL": ["SAIL", ""],
     "SWIM": ["SWIM", ""]

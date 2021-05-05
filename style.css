@@ -5,7 +5,7 @@ body {
 /*Table Buttons*/
 .hidebutton {
   font-size: 14px;
-  margin: 2px;
+  margin: 4px 2px;
   cursor: pointer;
   background-image: linear-gradient(90deg, #61cae3, #3489c9);
 	border-radius: 4px;
@@ -21,7 +21,7 @@ body {
   padding: 4px;
 	align-items: center;
 	background: #fff;
-	border-radius: 4px;
+	border-radius: 2px;
 	display: flex;
 	justify-content: center;
 	height: 100%;
@@ -108,7 +108,7 @@ th, td {
 #header #login {
   background: linear-gradient(90deg, #61cae3, #3489c9);
 }
-@media screen and (max-width: 525px) {
+@media screen and (max-width: 550px) {
   #header #logo h1 {
     display: none;
   }
@@ -133,7 +133,6 @@ th, td {
   top: 0;
   width: 100%;
   height: 100%; 
-  background-color: rgb(0, 0, 0);
   background-color: rgba(0, 0, 0, 0.5);
 }
 .modal .content {
@@ -169,31 +168,13 @@ th, td {
   from {top:-300px; opacity:0}
   to {top:15%; opacity:1}
 }
+.modal h1 {
+  margin: 0;
+}
 .modal .buttonbox {
   float: right;
 }
-.modal .buttons {
-  color: black;
-  text-align: center;
-  padding: 5px;
-  text-decoration: none;
-  font-size: 16px;
-  line-height: 20px;
-  border-radius: 4px;
-  margin-right: 2px;
-  margin-left: 2px;
-  cursor: pointer;
-}
-.modal .buttons:hover {
-  background-color: #ddd;
-}
-.modal .mainmodalbtn {
-  color: white;
-  background: linear-gradient(90deg, #d80000, #eb0000);
-}
-.modal .mainmodalbtn:hover {
-  background: linear-gradient(90deg, #eb0000, #f00);
-}
+
 
 /*Pop Up*/
 .popup {
@@ -229,6 +210,30 @@ th, td {
   line-height: 18px;
   margin: 5px 10px;
   font-weight: normal;
+}
+
+/*Modal and Popup Buttons*/
+.modal .buttons, .popup a {
+  color: black;
+  text-align: center;
+  padding: 5px;
+  text-decoration: none;
+  font-size: 16px;
+  line-height: 20px;
+  border-radius: 4px;
+  margin-right: 2px;
+  margin-left: 2px;
+  cursor: pointer;
+}
+.modal .buttons:hover, .popup a:hover {
+  background-color: #ddd;
+}
+.modal .mainbtn, .popup .mainbtn {
+  color: white;
+  background: linear-gradient(90deg, #d80000, #eb0000);
+}
+.modal .mainbtn:hover, .popup .mainbtn:hover {
+  background: linear-gradient(90deg, #eb0000, #f00);
 }
 
 /*User info*/
@@ -304,14 +309,28 @@ input[type=number] {
 .dropdown {
   margin: 5px 10px;
 }
+.barbox {
+  width: fit-content;
+  height: fit-content;
+  margin-bottom: 5px;
+}
+.bar {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+}
+.rangeval {
+  width: 50px;
+  margin: 5px;
+}
+.scorelabel {
+  margin: 0;
+  text-align: center;
+}
 .vert {
   writing-mode: bt-lr; /* IE */
   -webkit-appearance: slider-vertical; /* WebKit */
   width: 10px;
   height: 100px;
   margin-bottom: 10px;
-}
-.rangeval {
-  width: 50px;
-  margin: 5px;
 }

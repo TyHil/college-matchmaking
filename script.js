@@ -50,7 +50,7 @@ function singedIn(loadData) {
     confirmmodal.getElementsByTagName("p")[0].innerHTML = "This will remove all customization from your match scores and return them to their default state.";
     confirmmodal.style.display = "block";
     document.getElementById("confirm").onclick = function () {
-      let score0Loaded = loadJSON("./UserData/" + scoreNames[0] + ".json").then(response => {
+      loadJSON("./UserData/" + scoreNames[0] + ".json").then(response => {
         scores[0] = JSON.parse(response);
         writeUserData();
         setSliders();
@@ -135,14 +135,14 @@ function singedIn(loadData) {
 
 let uiConfig = {
   callbacks: {
-    signInSuccessWithAuthResult: function (authResult) {//User successfully signed in.
+    signInSuccessWithAuthResult: function (authResult) {//User successfully signed in
       document.getElementById("loginmodal").style.display = "none";
       if (authResult.additionalUserInfo.isNewUser) {
         writeUserData();
       }
       signedIn(!authResult.additionalUserInfo.isNewUser);
     },
-    uiShown: function () { // The widget is rendered.
+    uiShown: function () {//The widget is rendered
       document.getElementById("loginmodal").getElementsByTagName("h1")[0].innerHTML = "Sign In or Sign Up";
     }
   },
@@ -151,17 +151,19 @@ let uiConfig = {
     firebase.auth.EmailAuthProvider.PROVIDER_ID,
     firebase.auth.GoogleAuthProvider.PROVIDER_ID
   ],
-  // Terms of service url.
+  /// Terms of service url.
   tosUrl: '<your-tos-url>',
-  // Privacy policy url.
+  /// Privacy policy url.
   privacyPolicyUrl: '<your-privacy-policy-url>'
 };
 
 function writeUserData() {
-  firebase.database().ref('/users/' + firebase.auth().currentUser.uid).set({
-    colleges: colleges,
-    FLOAT: scores[0],
-  });
+  if (loggedIn) {
+    firebase.database().ref('/users/' + firebase.auth().currentUser.uid).set({
+      colleges: colleges,
+      FLOAT: scores[0],
+    });
+  }
 }
 
 let loginmodal = document.getElementById("loginmodal");
@@ -280,7 +282,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
       text.innerHTML = category;
       button.appendChild(text);
       button.addEventListener("click", function () {
-        let cats = document.getElementsByClassName(category);
+        let cats = document.getElementsByClassName(category.replace(/\s+/g, ''));
         if (cats[0].style.display == "none") {
           button.classList.add("clicked");
           for (const cat of cats) {
@@ -322,14 +324,14 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
         let h3 = document.createElement("h3");
         h3.innerHTML = key
         datath.appendChild(h3);
-        datath.classList.add(category);
+        datath.classList.add(category.replace(/\s+/g, ''));
         datath.classList.add(headers[category][key][0]);
         datatr.appendChild(datath);
         length++;
       }
       categoryth.colSpan = length;
     }
-    categoryth.classList.add(category);
+    categoryth.classList.add(category.replace(/\s+/g, ''));
     categorytr.appendChild(categoryth);
   }
   table.appendChild(categorytr);
@@ -462,6 +464,7 @@ function addRowToTable(college) {
       remove.addEventListener("click", () => {
         document.getElementById(college).remove();
         delete colleges[college];
+        writeUserData();
       });
       td.appendChild(remove);
       tr.appendChild(td);
@@ -472,16 +475,14 @@ function addRowToTable(college) {
       textarea.maxlength = "10";
       textarea.addEventListener("blur", function () {
         colleges[college] = this.value;
-        if (loggedIn) {
-          writeUserData();
-        }
+        writeUserData();
       });
       td.appendChild(textarea);
       tr.appendChild(td);
     } else {
       for (const key in headers[category]) {
         let td = document.createElement("td");
-        td.classList.add(category);
+        td.classList.add(category.replace(/\s+/g, ''));
         td.classList.add(headers[category][key][0]);
         tr.appendChild(td);
       }
@@ -493,7 +494,7 @@ function addRowToTable(college) {
 
 function setSliders() {
   for (const category in scores[0]) {
-    let cell = document.getElementsByClassName(category)[0];
+    let cell = document.getElementsByClassName(category.replace(/\s+/g, ''))[0];
     cell.getElementsByClassName("slider")[0].value = scores[0][category][0];
     cell.getElementsByClassName("weight")[0].innerHTML = "Weight: " + scores[0][category][0];
     for (const key in scores[0][category][1]) {
@@ -536,9 +537,7 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
       for (const college in colleges) {
         updateRowMatchScores(college);
       }
-      if (loggedIn) {
-        writeUserData();
-      }
+      writeUserData();
     });
     for (const key in scores[0][category][1]) {
       let range = createSlider(key, scores[0][category][1][key][0]);
@@ -547,9 +546,7 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
         for (const college in colleges) {
           updateRowMatchScores(college);
         }
-        if (loggedIn) {
-          writeUserData();
-        }
+        writeUserData();
       });
       let plus = document.createElement("img");
       plus.classList.add("plus");
@@ -575,6 +572,40 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
         let h3 = document.createElement("h3");
         h3.innerHTML = "Redefine what makes a good score.";
         datachange.appendChild(h3);
+        let barbox = document.createElement("div");
+        barbox.classList.add("barbox");
+        for (let i = 0; i < 5; i++) {
+          let bar = document.createElement("bar");
+          bar.classList.add("bar");
+          bar.style.backgroundColor = highlightColors[scoreVals[i] - 1];
+          if (i > 0 && i < 4) {
+            let range = scores[0][category][1][key][1];
+            if (range.length == 2) {//min and max defined
+              let width = (range[1] - range[0]) / 5;
+              range = [range[0] + width, range[0] + 2 * width, range[1] - 2 * width, range[1] - width];
+            }
+            bar.style.width = (200 - 2 * 10 - 2 * 20) * ((range[i] - range[i - 1]) / (range[3] - range[0])) + "px";
+          }
+          barbox.appendChild(bar);
+        }
+        datachange.appendChild(barbox);
+        let breakline1 = document.createElement("div");
+        breakline1.classList.add("break");
+        datachange.appendChild(breakline1);
+        let reset = document.createElement("a");
+        reset.classList.add("mainbtn");
+        reset.innerHTML = "Reset";
+        reset.addEventListener("click", function () {
+          loadJSON("UserData/" + scoreNames[0] + ".json").then(response => {
+            scores[0][category][1][key] = JSON.parse(response)[category][1][key];
+            writeUserData();
+            datachange.remove();
+            setSliders();
+          }, error => {
+            console.error("Load " + scoreNames[i] + " Score Failed!", error);
+          });
+        })
+        datachange.appendChild(reset);
         let dropdown = document.createElement("select");
         dropdown.classList.add("dropdown");
         let short = document.createElement("option");
@@ -626,9 +657,10 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
           }
         });
         datachange.appendChild(dropdown);
-        let breakline1 = document.createElement("div");
-        breakline1.classList.add("break");
-        datachange.appendChild(breakline1);
+        let breakline2 = document.createElement("div");
+        breakline2.classList.add("break");
+        datachange.appendChild(breakline2);
+        let isPercent = (headers[category][Object.keys(headers[category]).find(keyh => headers[category][keyh][0] == key)][1] == "%")
         for (let i = 0; i < 4; i++) {
           let rangeVal = document.createElement("input");
           rangeVal.type = "number";
@@ -637,39 +669,85 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
           rangeVal.classList.add("rangeval");
           if (i < scores[0][category][1][key][1].length) {
             rangeVal.value = scores[0][category][1][key][1][i];
+            if (isPercent) {
+              rangeVal.value *= 100;
+            }
           } else {
             rangeVal.style.display = "none";
           }
           if (i > 0 && i < scores[0][category][1][key][1].length) {
             rangeVal.min = scores[0][category][1][key][1][i - 1];
+            if (isPercent) {
+              rangeVal.min *= 100;
+            }
           }
           if (i < 3 && i < scores[0][category][1][key][1].length - 1) {
             rangeVal.max = scores[0][category][1][key][1][i + 1];
+            if (isPercent) {
+              rangeVal.max *= 100;
+            }
           }
+          rangeVal.addEventListener("input", function () {
+            if ((this.hasAttribute("min") && parseInt(this.value) < parseInt(this.min)) || (this.hasAttribute("max") && parseInt(this.value) > parseInt(this.max))) {
+              this.style.backgroundColor = highlightColors[0];
+            } else {
+              this.style.backgroundColor = "#fff";
+              let bars = this.parentElement.getElementsByClassName("bar");
+              for (let j = 0; j < 5; j++) {
+                bars[j].style.backgroundColor = highlightColors[scoreVals[j] - 1];
+                if (j > 0 && j < 4) {
+                  let range = scores[0][category][1][key][1];
+                  range[i] = parseInt(this.value);
+                  if (isPercent) {
+                    range[i] /= 100;
+                  }
+                  if (range.length == 2) {//min and max defined
+                    let width = (range[1] - range[0]) / 5;
+                    range = [range[0] + width, range[0] + 2 * width, range[1] - 2 * width, range[1] - width];
+                  }
+                  bars[j].style.width = (200 - 2 * 10 - 2 * 20) * ((range[j] - range[j - 1]) / (range[3] - range[0])) + "px";
+                }
+              }
+            }
+          });
           rangeVal.addEventListener("change", function () {
-            if (this.min != "" && this.min != undefined) {
+            if (this.hasAttribute("min")) {
               this.value = Math.max(this.value, this.min);
             }
-            if (this.max != "" && this.max != undefined) {
+            if (this.hasAttribute("max")) {
               this.value = Math.min(this.value, this.max);
             }
             scores[0][category][1][key][1][i] = parseInt(this.value);
+            if (isPercent) {
+              scores[0][category][1][key][1][i] /= 100;
+            }
             let rangeVals = this.parentElement.getElementsByClassName("rangeval");
             for (let i = 0; i < 4; i++) {
               if (i > 0 && i < scores[0][category][1][key][1].length) {
                 rangeVals[i].min = scores[0][category][1][key][1][i - 1];
+                if (isPercent) {
+                  rangeVals[i].min *= 100;
+                }
               }
               if (i < 3 && i < scores[0][category][1][key][1].length - 1) {
                 rangeVals[i].max = scores[0][category][1][key][1][i + 1];
+                if (isPercent) {
+                  rangeVals[i].max *= 100;
+                }
               }
             }
           });
           datachange.appendChild(rangeVal);
         }
-        let breakline2 = document.createElement("div");
-        breakline2.classList.add("break");
-        datachange.appendChild(breakline2);
+        let breakline3 = document.createElement("div");
+        breakline3.classList.add("break");
+        datachange.appendChild(breakline3);
         for (let i = 0; i < 5; i++) {
+          let div = document.createElement("div");
+          let score = document.createElement("p");
+          score.classList.add("scorelabel");
+          score.innerHTML = scoreVals[i];
+          div.appendChild(score);
           let scoreSlider = document.createElement("input");
           scoreSlider.type = "range";
           scoreSlider.min = "1";
@@ -677,6 +755,11 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
           scoreSlider.classList.add("slider");
           scoreSlider.classList.add("vert");
           scoreSlider.value = scoreVals[i];
+          scoreSlider.addEventListener("input", function () {
+            score.innerHTML = this.value;
+            console.log
+            this.parentElement.parentElement.getElementsByClassName("bar")[i].style.backgroundColor = highlightColors[this.value - 1];
+          });
           scoreSlider.addEventListener("change", function () {
             if (scores[0][category][1][key].length == 2) {
               let defaultScores = [1, 2, 3, 4, 5];
@@ -695,7 +778,8 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
               }
             }
           });
-          datachange.appendChild(scoreSlider);
+          div.appendChild(scoreSlider);
+          datachange.appendChild(div);
         }
         document.body.appendChild(datachange);
       });
@@ -788,6 +872,7 @@ document.getElementById("textinput").addEventListener("click", function () {
             suggestions.innerHTML = "";
             colleges[results[0][0]] = "";
             addRowToTable(results[0][0]);
+            writeUserData();
           } else {
             window.alert("College already exists.");
           }
