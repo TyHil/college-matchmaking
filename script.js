@@ -280,9 +280,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
       let button = document.createElement("a");
       button.classList.add("hidebutton");
       button.classList.add("clicked");
-      let text = document.createElement("span");
-      text.innerHTML = category;
-      button.appendChild(text);
+      button.innerHTML = category;
       button.addEventListener("click", function () {
         let cats = document.getElementsByClassName(category.replace(/\s+/g, ''));
         if (cats[0].style.display == "none") {
