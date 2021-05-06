@@ -70,12 +70,6 @@ function singedIn(loadData) {
       document.getElementById("confirm").onclick = '';
       confirmmodal.style.display = "none";
     });
-    document.addEventListener('click', function (e) {
-      if (e.target == confirmmodal) {
-        document.getElementById("confirm").onclick = '';
-        confirmmodal.style.display = "none";
-      }
-    });
   });
   document.getElementById("logout").addEventListener("click", function () {
     firebase.auth().signOut().then(() => {
@@ -107,12 +101,6 @@ function singedIn(loadData) {
     confirmmodal.getElementsByClassName("close")[0].addEventListener("click", function () {
       document.getElementById("confirm").onclick = '';
       confirmmodal.style.display = "none";
-    });
-    document.addEventListener('click', function (e) {
-      if (e.target == confirmmodal) {
-        document.getElementById("confirm").onclick = '';
-        confirmmodal.style.display = "none";
-      }
     });
   });
   if (loadData) {
@@ -178,12 +166,18 @@ loginmodal.getElementsByClassName("close")[0].onclick = function () {
 }
 document.addEventListener('click', function (e) {
   for (modal of document.getElementsByClassName("modal")) {
-    if (e.target == modal) {
+    if (modal.contains(e.target)) {
       modal.style.display = "none";
     }
   }
   let datachanges = document.getElementsByClassName("datachange");
-  if (datachanges.length != 0) {
+  let datachangeDisplay = 0;
+  for (const datachange of datachanges) {
+    if (datachange.style.display != "none") {
+      datachangeDisplay = 1;
+    }
+  }
+  if (datachangeDisplay) {
     let plusBool = 0;
     for (const plus of document.getElementsByClassName("plus")) {
       if (plus.contains(e.target)) {
@@ -203,14 +197,22 @@ document.addEventListener('click', function (e) {
       }
     }
     if (!datachangeBool && !sliderBool && !plusBool) {
-      while (datachanges.length) {
-        datachanges[0].remove();
-      }
       writeUserData();
+      for (const datachange of datachanges) {
+        datachange.style.display = "none";
+      }
       for (const college in colleges) {
         updateRowMatchScores(college);
       }
     }
+  }
+  let suggestions = document.getElementById("suggestions");
+  if (!document.getElementById("textinput").contains(e.target) && !suggestions.contains(e.target)) {
+    suggestions.style.display = "none";
+  }
+  if (confirmmodal.contains(e.target)) {
+    document.getElementById("confirm").onclick = '';
+    confirmmodal.style.display = "none";
   }
 });
 
@@ -295,7 +297,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
           }
         }
       });
-      document.body.insertBefore(button, table);
+      document.body.insertBefore(button, document.getElementById("addcollege"));
     }
     let categoryth = document.createElement("th");
     let h2 = document.createElement("h2");
@@ -527,6 +529,24 @@ function createSlider(nameClass, val) {
   return range;
 }
 
+function datachangePos(datachange, plus) {
+  datachange.style.left = plus.parentElement.getBoundingClientRect().x + (window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft || 0) + "px";
+}
+
+datachangePlusPairs = [];
+
+function allDatachangePos() {
+  datachangePlusPairs.forEach(function (item) {
+    if (item[0].style.display != "none") {
+      datachangePos(item[0], item[1]);
+    }
+  });
+}
+
+[document, document.getElementById("tableholder")].forEach(function (item) {
+  item.addEventListener("scroll", allDatachangePos);
+})
+
 Promise.all(allLoaded).then(function () {//when headers, scores, and colleges are loaded
   for (const college in colleges) {
     addRowToTable(college);
@@ -549,241 +569,244 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
         writeUserData();
       });
       let plus = document.createElement("img");
+      let datachange = document.createElement("div");
+      datachange.style.display = "none";
+      datachangePlusPairs.push([datachange, plus]);
       plus.classList.add("plus");
       plus.src = "icons/plus.svg";
       plus.addEventListener("click", function () {
-        let scoreVals = [1, 2, 3, 4, 5];
-        if (scores[0][category][1][key].length == 3) {//custom score ordering defined
-          scoreVals = scores[0][category][1][key][2];
+        if (datachange.style.display == "none") {
+          datachange.style.top = plus.getBoundingClientRect().y + plus.height + 30 + (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0) + "px";
+          datachangePos(datachange, plus);
+          datachange.style.display = "flex";
+        } else {
+          writeUserData();
+          datachange.style.display = "none";
         }
+      });
+      document.getElementsByClassName(key)[0].getElementsByClassName("scorecontrol")[0].insertBefore(plus, range);
+      let scoreVals = [1, 2, 3, 4, 5];
+      if (scores[0][category][1][key].length == 3) {//custom score ordering defined
+        scoreVals = scores[0][category][1][key][2];
+      }
+      datachange.classList.add("popup");
+      datachange.classList.add("datachange");
 
-        let datachange = document.createElement("div");
-        datachange.classList.add("popup");
-        datachange.classList.add("datachange");
-
-        let body = document.body;
-        let html = document.documentElement;
-        datachange.style.top = this.getBoundingClientRect().y + this.height + 30 + (window.pageYOffset || html.scrollTop || body.scrollTop || 0) + "px";
-        datachange.style.left = this.parentElement.getBoundingClientRect().x + (window.pageXOffset || html.scrollLeft || body.scrollLeft || 0) + "px";
-
-        let h2 = document.createElement("h2");
-        h2.innerHTML = "Change Range";
-        datachange.appendChild(h2);
-        let h3 = document.createElement("h3");
-        h3.innerHTML = "Redefine what makes a good score.";
-        datachange.appendChild(h3);
-        let barbox = document.createElement("div");
-        barbox.classList.add("barbox");
-        for (let i = 0; i < 5; i++) {
-          let bar = document.createElement("bar");
-          bar.classList.add("bar");
-          bar.style.backgroundColor = highlightColors[scoreVals[i] - 1];
-          if (i > 0 && i < 4) {
-            let range = scores[0][category][1][key][1];
-            if (range.length == 2) {//min and max defined
-              let width = (range[1] - range[0]) / 5;
-              range = [range[0] + width, range[0] + 2 * width, range[1] - 2 * width, range[1] - width];
-            }
-            bar.style.width = (200 - 2 * 10 - 2 * 20) * ((range[i] - range[i - 1]) / (range[3] - range[0])) + "px";
-          }
-          barbox.appendChild(bar);
-        }
-        datachange.appendChild(barbox);
-        let breakline1 = document.createElement("div");
-        breakline1.classList.add("break");
-        datachange.appendChild(breakline1);
-        let reset = document.createElement("a");
-        reset.classList.add("mainbtn");
-        reset.innerHTML = "Reset";
-        reset.addEventListener("click", function () {
-          loadJSON("UserData/" + scoreNames[0] + ".json").then(response => {
-            scores[0][category][1][key] = JSON.parse(response)[category][1][key];
-            writeUserData();
-            datachange.remove();
-            setSliders();
-          }, error => {
-            console.error("Load " + scoreNames[i] + " Score Failed!", error);
-          });
-        })
-        datachange.appendChild(reset);
-        let dropdown = document.createElement("select");
-        dropdown.classList.add("dropdown");
-        let short = document.createElement("option");
-        short.value = "short";
-        short.innerHTML = "Short Range";
-        if (scores[0][category][1][key][1].length == 2) {
-          short.selected = "selceted";
-        }
-        dropdown.appendChild(short);
-        let long = document.createElement("option");
-        long.value = "long";
-        long.innerHTML = "Long Range";
-        if (scores[0][category][1][key][1].length == 4) {
-          long.selected = "selceted";
-        }
-        dropdown.appendChild(long);
-        dropdown.addEventListener("change", function () {
-          let rangeVals = this.parentElement.getElementsByClassName("rangeval");
+      let h2 = document.createElement("h2");
+      h2.innerHTML = "Change Range";
+      datachange.appendChild(h2);
+      let h3 = document.createElement("h3");
+      h3.innerHTML = "Redefine what makes a good score.";
+      datachange.appendChild(h3);
+      let barbox = document.createElement("div");
+      barbox.classList.add("barbox");
+      for (let i = 0; i < 5; i++) {
+        let bar = document.createElement("bar");
+        bar.classList.add("bar");
+        bar.style.backgroundColor = highlightColors[scoreVals[i] - 1];
+        if (i > 0 && i < 4) {
           let range = scores[0][category][1][key][1];
-          if (this.value == "long") {
-            range[0] = Math.min(range[0], range[1]);
-            range[1] = Math.max(range[0], range[1]);
+          if (range.length == 2) {//min and max defined
             let width = (range[1] - range[0]) / 5;
             range = [range[0] + width, range[0] + 2 * width, range[1] - 2 * width, range[1] - width];
-            scores[0][category][1][key][1] = range;
-            for (let i = 0; i < 4; i++) {
-              rangeVals[i].value = Math.round(range[i] * 100) / 100;
-              if (i > 0) {
-                rangeVals[i].min = range[i - 1];
-              }
-              if (i < 3) {
-                rangeVals[i].max = range[i + 1];
-              }
-              rangeVals[i].style.display = "inline";
+          }
+          bar.style.width = (200 - 2 * 10 - 2 * 20) * ((range[i] - range[i - 1]) / (range[3] - range[0])) + "px";
+        }
+        barbox.appendChild(bar);
+      }
+      datachange.appendChild(barbox);
+      let breakline1 = document.createElement("div");
+      breakline1.classList.add("break");
+      datachange.appendChild(breakline1);
+      let reset = document.createElement("a");
+      reset.classList.add("mainbtn");
+      reset.innerHTML = "Reset";
+      reset.addEventListener("click", function () {
+        loadJSON("UserData/" + scoreNames[0] + ".json").then(response => {
+          scores[0][category][1][key] = JSON.parse(response)[category][1][key];
+          writeUserData();
+          datachange.style.display == "none"
+          setSliders();
+        }, error => {
+          console.error("Load " + scoreNames[i] + " Score Failed!", error);
+        });
+      })
+      datachange.appendChild(reset);
+      let dropdown = document.createElement("select");
+      dropdown.classList.add("dropdown");
+      let short = document.createElement("option");
+      short.value = "short";
+      short.innerHTML = "Short Range";
+      if (scores[0][category][1][key][1].length == 2) {
+        short.selected = "selceted";
+      }
+      dropdown.appendChild(short);
+      let long = document.createElement("option");
+      long.value = "long";
+      long.innerHTML = "Long Range";
+      if (scores[0][category][1][key][1].length == 4) {
+        long.selected = "selceted";
+      }
+      dropdown.appendChild(long);
+      dropdown.addEventListener("change", function () {
+        let rangeVals = this.parentElement.getElementsByClassName("rangeval");
+        let range = scores[0][category][1][key][1];
+        if (this.value == "long") {
+          range[0] = Math.min(range[0], range[1]);
+          range[1] = Math.max(range[0], range[1]);
+          let width = (range[1] - range[0]) / 5;
+          range = [range[0] + width, range[0] + 2 * width, range[1] - 2 * width, range[1] - width];
+          scores[0][category][1][key][1] = range;
+          for (let i = 0; i < 4; i++) {
+            rangeVals[i].value = Math.round(range[i] * 100) / 100;
+            if (i > 0) {
+              rangeVals[i].min = range[i - 1];
             }
-          } else if (this.value == "short") {
-            let width = (range[3] - range[0]) / 3;
-            range = [range[0] - width, range[3] + width];
-            scores[0][category][1][key][1] = range;
-            for (let i = 0; i < 2; i++) {
-              rangeVals[i].value = Math.round(range[i] * 100) / 100;
+            if (i < 3) {
+              rangeVals[i].max = range[i + 1];
             }
-            rangeVals[0].max = range[1];
-            rangeVals[1].min = range[0];
-            rangeVals[1].max = "";
-            for (let i = 2; i < 4; i++) {
-              rangeVals[i].style.display = "none";
+            rangeVals[i].style.display = "inline";
+          }
+        } else if (this.value == "short") {
+          let width = (range[3] - range[0]) / 3;
+          range = [range[0] - width, range[3] + width];
+          scores[0][category][1][key][1] = range;
+          for (let i = 0; i < 2; i++) {
+            rangeVals[i].value = Math.round(range[i] * 100) / 100;
+          }
+          rangeVals[0].max = range[1];
+          rangeVals[1].min = range[0];
+          rangeVals[1].max = "";
+          for (let i = 2; i < 4; i++) {
+            rangeVals[i].style.display = "none";
+          }
+        }
+      });
+      datachange.appendChild(dropdown);
+      let breakline2 = document.createElement("div");
+      breakline2.classList.add("break");
+      datachange.appendChild(breakline2);
+      let isPercent = (headers[category][Object.keys(headers[category]).find(keyh => headers[category][keyh][0] == key)][1] == "%")
+      for (let i = 0; i < 4; i++) {
+        let rangeVal = document.createElement("input");
+        rangeVal.type = "number";
+        rangeVal.step = "any";
+        rangeVal.size = "8";
+        rangeVal.classList.add("rangeval");
+        if (i < scores[0][category][1][key][1].length) {
+          rangeVal.value = scores[0][category][1][key][1][i];
+          if (isPercent) {
+            rangeVal.value *= 100;
+          }
+        } else {
+          rangeVal.style.display = "none";
+        }
+        if (i > 0 && i < scores[0][category][1][key][1].length) {
+          rangeVal.min = scores[0][category][1][key][1][i - 1];
+          if (isPercent) {
+            rangeVal.min *= 100;
+          }
+        }
+        if (i < 3 && i < scores[0][category][1][key][1].length - 1) {
+          rangeVal.max = scores[0][category][1][key][1][i + 1];
+          if (isPercent) {
+            rangeVal.max *= 100;
+          }
+        }
+        rangeVal.addEventListener("input", function () {
+          if ((this.hasAttribute("min") && parseInt(this.value) < parseInt(this.min)) || (this.hasAttribute("max") && parseInt(this.value) > parseInt(this.max))) {
+            this.style.backgroundColor = highlightColors[0];
+          } else {
+            this.style.backgroundColor = "#fff";
+            let bars = this.parentElement.getElementsByClassName("bar");
+            for (let j = 0; j < 5; j++) {
+              bars[j].style.backgroundColor = highlightColors[scoreVals[j] - 1];
+              if (j > 0 && j < 4) {
+                let range = scores[0][category][1][key][1];
+                range[i] = parseInt(this.value);
+                if (isPercent) {
+                  range[i] /= 100;
+                }
+                if (range.length == 2) {//min and max defined
+                  let width = (range[1] - range[0]) / 5;
+                  range = [range[0] + width, range[0] + 2 * width, range[1] - 2 * width, range[1] - width];
+                }
+                bars[j].style.width = (200 - 2 * 10 - 2 * 20) * ((range[j] - range[j - 1]) / (range[3] - range[0])) + "px";
+              }
             }
           }
         });
-        datachange.appendChild(dropdown);
-        let breakline2 = document.createElement("div");
-        breakline2.classList.add("break");
-        datachange.appendChild(breakline2);
-        let isPercent = (headers[category][Object.keys(headers[category]).find(keyh => headers[category][keyh][0] == key)][1] == "%")
-        for (let i = 0; i < 4; i++) {
-          let rangeVal = document.createElement("input");
-          rangeVal.type = "number";
-          rangeVal.step = "any";
-          rangeVal.size = "8";
-          rangeVal.classList.add("rangeval");
-          if (i < scores[0][category][1][key][1].length) {
-            rangeVal.value = scores[0][category][1][key][1][i];
-            if (isPercent) {
-              rangeVal.value *= 100;
+        rangeVal.addEventListener("change", function () {
+          if (this.hasAttribute("min")) {
+            this.value = Math.max(this.value, this.min);
+          }
+          if (this.hasAttribute("max")) {
+            this.value = Math.min(this.value, this.max);
+          }
+          scores[0][category][1][key][1][i] = parseInt(this.value);
+          if (isPercent) {
+            scores[0][category][1][key][1][i] /= 100;
+          }
+          let rangeVals = this.parentElement.getElementsByClassName("rangeval");
+          for (let i = 0; i < 4; i++) {
+            if (i > 0 && i < scores[0][category][1][key][1].length) {
+              rangeVals[i].min = scores[0][category][1][key][1][i - 1];
+              if (isPercent) {
+                rangeVals[i].min *= 100;
+              }
             }
+            if (i < 3 && i < scores[0][category][1][key][1].length - 1) {
+              rangeVals[i].max = scores[0][category][1][key][1][i + 1];
+              if (isPercent) {
+                rangeVals[i].max *= 100;
+              }
+            }
+          }
+        });
+        datachange.appendChild(rangeVal);
+      }
+      let breakline3 = document.createElement("div");
+      breakline3.classList.add("break");
+      datachange.appendChild(breakline3);
+      for (let i = 0; i < 5; i++) {
+        let div = document.createElement("div");
+        let score = document.createElement("p");
+        score.classList.add("scorelabel");
+        score.innerHTML = scoreVals[i];
+        div.appendChild(score);
+        let scoreSlider = document.createElement("input");
+        scoreSlider.type = "range";
+        scoreSlider.min = "1";
+        scoreSlider.max = "5";
+        scoreSlider.classList.add("slider");
+        scoreSlider.classList.add("vert");
+        scoreSlider.value = scoreVals[i];
+        scoreSlider.addEventListener("input", function () {
+          score.innerHTML = this.value;
+          this.parentElement.parentElement.getElementsByClassName("bar")[i].style.backgroundColor = highlightColors[this.value - 1];
+        });
+        scoreSlider.addEventListener("change", function () {
+          if (scores[0][category][1][key].length == 2) {
+            let defaultScores = [1, 2, 3, 4, 5];
+            defaultScores[i] = parseInt(this.value);
+            scores[0][category][1][key][2] = defaultScores;
           } else {
-            rangeVal.style.display = "none";
-          }
-          if (i > 0 && i < scores[0][category][1][key][1].length) {
-            rangeVal.min = scores[0][category][1][key][1][i - 1];
-            if (isPercent) {
-              rangeVal.min *= 100;
+            scores[0][category][1][key][2][i] = parseInt(this.value);
+            let equals = 1;
+            for (let j = 0; j < 5; j++) {
+              if ([1, 2, 3, 4, 5][j] != scores[0][category][1][key][2][j]) {
+                equals = 0;
+              }
             }
-          }
-          if (i < 3 && i < scores[0][category][1][key][1].length - 1) {
-            rangeVal.max = scores[0][category][1][key][1][i + 1];
-            if (isPercent) {
-              rangeVal.max *= 100;
+            if (equals) {
+              scores[0][category][1][key].pop();
             }
           }
-          rangeVal.addEventListener("input", function () {
-            if ((this.hasAttribute("min") && parseInt(this.value) < parseInt(this.min)) || (this.hasAttribute("max") && parseInt(this.value) > parseInt(this.max))) {
-              this.style.backgroundColor = highlightColors[0];
-            } else {
-              this.style.backgroundColor = "#fff";
-              let bars = this.parentElement.getElementsByClassName("bar");
-              for (let j = 0; j < 5; j++) {
-                bars[j].style.backgroundColor = highlightColors[scoreVals[j] - 1];
-                if (j > 0 && j < 4) {
-                  let range = scores[0][category][1][key][1];
-                  range[i] = parseInt(this.value);
-                  if (isPercent) {
-                    range[i] /= 100;
-                  }
-                  if (range.length == 2) {//min and max defined
-                    let width = (range[1] - range[0]) / 5;
-                    range = [range[0] + width, range[0] + 2 * width, range[1] - 2 * width, range[1] - width];
-                  }
-                  bars[j].style.width = (200 - 2 * 10 - 2 * 20) * ((range[j] - range[j - 1]) / (range[3] - range[0])) + "px";
-                }
-              }
-            }
-          });
-          rangeVal.addEventListener("change", function () {
-            if (this.hasAttribute("min")) {
-              this.value = Math.max(this.value, this.min);
-            }
-            if (this.hasAttribute("max")) {
-              this.value = Math.min(this.value, this.max);
-            }
-            scores[0][category][1][key][1][i] = parseInt(this.value);
-            if (isPercent) {
-              scores[0][category][1][key][1][i] /= 100;
-            }
-            let rangeVals = this.parentElement.getElementsByClassName("rangeval");
-            for (let i = 0; i < 4; i++) {
-              if (i > 0 && i < scores[0][category][1][key][1].length) {
-                rangeVals[i].min = scores[0][category][1][key][1][i - 1];
-                if (isPercent) {
-                  rangeVals[i].min *= 100;
-                }
-              }
-              if (i < 3 && i < scores[0][category][1][key][1].length - 1) {
-                rangeVals[i].max = scores[0][category][1][key][1][i + 1];
-                if (isPercent) {
-                  rangeVals[i].max *= 100;
-                }
-              }
-            }
-          });
-          datachange.appendChild(rangeVal);
-        }
-        let breakline3 = document.createElement("div");
-        breakline3.classList.add("break");
-        datachange.appendChild(breakline3);
-        for (let i = 0; i < 5; i++) {
-          let div = document.createElement("div");
-          let score = document.createElement("p");
-          score.classList.add("scorelabel");
-          score.innerHTML = scoreVals[i];
-          div.appendChild(score);
-          let scoreSlider = document.createElement("input");
-          scoreSlider.type = "range";
-          scoreSlider.min = "1";
-          scoreSlider.max = "5";
-          scoreSlider.classList.add("slider");
-          scoreSlider.classList.add("vert");
-          scoreSlider.value = scoreVals[i];
-          scoreSlider.addEventListener("input", function () {
-            score.innerHTML = this.value;
-            console.log
-            this.parentElement.parentElement.getElementsByClassName("bar")[i].style.backgroundColor = highlightColors[this.value - 1];
-          });
-          scoreSlider.addEventListener("change", function () {
-            if (scores[0][category][1][key].length == 2) {
-              let defaultScores = [1, 2, 3, 4, 5];
-              defaultScores[i] = parseInt(this.value);
-              scores[0][category][1][key][2] = defaultScores;
-            } else {
-              scores[0][category][1][key][2][i] = parseInt(this.value);
-              let equals = 1;
-              for (let j = 0; j < 5; j++) {
-                if ([1, 2, 3, 4, 5][j] != scores[0][category][1][key][2][j]) {
-                  equals = 0;
-                }
-              }
-              if (equals) {
-                scores[0][category][1][key].pop();
-              }
-            }
-          });
-          div.appendChild(scoreSlider);
-          datachange.appendChild(div);
-        }
-        document.body.appendChild(datachange);
-      });
-      document.getElementsByClassName(key)[0].getElementsByClassName("scorecontrol")[0].insertBefore(plus, range);
+        });
+        div.appendChild(scoreSlider);
+        datachange.appendChild(div);
+      }
+      document.body.appendChild(datachange);
     }
   }
   setSliders();
@@ -841,20 +864,46 @@ function JaroWrinker(s1, s2) {
   return weight;
 }
 
-let search;
+let search = [];
 document.getElementById("textinput").addEventListener("click", function () {
   loadFirebaseJSON("/search").then(response => {
-    search = response;
-    for (let i = 0; i < search.length; i++) {
-      for (let j = search[i].length - 1; j > 1; j--) {
-        search.push([search[i][0], search[i][j]]);
-        search[i].splice(j, 1);
+    for (const key in response) {
+      if (Array.isArray(response[key])) {
+        for (const alias of response[key]) {
+          search.push([key, alias]);
+        }
+      } else {
+        search.push([key, response[key]]);
       }
     }
-    document.getElementById("textinput").addEventListener("keyup", function (event) {//text box suggestion generator
+    let suggestions = document.getElementById("suggestions");
+    let currentFocus;
+    for (let i = 0; i < 10; i++) {
+      let div = document.createElement("div");
+      div.appendChild(document.createElement("p"));
+      let input = document.createElement("input");
+      input.type = "hidden";
+      div.appendChild(input);
+      suggestions.appendChild(div);
+      div.addEventListener("click", function () {
+        let itemVal = this.getElementsByTagName("input")[0].value;
+        colleges[itemVal] = "";
+        addRowToTable(itemVal);
+        writeUserData();
+        suggestions.style.display = "none";
+        currentFocus = -1;
+        let removeActive = suggestions.getElementsByClassName("active")[0];
+        if (removeActive != undefined) {
+          removeActive.classList.remove("active");
+        }
+      });
+    }
+
+
+
+    document.getElementById("textinput").addEventListener("input", function (event) {//text box suggestion generator
       if (this.value != "") {
-        let suggestions = document.getElementById("suggestions");
-        suggestions.innerHTML = "Loading...";
+        suggestions.style.display = "block";
         let results = JSON.parse(JSON.stringify(search));
         for (let i = 0; i < results.length; i++) {
           results[i].push(JaroWrinker(this.value, results[i][1]));
@@ -867,19 +916,50 @@ document.getElementById("textinput").addEventListener("click", function () {
           }
           return 0;
         });
-        if (event.keyCode === 13) {
-          if (document.getElementById(results[0][0]) == null) {
-            suggestions.innerHTML = "";
-            colleges[results[0][0]] = "";
-            addRowToTable(results[0][0]);
-            writeUserData();
-          } else {
-            window.alert("College already exists.");
-          }
-        } else {
-          suggestions.innerHTML = results.slice(0, 10);
+        currentFocus = -1;
+        let removeActive = suggestions.getElementsByClassName("active")[0];
+        if (removeActive != undefined) {
+          removeActive.classList.remove("active");
+        }
+        let items = suggestions.getElementsByTagName("div");
+        for (let i = 0; i < 10; i++) {
+          items[i].getElementsByTagName("p")[0].innerHTML = results[i][1];
+          items[i].getElementsByTagName("input")[0].value = results[i][0];
         }
       }
+    });
+    this.addEventListener("keydown", function (e) {
+      let items = document.getElementById("suggestions").getElementsByTagName("div");
+      if (e.keyCode == 40) {//Down
+        currentFocus = (currentFocus + 1) % 10;
+      } else if (e.keyCode == 38) {//Up
+        currentFocus = (currentFocus + 10 - 1) % 10;
+      }
+      if (e.keyCode == 40 || e.keyCode == 38) {
+        let removeActive = suggestions.getElementsByClassName("active")[0];
+        if (removeActive != undefined) {
+          removeActive.classList.remove("active");
+        }
+        items[currentFocus].classList.add("active");
+      } else if (event.keyCode === 13 && currentFocus != -1) {
+        let itemVal = suggestions.getElementsByTagName("div")[currentFocus].getElementsByTagName("input")[0].value;
+        if (document.getElementById(itemVal) == null) {
+          colleges[itemVal] = "";
+          addRowToTable(itemVal);
+          writeUserData();
+          suggestions.style.display = "none";
+          currentFocus = -1;
+          let removeActive = suggestions.getElementsByClassName("active")[0];
+          if (removeActive != undefined) {
+            removeActive.classList.remove("active");
+          }
+        } else {
+          window.alert("College already exists.");
+        }
+      }
+    });
+    this.addEventListener("focusin", function () {
+      suggestions.style.display = "block";
     });
   }, error => {
     console.error("Load Search Data Failed!", error);

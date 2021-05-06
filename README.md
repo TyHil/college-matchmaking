@@ -3,7 +3,8 @@ The College Matchmaking website.
 ## Documentation
 [JSON Documentation](https://docs.google.com/document/d/1eRywNeOZg6bmokPfr1w0Q88CdCXvMOuLnuUajdLSmAc/edit?usp=sharing)
 ## Todo
-- [ ] Table scroll?
+- [x] Table scroll.
+- [x] Suggestions popup.
 - [ ] Terms of Service.
 - [ ] Privacy Policy.
 - [ ] Move colleges up and down.

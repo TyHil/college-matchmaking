@@ -32,7 +32,52 @@ body {
 	background: transparent;
 }
 
+/*Add a college*/
+#addcollege {
+  position: relative;
+  display: inline-block;
+}
+#textinput {
+  height: 20px;
+  margin: 4px 2px;
+  width: 200px;
+  border-radius: 4px;
+  border: none;
+  background-color: #ddd;
+  padding: 4px 8px;
+}
+#suggestions {
+  display: none;
+  position: absolute;
+  border: 1px solid #ddd;
+  border-radius: 0 0 4px 4px;
+  border-bottom: none;
+  border-top: none;
+  z-index: 99;
+  top: 100%;
+  left: 0;
+  right: 0;
+}
+#suggestions div {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+}
+#suggestions div:hover {
+  background-color: #ddd;
+}
+#suggestions div.active {
+  background: linear-gradient(90deg, #61cae3, #3489c9);
+}
+#suggestions div p {
+  margin: 0;
+}
+
 /*Table*/
+#tableholder {
+  overflow: auto;
+}
 table, th, td {
   border: 1px solid black;
   border-collapse: collapse;
@@ -175,7 +220,6 @@ th, td {
   float: right;
 }
 
-
 /*Pop Up*/
 .popup {
   position: absolute;
@@ -185,19 +229,6 @@ th, td {
   border-radius: 4px;
   display: none;
   box-shadow: 0 0 20px grey;
-}
-.popup a {
-  color: black;
-  text-align: left;
-  padding: 5px 10px;
-  text-decoration: none;
-  font-size: 14px;
-  line-height: 20px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-.popup a:hover {
-  background-color: #ddd;
 }
 .popup h2 {
   font-size: 24px;
@@ -221,8 +252,7 @@ th, td {
   font-size: 16px;
   line-height: 20px;
   border-radius: 4px;
-  margin-right: 2px;
-  margin-left: 2px;
+  margin: 2px 0;
   cursor: pointer;
 }
 .modal .buttons:hover, .popup a:hover {
@@ -290,7 +320,8 @@ th, td {
 
 /*Data Changer*/
 .datachange {
-  display: flex;
+  position: absolute;
+  display: none;
   flex-wrap: wrap;
   justify-content: space-around;
 }
