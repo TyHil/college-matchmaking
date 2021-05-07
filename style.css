@@ -14,7 +14,7 @@ body {
   display: inline-block;
   padding: 6px 8px;
 }
-.hidebutton.clicked, .hidebutton:hover {
+.hidebutton.clicked {
   background-color: #ddd;
 }
 
@@ -139,7 +139,7 @@ th, td {
 #header #login {
   background: linear-gradient(90deg, #61cae3, #3489c9);
 }
-@media screen and (max-width: 550px) {
+@media screen and (max-width: 680px) {
   #header #logo h1 {
     display: none;
   }
@@ -173,6 +173,7 @@ th, td {
   margin: 0 auto;
   width: fit-content;
   max-width: 75%;
+  max-height: 70%;
   border-radius: 8px;
   top: 15%;
   -webkit-animation-name: animatetop;
@@ -289,6 +290,20 @@ th, td {
   background: linear-gradient(90deg, #61cae3, #3489c9);
   cursor: pointer;
 }*/
+
+/*Override*/
+.override input[type=checkbox] {
+  display: inline;
+}
+.override p {
+  display: block;
+  margin: 0 5px;
+  float: right;
+}
+.override .slider {
+  display: block; 
+  width: 60px;
+}
 
 /*Weight Change*/
 .weight {

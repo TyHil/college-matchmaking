@@ -3,12 +3,14 @@ The College Matchmaking website.
 ## Documentation
 [JSON Documentation](https://docs.google.com/document/d/1eRywNeOZg6bmokPfr1w0Q88CdCXvMOuLnuUajdLSmAc/edit?usp=sharing)
 ## Todo
+- [x] Move colleges up and down.
 - [x] Table scroll.
 - [x] Suggestions popup.
+- [ ] Change font.
 - [ ] Terms of Service.
 - [ ] Privacy Policy.
 - [ ] Move colleges up and down.
-- [ ] Add overrides.
+- [x] Add overrides.
 - [x] Actually store changed user data.
   - [x] Allow users to change ranges and score ranges.
 - [ ] Add info to intro popup.

@@ -1,4 +1,11 @@
-{
-  "AustinCollege":"My description", 
-  "CaliforniaInstituteofTechnology":"Caltech is a school"
-}
+[
+  {
+    "ID":"CaliforniaInstituteofTechnology",
+    "Notes":"Caltech is a school"
+  },
+  {
+    "ID":"AustinCollege",
+    "Notes":"My description",
+    "Size":3
+  }
+]
