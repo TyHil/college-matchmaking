@@ -471,6 +471,44 @@ function addRowToTable(college) {
     if (category == "Actions") {
       let td = document.createElement("td");
       td.classList.add(category);
+      let actionsdiv = document.createElement("div");
+      actionsdiv.classList.add("actionsdiv");
+      let arrowdiv = document.createElement("div");
+      arrowdiv.classList.add("arrowdiv");
+      up = document.createElement("img");
+      up.classList.add("up");
+      up.src = "./icons/up.svg";
+      up.addEventListener("click", () => {
+        for (let i = 1; i < colleges.length; i++) {
+          if (colleges[i]["ID"] == college) {
+            document.getElementById("table").insertBefore(document.getElementById(colleges[i]["ID"]), document.getElementById(colleges[i - 1]["ID"]));
+            let temp = colleges[i - 1];
+            colleges[i - 1] = colleges[i];
+            colleges[i] = temp;
+            break;
+          }
+        }
+        writeUserData();
+      });
+      arrowdiv.appendChild(up);
+      arrowdiv.appendChild(document.createElement("br"));
+      down = document.createElement("img");
+      down.classList.add("down");
+      down.src = "./icons/down.svg";
+      down.addEventListener("click", () => {
+        for (let i = 0; i < colleges.length - 1; i++) {
+          if (colleges[i]["ID"] == college) {
+            document.getElementById("table").insertBefore(document.getElementById(colleges[i + 1]["ID"]), document.getElementById(colleges[i]["ID"]));
+            let temp = colleges[i];
+            colleges[i] = colleges[i + 1];
+            colleges[i + 1] = temp;
+            break;
+          }
+        }
+        writeUserData();
+      });
+      arrowdiv.appendChild(down);
+      actionsdiv.appendChild(arrowdiv);
       remove = document.createElement("img");
       remove.classList.add("removeicon");
       remove.src = "./icons/remove.svg";
@@ -478,13 +516,13 @@ function addRowToTable(college) {
         document.getElementById(college).remove();
         for (let i = 0; i < colleges.length; i++) {
           if (colleges[i]["ID"] == college) {
-            //delete colleges[i];
             colleges.splice(i, 1);
           }
         }
         writeUserData();
       });
-      td.appendChild(remove);
+      actionsdiv.appendChild(remove);
+      td.appendChild(actionsdiv);
       tr.appendChild(td);
     } else if (category == "Notes") {
       let td = document.createElement("td");
@@ -979,7 +1017,7 @@ document.getElementById("textinput").addEventListener("click", function () {
       suggestions.appendChild(div);
       div.addEventListener("click", function () {
         let itemVal = this.getElementsByTagName("input")[0].value;
-        colleges.push({"ID":itemVal,"Notes":""});
+        colleges.push({ "ID": itemVal, "Notes": "" });
         addRowToTable(itemVal);
         writeUserData();
         suggestions.style.display = "none";
@@ -1033,7 +1071,7 @@ document.getElementById("textinput").addEventListener("click", function () {
       } else if (event.keyCode === 13 && currentFocus != -1) {
         let itemVal = suggestions.getElementsByTagName("div")[currentFocus].getElementsByTagName("input")[0].value;
         if (document.getElementById(itemVal) == null) {
-          colleges.push({"ID":itemVal,"Notes":""});
+          colleges.push({ "ID": itemVal, "Notes": "" });
           addRowToTable(itemVal);
           writeUserData();
           suggestions.style.display = "none";
@@ -1048,7 +1086,9 @@ document.getElementById("textinput").addEventListener("click", function () {
       }
     });
     this.addEventListener("focusin", function () {
-      suggestions.style.display = "block";
+      if (this.value != "") {
+        suggestions.style.display = "block";
+      }
     });
   }, error => {
     console.error("Load Search Data Failed!", error);
