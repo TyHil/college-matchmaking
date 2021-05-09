@@ -23,6 +23,8 @@ function singedIn(loadData) {
   img.id = "userimg";
   if (firebase.auth().currentUser.photoURL == null) {
     img.src = "icons/profile.svg";
+    img.style.width = "30px";
+    img.style.height = "30px";
   } else {
     img.src = firebase.auth().currentUser.photoURL;
   }
@@ -166,7 +168,7 @@ loginmodal.getElementsByClassName("close")[0].onclick = function () {
 }
 document.addEventListener('click', function (e) {
   for (modal of document.getElementsByClassName("modal")) {
-    if (modal.contains(e.target)) {
+    if (modal.contains(e.target) && !modal.childNodes[1].contains(e.target)) {
       modal.style.display = "none";
     }
   }
@@ -210,7 +212,7 @@ document.addEventListener('click', function (e) {
   if (!document.getElementById("textinput").contains(e.target) && !suggestions.contains(e.target)) {
     suggestions.style.display = "none";
   }
-  if (confirmmodal.contains(e.target)) {
+  if (confirmmodal.contains(e.target) && !confirmmodal.childNodes[1].contains(e.target) ) {
     document.getElementById("confirm").onclick = '';
     confirmmodal.style.display = "none";
   }
@@ -280,6 +282,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
       let button = document.createElement("a");
       button.classList.add("hidebutton");
       button.classList.add("clicked");
+      button.id = category.replace(/\s+/g, '');
       button.innerHTML = category;
       button.addEventListener("click", function () {
         let cats = document.getElementsByClassName(category.replace(/\s+/g, ''));

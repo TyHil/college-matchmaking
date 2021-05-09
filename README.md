@@ -6,7 +6,7 @@ The College Matchmaking website.
 - [x] Move colleges up and down.
 - [x] Table scroll.
 - [x] Suggestions popup.
-- [ ] Change font.
+- [x] Change font.
 - [ ] Terms of Service.
 - [ ] Privacy Policy.
 - [ ] Move colleges up and down.
@@ -28,4 +28,5 @@ The College Matchmaking website.
 - [x] Add header with an icon, name, and donation page.
   - [x] Donate button (through donorbox).
 - [ ] Add inputs above the table for: SAT/ACT/none, want financial aid.
-- [ ] maybe use: datatables.net but make a pretty table.
+- [ ] Maybe use: datatables.net but make a pretty table.
+- [ ] Make Change Range popup intuitive.
