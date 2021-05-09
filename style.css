@@ -72,11 +72,17 @@ table, th, td {
 th, td {
   padding: 4px;
 }
+.actionsdiv {
+  display: flex;
+  justify-content: space-around;
+}
+.up, .down {
+  cursor: pointer;
+  width: 20px;
+}
 .removeicon {
   cursor: pointer;
   width: 20px;
-  margin-right: 3px;
-  margin-left: 3px;
 }
 .scoreicon {
   width: 40px;
