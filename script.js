@@ -212,7 +212,7 @@ document.addEventListener('click', function (e) {
   if (!document.getElementById("textinput").contains(e.target) && !suggestions.contains(e.target)) {
     suggestions.style.display = "none";
   }
-  if (confirmmodal.contains(e.target) && !confirmmodal.childNodes[1].contains(e.target) ) {
+  if (confirmmodal.contains(e.target) && !confirmmodal.childNodes[1].contains(e.target)) {
     document.getElementById("confirm").onclick = '';
     confirmmodal.style.display = "none";
   }
@@ -708,16 +708,6 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
       datachangePlusPairs.push([datachange, plus]);
       plus.classList.add("plus");
       plus.src = "icons/plus.svg";
-      plus.addEventListener("click", function () {
-        if (datachange.style.display == "none") {
-          datachange.style.top = plus.getBoundingClientRect().y + plus.height + 30 + (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0) + "px";
-          datachangePos(datachange, plus);
-          datachange.style.display = "flex";
-        } else {
-          writeUserData();
-          datachange.style.display = "none";
-        }
-      });
       document.getElementsByClassName(key)[0].getElementsByClassName("scorecontrol")[0].insertBefore(plus, range);
       let scoreVals = [1, 2, 3, 4, 5];
       if (scores[0][category][1][key].length == 3) {//custom score ordering defined
@@ -758,7 +748,7 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
         loadJSON("UserData/" + scoreNames[0] + ".json").then(response => {
           scores[0][category][1][key] = JSON.parse(response)[category][1][key];
           writeUserData();
-          datachange.style.display == "none"
+          datachange.style.display = "none";
           setSliders();
         }, error => {
           console.error("Load " + scoreNames[i] + " Score Failed!", error);
@@ -770,16 +760,10 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
       let short = document.createElement("option");
       short.value = "short";
       short.innerHTML = "Short Range";
-      if (scores[0][category][1][key][1].length == 2) {
-        short.selected = "selceted";
-      }
       dropdown.appendChild(short);
       let long = document.createElement("option");
       long.value = "long";
       long.innerHTML = "Long Range";
-      if (scores[0][category][1][key][1].length == 4) {
-        long.selected = "selceted";
-      }
       dropdown.appendChild(long);
       dropdown.addEventListener("change", function () {
         let rangeVals = this.parentElement.getElementsByClassName("rangeval");
@@ -826,26 +810,6 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
         rangeVal.step = "any";
         rangeVal.size = "8";
         rangeVal.classList.add("rangeval");
-        if (i < scores[0][category][1][key][1].length) {
-          rangeVal.value = scores[0][category][1][key][1][i];
-          if (isPercent) {
-            rangeVal.value *= 100;
-          }
-        } else {
-          rangeVal.style.display = "none";
-        }
-        if (i > 0 && i < scores[0][category][1][key][1].length) {
-          rangeVal.min = scores[0][category][1][key][1][i - 1];
-          if (isPercent) {
-            rangeVal.min *= 100;
-          }
-        }
-        if (i < 3 && i < scores[0][category][1][key][1].length - 1) {
-          rangeVal.max = scores[0][category][1][key][1][i + 1];
-          if (isPercent) {
-            rangeVal.max *= 100;
-          }
-        }
         rangeVal.addEventListener("input", function () {
           if ((this.hasAttribute("min") && parseInt(this.value) < parseInt(this.min)) || (this.hasAttribute("max") && parseInt(this.value) > parseInt(this.max))) {
             this.style.backgroundColor = highlightColors[0];
@@ -940,6 +904,61 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
         datachange.appendChild(div);
       }
       document.body.appendChild(datachange);
+      plus.addEventListener("click", function () {///
+        if (datachange.style.display == "none") {
+          datachange.style.top = plus.getBoundingClientRect().y + plus.height + 30 + (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0) + "px";
+          datachangePos(datachange, plus);
+          let bars = datachange.getElementsByClassName("bar");
+          for (let i = 0; i < 5; i++) {
+            bars[i].style.backgroundColor = highlightColors[scoreVals[i] - 1];
+            if (i > 0 && i < 4) {
+              let range = scores[0][category][1][key][1];
+              if (range.length == 2) {//min and max defined
+                let width = (range[1] - range[0]) / 5;
+                range = [range[0] + width, range[0] + 2 * width, range[1] - 2 * width, range[1] - width];
+              }
+              bars[i].style.width = (200 - 2 * 10 - 2 * 20) * ((range[i] - range[i - 1]) / (range[3] - range[0])) + "px";
+            }
+          }
+          if (scores[0][category][1][key][1].length == 2) {
+            short.selected = "selected";
+          }
+          if (scores[0][category][1][key][1].length == 4) {
+            long.selected = "selected";
+          }
+          let rangeVals = datachange.getElementsByClassName("rangeval");
+          for (let i = 0; i < 4; i++) {///
+            if (i < scores[0][category][1][key][1].length) {
+              rangeVals[i].value = scores[0][category][1][key][1][i];
+              if (isPercent) {
+                rangeVals[i].value *= 100;
+              }
+            } else {
+              rangeVals[i].style.display = "none";
+            }
+            if (i > 0 && i < scores[0][category][1][key][1].length) {
+              rangeVals[i].min = scores[0][category][1][key][1][i - 1];
+              if (isPercent) {
+                rangeVals[i].min *= 100;
+              }
+            }
+            if (i < 3 && i < scores[0][category][1][key][1].length - 1) {
+              rangeVals[i].max = scores[0][category][1][key][1][i + 1];
+              if (isPercent) {
+                rangeVals[i].max *= 100;
+              }
+            }
+          }
+          let scoreSliders = datachange.getElementsByClassName("vert");
+          for (let i = 0; i < 5; i++) {///
+            scoreSliders[i].value = scoreVals[i];
+          }
+          datachange.style.display = "flex";
+        } else {
+          writeUserData();
+          datachange.style.display = "none";
+        }
+      });
     }
   }
   setSliders();
@@ -1002,8 +1021,12 @@ document.getElementById("textinput").addEventListener("click", function () {
   loadFirebaseJSON("/search").then(response => {
     for (const key in response) {
       if (Array.isArray(response[key])) {
-        for (const alias of response[key]) {
-          search.push([key, alias]);
+        for (let i = 0; i < response[key].length; i++) {//(const alias of response[key]) {
+          let arr = [key, response[key][i]];
+          if (i != 0) {
+            arr.push(response[key][0]);
+          }
+          search.push(arr);
         }
       } else {
         search.push([key, response[key]]);
@@ -1039,9 +1062,9 @@ document.getElementById("textinput").addEventListener("click", function () {
           results[i].push(JaroWrinker(this.value, results[i][1]));
         }
         results.sort(function (a, b) {//Sort results
-          if (a[2] > b[2]) {
+          if (a[a.length - 1] > b[b.length - 1]) {
             return -1;
-          } if (a[2] < b[2]) {
+          } if (a[a.length - 1] < b[b.length - 1]) {
             return 1;
           }
           return 0;
@@ -1053,7 +1076,7 @@ document.getElementById("textinput").addEventListener("click", function () {
         }
         let items = suggestions.getElementsByTagName("div");
         for (let i = 0; i < 10; i++) {
-          items[i].getElementsByTagName("p")[0].innerHTML = results[i][1];
+          items[i].getElementsByTagName("p")[0].innerHTML = results[i][results[i].length - 2];
           items[i].getElementsByTagName("input")[0].value = results[i][0];
         }
       }

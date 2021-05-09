@@ -9,7 +9,7 @@ The College Matchmaking website.
 - [x] Change font.
 - [ ] Terms of Service.
 - [ ] Privacy Policy.
-- [ ] Move colleges up and down.
+- [x] Move colleges up and down.
 - [x] Add overrides.
 - [x] Actually store changed user data.
   - [x] Allow users to change ranges and score ranges.
