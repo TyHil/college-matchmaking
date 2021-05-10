@@ -671,12 +671,7 @@ function addRowToTable(college) {
           }
         });
         scoreSlider.addEventListener("change", function () {
-          getFromColleges(college)[category] = parseInt(this.value);///
-          /*for (let i = 0; i < colleges.lenght; i++) {
-            if (colleges[i]["ID"] == college) {
-              colleges[i][category] = parseInt(this.value);
-            }
-          }*/
+          getFromColleges(college)[category] = parseInt(this.value);
           writeUserData();
           updateRowMatchScores(college);
         });
@@ -685,14 +680,13 @@ function addRowToTable(college) {
         if (button != null && !button.classList.contains("clicked")) {
           overridetd.style.display = "none";
         }
-
         tr.appendChild(overridetd);
       }
       for (const key in headers[category]) {
         let td = document.createElement("td");
         td.classList.add(category.replace(/\s+/g, ''));
         td.classList.add(headers[category][key][0]);
-        if (colorBool) {
+        if (colorBool && headers[category][key][0] in scores[0][category][1]) {
           td.style.backgroundColor = highlightColors[getFromColleges(college)[category] - 1];
         }
         let button = document.getElementById(category.replace(/\s+/g, ''));
@@ -904,10 +898,9 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
           if ((this.hasAttribute("min") && parseInt(this.value) < parseInt(this.min)) || (this.hasAttribute("max") && parseInt(this.value) > parseInt(this.max))) {
             this.style.backgroundColor = highlightColors[0];
           } else {
-            this.style.backgroundColor = "#fff";
+            this.style.backgroundColor = "#ddd";
             let bars = this.parentElement.getElementsByClassName("bar");
             for (let j = 0; j < 5; j++) {
-              bars[j].style.backgroundColor = highlightColors[scoreVals[j] - 1];
               if (j > 0 && j < 4) {
                 let range = scores[0][category][1][key][1];
                 range[i] = parseInt(this.value);
@@ -930,6 +923,7 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
           if (this.hasAttribute("max")) {
             this.value = Math.min(this.value, this.max);
           }
+          this.style.backgroundColor = "#ddd";
           scores[0][category][1][key][1][i] = parseInt(this.value);
           if (isPercent) {
             scores[0][category][1][key][1][i] /= 100;

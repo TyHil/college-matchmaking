@@ -15,7 +15,8 @@ The College Matchmaking website.
   - [x] Allow users to change ranges and score ranges.
 - [ ] Add info to intro popup.
 - [ ] Include all data points.
-- [ ] Refine match scores.
+  - [ ] Switch to Ellen's data.
+- [ ] Refine match scores (stop using dummy ones).
 - [x] Make categories of the table collapsible or split it onto multiple pages or split the table onto multiple lines so it scrolls vertically.
 - [x] Ability to change weights.
 - [x] Store college list and chosen weights somehow.
