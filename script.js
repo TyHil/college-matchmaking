@@ -608,6 +608,10 @@ function addRowToTable(college) {
         writeUserData();
       });
       td.appendChild(textarea);
+      let button = document.getElementById(category.replace(/\s+/g, ''));
+      if (button != null && !button.classList.contains("clicked")) {
+        td.style.display = "none";
+      }
       tr.appendChild(td);
     } else {
       let colorBool = 0;
@@ -672,6 +676,11 @@ function addRowToTable(college) {
           updateRowMatchScores(college);
         });
         overridetd.appendChild(scoreSlider);
+        let button = document.getElementById(category.replace(/\s+/g, ''));
+        if (button != null && !button.classList.contains("clicked")) {
+          overridetd.style.display = "none";
+        }
+
         tr.appendChild(overridetd);
       }
       for (const key in headers[category]) {
@@ -681,6 +690,11 @@ function addRowToTable(college) {
         if (colorBool) {
           td.style.backgroundColor = highlightColors[getFromColleges(college)[category] - 1];
         }
+        let button = document.getElementById(category.replace(/\s+/g, ''));
+        if (button != null && !button.classList.contains("clicked")) {
+          td.style.display = "none";
+        }
+
         tr.appendChild(td);
       }
     }
