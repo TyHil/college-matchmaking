@@ -645,7 +645,7 @@ function addRowToTable(college) {
             score.style.display = "block";
             score.innerHTML = 3;
             scoreSlider.value = 3;
-            getFromColleges(college)[category] = 3;
+            getFromColleges(college)[category] = 3;///
             writeUserData();
             overridetd.style.backgroundColor = highlightColors[2];
             for (const key in scores[0][category][1]) {
@@ -671,7 +671,12 @@ function addRowToTable(college) {
           }
         });
         scoreSlider.addEventListener("change", function () {
-          getFromColleges(college)[category] = parseInt(this.value);
+          getFromColleges(college)[category] = parseInt(this.value);///
+          /*for (let i = 0; i < colleges.lenght; i++) {
+            if (colleges[i]["ID"] == college) {
+              colleges[i][category] = parseInt(this.value);
+            }
+          }*/
           writeUserData();
           updateRowMatchScores(college);
         });
@@ -991,11 +996,15 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
       document.body.appendChild(datachange);
       plus.addEventListener("click", function () {
         if (datachange.style.display == "none") {
+          let scoreVals2 = [1, 2, 3, 4, 5];
+          if (scores[0][category][1][key].length == 3) {//custom score ordering defined
+            scoreVals2 = scores[0][category][1][key][2];
+          }
           datachange.style.top = plus.getBoundingClientRect().y + plus.height + 30 + (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0) + "px";
           datachangePos(datachange, plus);
           let bars = datachange.getElementsByClassName("bar");
           for (let i = 0; i < 5; i++) {
-            bars[i].style.backgroundColor = highlightColors[scoreVals[i] - 1];
+            bars[i].style.backgroundColor = highlightColors[scoreVals2[i] - 1];
             if (i > 0 && i < 4) {
               let range = scores[0][category][1][key][1];
               if (range.length == 2) {//min and max defined
@@ -1035,8 +1044,10 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
             }
           }
           let scoreSliders = datachange.getElementsByClassName("vert");
+          let scoreLabels = datachange.getElementsByClassName("scorelabel");
           for (let i = 0; i < 5; i++) {
-            scoreSliders[i].value = scoreVals[i];
+            scoreSliders[i].value = scoreVals2[i];
+            scoreLabels[i].innerHTML = scoreVals2[i];
           }
           datachange.style.display = "flex";
         } else {
