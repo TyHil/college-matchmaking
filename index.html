@@ -22,6 +22,25 @@
     </div>
   </div>
   
+  <div id="testscore" class="userinfo">
+    <p>Test Scores:</p>
+    <select>
+      <option value="sat" selected>SAT</option>
+      <option value="act">ACT</option>
+      <option value="none">Not sending</option>
+    </select>
+    <input type="number" placeholder="Score" value="1200" step="10" min="400" max="1600">
+  </div>
+  <div id="gpa" class="userinfo">
+    <p>GPA:</p>
+    <input type="number" placeholder="GPA" value="3.0" step="0.1" min="0" max="4">
+  </div>
+  <div id="needaid" class="userinfo">
+    <input type="checkbox" checked>
+    <p>Need based aid</p>
+  </div>
+  <br>
+
   <div id="addcollege">
     <input type="text" id="textinput" placeholder="Add a college" autocomplete="off">
     <div id="suggestions"></div>
@@ -48,7 +67,7 @@
     </div>
   </div>
 
-  <div class="popup" id="userinfo">
+  <div class="popup" id="useractions">
     <h2></h2>
     <h3></h3>
     <a id="reset">Reset Match Scores</a>

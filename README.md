@@ -27,6 +27,6 @@ The College Matchmaking website.
 - [ ] Add category descriptions.
 - [x] Add header with an icon, name, and donation page.
   - [x] Donate button (through donorbox).
-- [ ] Add inputs above the table for: SAT/ACT/none, want financial aid.
+- [x] Add inputs above the table for: SAT/ACT/none, want financial aid.
 - [ ] Maybe use: datatables.net but make a pretty table.
 - [ ] Make Change Range popup intuitive.

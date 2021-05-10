@@ -3,6 +3,54 @@ body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+/*Inputs*/
+input[type=text], input[type=number] {
+  border-radius: 4px;
+  border: none;
+  background-color: #ddd;
+}
+select {
+  border-radius: 4px;
+  border: none;
+  background-color: #ddd;
+  padding: 2px 2px;
+}
+option {
+  background-color: #fff;
+}
+
+/*User info*/
+.userinfo p {
+  display: inline;
+  font-size: 14px;
+}
+#testscore p, #gpa p {
+  margin: 0 0 0 6px;
+}
+#needaid p {
+  margin: 0 6px 0 0;
+}
+.userinfo {
+  display: inline-block;
+  height: 20px;
+  margin: 4px 2px;
+  border-radius: 4px;
+  padding: 2px 2px;
+  background-color: #f1f1f1;
+}
+.userinfo input {
+  padding: 2px 4px;
+}
+#testscore input {
+  width: 50px;
+}
+#gpa input {
+  width: 40px;
+}
+#testscore select {
+  height: 19px;
+}
+
 /*Table Buttons*/
 .hidebutton {
   font-size: 14px;
@@ -25,12 +73,9 @@ body {
   display: inline-block;
 }
 #textinput {
+  width: 200px;
   height: 20px;
   margin: 4px 2px;
-  width: 200px;
-  border-radius: 4px;
-  border: none;
-  background-color: #ddd;
   padding: 4px 8px;
 }
 #suggestions {
@@ -261,8 +306,8 @@ th, td {
   background: linear-gradient(90deg, #eb0000, #f00);
 }
 
-/*User info*/
-#userinfo {
+/*User actions*/
+#useractions {
   top: 60px;
   right: 10px;
   flex-direction: column;
@@ -338,14 +383,6 @@ th, td {
   flex-basis: 100%;
   height: 0;
 }
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-input[type=number] {
-  -moz-appearance: textfield;
-}
 .dropdown {
   margin: 5px 10px;
 }
@@ -362,6 +399,14 @@ input[type=number] {
 .rangeval {
   width: 50px;
   margin: 5px;
+  padding: 4px 8px;
+  height: 20px;
+  -moz-appearance: textfield;
+}
+.rangeval::-webkit-outer-spin-button,
+.rangeval::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 .scorelabel {
   margin: 0;

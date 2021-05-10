@@ -29,23 +29,23 @@ function singedIn(loadData) {
     img.src = firebase.auth().currentUser.photoURL;
   }
   img.addEventListener("click", () => {
-    let userinfo = document.getElementById("userinfo");
-    if (userinfo.style.display == "flex") {
-      userinfo.style.display = "none";
+    let useractions = document.getElementById("useractions");
+    if (useractions.style.display == "flex") {
+      useractions.style.display = "none";
     } else {
-      userinfo.style.display = "flex";
+      useractions.style.display = "flex";
     }
   });
   document.addEventListener('click', function (e) {
-    let userinfo = document.getElementById("userinfo");
-    if (!userinfo.contains(e.target) && !document.getElementById("userimg").contains(e.target)) {
-      userinfo.style.display = "none";
+    let useractions = document.getElementById("useractions");
+    if (!useractions.contains(e.target) && !document.getElementById("userimg").contains(e.target)) {
+      useractions.style.display = "none";
     }
   });
-  let userinfo = document.getElementById("userinfo");
+  let useractions = document.getElementById("useractions");
   document.getElementById("headerright").appendChild(img);
-  userinfo.getElementsByTagName("h2")[0].innerHTML = firebase.auth().currentUser.displayName;
-  userinfo.getElementsByTagName("h3")[0].innerHTML = firebase.auth().currentUser.email;
+  useractions.getElementsByTagName("h2")[0].innerHTML = firebase.auth().currentUser.displayName;
+  useractions.getElementsByTagName("h3")[0].innerHTML = firebase.auth().currentUser.email;
   document.getElementById("reset").addEventListener("click", function () {
     let confirmmodal = document.getElementById("confirmmodal");
     confirmmodal.getElementsByTagName("h1")[0].innerHTML = "Confirm Match Score Reset";
@@ -116,6 +116,26 @@ function singedIn(loadData) {
         addRowToTable(college["ID"]);
       }
       scores[0] = response[scoreNames[0]];
+      userinfo = response["userinfo"];
+      document.getElementById("testscore").getElementsByTagName("select")[0].value = userinfo["test"];
+      let input = document.getElementById("testscore").getElementsByTagName("input")[0];
+      if (userinfo["test"] == "none") {
+        input.style.display = "none";
+      } else if (userinfo["test"] == "act") {
+        input.style.display = "inline-block";
+        input.min = 1;
+        input.max = 36;
+        input.step = 1;
+        input.value = userinfo[userinfo["test"]];
+      } else if (userinfo["test"] == "sat") {
+        input.style.display = "inline-block";
+        input.min = 400;
+        input.max = 1600;
+        input.step = 10;
+        input.value = userinfo[userinfo["test"]];
+      }
+      document.getElementById("gpa").getElementsByTagName("input")[0].value = userinfo["gpa"];
+      document.getElementById("needaid").getElementsByTagName("input")[0].checked = userinfo["needaid"];
     }, error => {
       console.error("Load User Data Failed!", error);
     });
@@ -127,10 +147,10 @@ let uiConfig = {
   callbacks: {
     signInSuccessWithAuthResult: function (authResult) {//User successfully signed in
       document.getElementById("loginmodal").style.display = "none";
-      if (authResult.additionalUserInfo.isNewUser) {
+      if (authResult.additionaluseractions.isNewUser) {
         writeUserData();
       }
-      signedIn(!authResult.additionalUserInfo.isNewUser);
+      signedIn(!authResult.additionaluseractions.isNewUser);
     },
     uiShown: function () {//The widget is rendered
       document.getElementById("loginmodal").getElementsByTagName("h1")[0].innerHTML = "Sign In or Sign Up";
@@ -151,7 +171,8 @@ function writeUserData() {
   if (loggedIn) {
     firebase.database().ref('/users/' + firebase.auth().currentUser.uid).set({
       colleges: colleges,
-      FLOAT: scores[0]
+      FLOAT: scores[0],
+      userinfo: userinfo
     });
   }
 }
@@ -216,6 +237,56 @@ document.addEventListener('click', function (e) {
     document.getElementById("confirm").onclick = '';
     confirmmodal.style.display = "none";
   }
+});
+let userinfo = { "test": "sat", "sat": 1200, "gpa": 3.0, "needaid": 1 };
+document.getElementById("testscore").getElementsByTagName("select")[0].addEventListener("change", function () {
+  testscore = this.value;
+  let input = this.parentElement.getElementsByTagName("input")[0];
+  if (this.value == "none") {
+    input.style.display = "none";
+    userinfo["test"] = "none";
+    delete userinfo["sat"];
+    delete userinfo["act"];
+    writeUserData();
+  } else if (this.value == "act") {
+    input.style.display = "inline-block";
+    input.min = 1;
+    input.max = 36;
+    input.step = 1;
+    if (input.value >= 400) {
+      input.value = Math.round((35 / 1200) * (input.value - 400) + 1);
+    }
+    userinfo["test"] = "act";
+    delete userinfo["sat"];
+    userinfo["act"] = parseInt(input.value);
+    writeUserData();
+  } else if (this.value == "sat") {
+    input.style.display = "inline-block";
+    input.min = 400;
+    input.max = 1600;
+    input.step = 10;
+    if (input.value < 400) {
+      input.value = Math.round(((1200 / 35) * (input.value - 1) + 400) / 10) * 10;
+    }
+    userinfo["test"] = "sat";
+    delete userinfo["act"];
+    userinfo["sat"] = parseInt(input.value);
+    writeUserData();
+  }
+});
+document.getElementById("testscore").getElementsByTagName("input")[0].addEventListener("change", function () {
+  this.value = Math.max(Math.min(this.value, this.max), this.min);
+  userinfo[this.parentElement.getElementsByTagName("select")[0].value] = parseInt(this.value);
+  writeUserData();
+});
+document.getElementById("gpa").getElementsByTagName("input")[0].addEventListener("change", function () {
+  this.value = Math.max(Math.min(this.value, this.max), this.min);
+  userinfo["gpa"] = parseFloat(this.value);
+  writeUserData();
+});
+document.getElementById("needaid").getElementsByTagName("input")[0].addEventListener("click", function () {
+  userinfo["needaid"] = this.checked ? 1 : 0;
+  writeUserData();
 });
 
 let loggedIn = 0;
@@ -904,7 +975,7 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
         datachange.appendChild(div);
       }
       document.body.appendChild(datachange);
-      plus.addEventListener("click", function () {///
+      plus.addEventListener("click", function () {
         if (datachange.style.display == "none") {
           datachange.style.top = plus.getBoundingClientRect().y + plus.height + 30 + (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0) + "px";
           datachangePos(datachange, plus);
@@ -927,7 +998,7 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
             long.selected = "selected";
           }
           let rangeVals = datachange.getElementsByClassName("rangeval");
-          for (let i = 0; i < 4; i++) {///
+          for (let i = 0; i < 4; i++) {
             if (i < scores[0][category][1][key][1].length) {
               rangeVals[i].value = scores[0][category][1][key][1][i];
               if (isPercent) {
@@ -950,7 +1021,7 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
             }
           }
           let scoreSliders = datachange.getElementsByClassName("vert");
-          for (let i = 0; i < 5; i++) {///
+          for (let i = 0; i < 5; i++) {
             scoreSliders[i].value = scoreVals[i];
           }
           datachange.style.display = "flex";
