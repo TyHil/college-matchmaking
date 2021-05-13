@@ -24,7 +24,7 @@ option {
   display: inline;
   font-size: 14px;
 }
-#testscore p, #gpa p {
+#testscore p, #gpa p, #income p {
   margin: 0 0 0 6px;
 }
 #needaid p {
@@ -47,7 +47,7 @@ option {
 #gpa input {
   width: 40px;
 }
-#testscore select {
+#testscore select, #income select {
   height: 19px;
 }
 

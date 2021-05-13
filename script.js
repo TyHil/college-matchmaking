@@ -136,6 +136,7 @@ function singedIn(loadData) {
       }
       document.getElementById("gpa").getElementsByTagName("input")[0].value = userinfo["gpa"];
       document.getElementById("needaid").getElementsByTagName("input")[0].checked = userinfo["needaid"];
+      document.getElementById("income").getElementsByTagName("select")[0].value = userinfo["income"];
     }, error => {
       console.error("Load User Data Failed!", error);
     });
@@ -238,9 +239,8 @@ document.addEventListener('click', function (e) {
     confirmmodal.style.display = "none";
   }
 });
-let userinfo = { "test": "sat", "sat": 1200, "gpa": 3.0, "needaid": 1 };
+let userinfo = { "test": "sat", "sat": 1200, "gpa": 3.0, "needaid": 1, "income": "none" };
 document.getElementById("testscore").getElementsByTagName("select")[0].addEventListener("change", function () {
-  testscore = this.value;
   let input = this.parentElement.getElementsByTagName("input")[0];
   if (this.value == "none") {
     input.style.display = "none";
@@ -286,6 +286,10 @@ document.getElementById("gpa").getElementsByTagName("input")[0].addEventListener
 });
 document.getElementById("needaid").getElementsByTagName("input")[0].addEventListener("click", function () {
   userinfo["needaid"] = this.checked ? 1 : 0;
+  writeUserData();
+});
+document.getElementById("income").getElementsByTagName("select")[0].addEventListener("change", function () {
+  userinfo["income"] = this.value;
   writeUserData();
 });
 
@@ -645,7 +649,7 @@ function addRowToTable(college) {
             score.style.display = "block";
             score.innerHTML = 3;
             scoreSlider.value = 3;
-            getFromColleges(college)[category] = 3;///
+            getFromColleges(college)[category] = 3;
             writeUserData();
             overridetd.style.backgroundColor = highlightColors[2];
             for (const key in scores[0][category][1]) {
