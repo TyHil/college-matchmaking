@@ -18,6 +18,7 @@ let ui = new firebaseui.auth.AuthUI(firebase.auth());
 
 function singedIn(loadData) {
   loggedIn = 1;
+  window.onbeforeunload = '';
   document.getElementById("login").style.display = "none";
   img = document.createElement("img");
   img.id = "userimg";
@@ -64,14 +65,6 @@ function singedIn(loadData) {
       });
       confirmmodal.style.display = "none";
     };
-    document.getElementById("cancel").addEventListener("click", function () {
-      document.getElementById("confirm").onclick = '';
-      confirmmodal.style.display = "none";
-    }, { once: true });
-    confirmmodal.getElementsByClassName("close")[0].addEventListener("click", function () {
-      document.getElementById("confirm").onclick = '';
-      confirmmodal.style.display = "none";
-    });
   });
   document.getElementById("logout").addEventListener("click", function () {
     firebase.auth().signOut().then(() => {
@@ -96,14 +89,6 @@ function singedIn(loadData) {
           });
         });
     };
-    document.getElementById("cancel").addEventListener("click", function () {
-      document.getElementById("confirm").onclick = '';
-      confirmmodal.style.display = "none";
-    }, { once: true });
-    confirmmodal.getElementsByClassName("close")[0].addEventListener("click", function () {
-      document.getElementById("confirm").onclick = '';
-      confirmmodal.style.display = "none";
-    });
   });
   if (loadData) {
     let scoresLoaded = loadFirebaseJSON("/users/" + firebase.auth().currentUser.uid).then(response => {
@@ -175,19 +160,22 @@ function writeUserData() {
       FLOAT: scores[0],
       userinfo: userinfo
     });
+  } else {
+    window.onbeforeunload = () => '';
   }
 }
 
-let loginmodal = document.getElementById("loginmodal");
 document.getElementById("login").addEventListener("click", event => {
   if (!ui.isPendingRedirect()) {
-    loginmodal.style.display = "block";
+    document.getElementById("loginmodal").style.display = "block";
     ui.start('#firebaseui-auth-container', uiConfig);
   }
 });
-loginmodal.getElementsByClassName("close")[0].onclick = function () {
-  loginmodal.style.display = "none";
-}
+document.querySelectorAll(".close").forEach(item => {
+  item.addEventListener('click', event => {
+    item.parentElement.parentElement.style.display = "none";
+  })
+});
 document.addEventListener('click', function (e) {
   for (modal of document.getElementsByClassName("modal")) {
     if (modal.contains(e.target) && !modal.childNodes[1].contains(e.target)) {
@@ -234,11 +222,21 @@ document.addEventListener('click', function (e) {
   if (!document.getElementById("textinput").contains(e.target) && !suggestions.contains(e.target)) {
     suggestions.style.display = "none";
   }
-  if (confirmmodal.contains(e.target) && !confirmmodal.childNodes[1].contains(e.target)) {
-    document.getElementById("confirm").onclick = '';
-    confirmmodal.style.display = "none";
+});
+document.getElementById("cancel").addEventListener("click", function () {
+  this.parentElement.parentElement.parentElement.style.display = "none";
+});
+document.addEventListener("keydown", (e) => {
+  if (e.keyCode == 27) {//ESC
+    for (modal of document.getElementsByClassName("modal")) {
+      modal.style.display = "none";
+    }
+    for (popup of document.getElementsByClassName("popup")) {
+      popup.style.display = "none";
+    }
   }
 });
+
 let userinfo = { "test": "sat", "sat": 1200, "gpa": 3.0, "needaid": 1, "income": "none" };
 document.getElementById("testscore").getElementsByTagName("select")[0].addEventListener("change", function () {
   let input = this.parentElement.getElementsByTagName("input")[0];
@@ -304,9 +302,6 @@ firebase.auth().onAuthStateChanged(function (user) {
     genericmodal.getElementsByTagName("p")[0].innerHTML = "Put a bunch of intro material here";
   }
 });
-document.getElementById("genericmodal").getElementsByClassName("close")[0].onclick = function () {
-  document.getElementById("genericmodal").style.display = "none";
-}
 
 highlightColors = ["#E67C73", "#F9AD66", "#FFD666", "#AFCF6F", "#57BB8A"];
 
