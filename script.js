@@ -61,6 +61,7 @@ function singedIn(loadData) {
           updateRowMatchScores(college["ID"]);
         }
       }, error => {
+        createToast("Load " + scoreNames[0] + " Score Failed!");
         console.error("Load " + scoreNames[0] + " Score Failed!", error);
       });
       confirmmodal.style.display = "none";
@@ -70,7 +71,8 @@ function singedIn(loadData) {
     firebase.auth().signOut().then(() => {
       location.reload();
     }).catch((error) => {
-      console.error(error);
+      createToast("Sign Out Failed!");
+      console.error("Sign Out Failed!", error);
     });
   });
   document.getElementById("deleteaccnt").addEventListener("click", function () {
@@ -85,7 +87,8 @@ function singedIn(loadData) {
           firebase.auth().currentUser.delete().then(function () {
             location.reload();
           }).catch(function (error) {
-            console.error(error);
+            createToast("Delete User Failed!");
+            console.error("Delete User Failed!", error);
           });
         });
     };
@@ -123,6 +126,7 @@ function singedIn(loadData) {
       document.getElementById("needaid").getElementsByTagName("input")[0].checked = userinfo["needaid"];
       document.getElementById("income").getElementsByTagName("select")[0].value = userinfo["income"];
     }, error => {
+      createToast("Load User Data Failed!");
       console.error("Load User Data Failed!", error);
     });
     allLoaded.push(scoresLoaded);
@@ -153,6 +157,28 @@ let uiConfig = {
   privacyPolicyUrl: '<your-privacy-policy-url>'
 };
 
+function createToast(text, callback = 0) {
+  let div = document.createElement("div");
+  div.classList.add("toast");
+  let p = document.createElement("p");
+  p.innerHTML = text;
+  div.appendChild(p);
+  if (callback) {
+    let undo = document.createElement("a");
+    undo.innerHTML = "Undo";
+    undo.onclick = callback;
+    div.appendChild(undo);
+  }
+  setTimeout(function() {
+    div.classList.add("animateout");
+    div.addEventListener("animationend", function() {
+      div.remove();
+    });
+  }, 6000);
+  document.getElementById("toasts").appendChild(div);
+  div.classList.add("animatein");
+}
+
 function writeUserData() {
   if (loggedIn) {
     firebase.database().ref('/users/' + firebase.auth().currentUser.uid).set({
@@ -160,6 +186,7 @@ function writeUserData() {
       FLOAT: scores[0],
       userinfo: userinfo
     });
+    createToast("Saved!");
   } else {
     window.onbeforeunload = () => '';
   }
@@ -410,6 +437,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
   table.appendChild(categorytr);
   table.appendChild(datatr);
 }, error => {
+  createToast("Load Headers Failed!");
   console.error("Load Headers Failed!", error);
 });
 allLoaded.push(headersLoaded);
@@ -421,6 +449,7 @@ for (let i = 0; i < 3; i++) {//load all scores
   let scoreLoaded = loadJSON(((i == 0) ? "UserData/" : "") + scoreNames[i] + ".json").then(response => {
     scores[i] = JSON.parse(response);
   }, error => {
+    createToast("Load " + scoreNames[i] + " Score Failed!");
     console.error("Load " + scoreNames[i] + " Score Failed!", error);
   });
   allLoaded.push(scoreLoaded);
@@ -439,6 +468,7 @@ let collegesData = {};//locally stored college data
 let collegesLoaded = loadJSON("./UserData/colleges.json").then(response => {
   colleges = JSON.parse(response);
 }, error => {
+  createToast("Load College List Failed!");
   console.error("Load College List Failed!", error);
 });
 allLoaded.push(collegesLoaded);
@@ -533,6 +563,7 @@ function updateRowData(college) {
     }
     updateRowMatchScores(college);
   }, error => {
+    createToast("Load " + college + " Data Failed!");
     console.error("Load " + college + " Data Failed!", error);
   });
 }
@@ -587,6 +618,11 @@ function addRowToTable(college) {
       remove.src = "./icons/remove.svg";
       remove.addEventListener("click", () => {
         document.getElementById(college).remove();
+        createToast(getFromColleges(college)["ID"] + " Removed", function() {
+          colleges.push({ "ID": college, "Notes": "" });
+          addRowToTable(college);
+          writeUserData();
+        });
         for (let i = 0; i < colleges.length; i++) {
           if (colleges[i]["ID"] == college) {
             colleges.splice(i, 1);
@@ -834,6 +870,7 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
           datachange.style.display = "none";
           setSliders();
         }, error => {
+          createToast("Load " + scoreNames[i] + " Score Failed!");
           console.error("Load " + scoreNames[i] + " Score Failed!", error);
         });
       })
@@ -1196,7 +1233,7 @@ document.getElementById("textinput").addEventListener("click", function () {
             removeActive.classList.remove("active");
           }
         } else {
-          window.alert("College already exists.");
+          createToast("College already exists!");
         }
       }
     });
@@ -1206,6 +1243,7 @@ document.getElementById("textinput").addEventListener("click", function () {
       }
     });
   }, error => {
+    createToast("Load Search Data Failed!");
     console.error("Load Search Data Failed!", error);
   });
 }, { once: true });

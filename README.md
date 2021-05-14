@@ -3,7 +3,7 @@ The College Matchmaking website.
 ## Documentation
 [JSON Documentation](https://docs.google.com/document/d/1eRywNeOZg6bmokPfr1w0Q88CdCXvMOuLnuUajdLSmAc/edit?usp=sharing)
 ## Todo
-- [ ] notifications, for saved and college already exists
+- [x] Notifications for data saved, college already exists, and errors
 - [x] Changes not saved chrome pop up
 - [x] ESC exits modals and popups
 - [x] Move colleges up and down.

@@ -85,7 +85,6 @@ option {
   border-radius: 0 0 4px 4px;
   border-bottom: none;
   border-top: none;
-  z-index: 99;
   top: 100%;
   left: 0;
   right: 0;
@@ -418,4 +417,56 @@ th, td {
   width: 10px;
   height: 100px;
   margin-bottom: 10px;
+}
+
+/*Toasts*/
+#toasts {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: 1;
+}
+.toast {
+  margin: 0 10px 10px auto;
+  height: 34px;
+  width: fit-content;
+  background-color: #ddd;
+  border-radius: 8px;
+  padding: 5px;
+  /*box-shadow: 0 0 5px grey;*/
+}
+@keyframes slidein {
+  0% { transform: translateX(120%); }
+  100% { transform: translateX(0%); }
+}
+.toast.animatein {
+  animation: slidein 0.5s cubic-bezier(0.175, 0.885, 0.320, 1.275);
+}
+@keyframes slideout {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(200%); }
+}
+.toast.animateout {
+  animation: slideout 0.5s forwards;
+}
+.toast p {
+  margin: 0 5px;
+  display: inline;
+  font-size: 16px;
+  line-height: 34px;
+}
+.toast a {
+  display: inline-block;
+  color: black;
+  text-align: center;
+  padding: 5px;
+  text-decoration: none;
+  font-size: 16px;
+  line-height: 20px;
+  border-radius: 4px;
+  margin: 2px 0;
+  cursor: pointer;
+}
+.toast a:hover {
+  background-color: #aaa;
 }
