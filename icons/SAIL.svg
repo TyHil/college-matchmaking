@@ -12,10 +12,12 @@
 	<stop  offset="1" style="stop-color:#3489C9"/>
 </linearGradient>
 <circle class="st0" cx="500" cy="500" r="500"/>
-<linearGradient id="SVGID_2_" gradientUnits="userSpaceOnUse" x1="325.0007" y1="574.9996" x2="674.9993" y2="924.9982">
+<linearGradient id="SVGID_2_" gradientUnits="userSpaceOnUse" x1="320.0629" y1="564.3745" x2="679.9371" y2="924.2487">
 	<stop  offset="0" style="stop-color:#FBDC3A"/>
 	<stop  offset="1" style="stop-color:#F7CE15"/>
 </linearGradient>
-<polygon class="st1" points="750,850 250,850 150,750 850,750 "/>
-<polygon class="st2" points="600,120 200,720 800,720 "/>
+<path class="st1" d="M760.04,840H239.96c-2.65,0-5.2-1.05-7.07-2.93l-85.67-85.67c-6.3-6.3-1.84-17.07,7.07-17.07h691.44
+	c8.91,0,13.37,10.77,7.07,17.07l-85.67,85.67C765.24,838.95,762.7,840,760.04,840z"/>
+<path class="st2" d="M594.33,85.59L193.34,687.08c-4.43,6.65,0.33,15.55,8.32,15.55h601.49c6.83,0,11.65-6.69,9.49-13.16
+	L612.14,87.98C609.51,80.08,598.95,78.67,594.33,85.59z"/>
 </svg>

@@ -64,7 +64,14 @@ function singedIn(loadData) {
         createToast("Load " + scoreNames[0] + " Score Failed!");
         console.error("Load " + scoreNames[0] + " Score Failed!", error);
       });
-      confirmmodal.style.display = "none";
+      let content = confirmmodal.getElementsByClassName("content")[0];
+      content.classList.add("out");
+      confirmmodal.classList.add("out");
+      content.addEventListener("animationend", function () {
+        confirmmodal.style.display = "none";
+        content.classList.remove("out");
+        confirmmodal.classList.remove("out");
+      }, { once: true });
     };
   });
   document.getElementById("logout").addEventListener("click", function () {
@@ -169,9 +176,9 @@ function createToast(text, callback = 0) {
     undo.onclick = callback;
     div.appendChild(undo);
   }
-  setTimeout(function() {
+  setTimeout(function () {
     div.classList.add("animateout");
-    div.addEventListener("animationend", function() {
+    div.addEventListener("animationend", function () {
       div.remove();
     });
   }, 6000);
@@ -200,13 +207,28 @@ document.getElementById("login").addEventListener("click", event => {
 });
 document.querySelectorAll(".close").forEach(item => {
   item.addEventListener('click', event => {
-    item.parentElement.parentElement.style.display = "none";
+    let content = item.parentElement;
+    let modal = content.parentElement;
+    content.classList.add("out");
+    modal.classList.add("out");
+    content.addEventListener("animationend", function() {
+      modal.style.display = "none";
+      content.classList.remove("out");
+      modal.classList.remove("out");
+    }, {once: true});
   })
 });
 document.addEventListener('click', function (e) {
-  for (modal of document.getElementsByClassName("modal")) {
+  for (const modal of document.getElementsByClassName("modal")) {
     if (modal.contains(e.target) && !modal.childNodes[1].contains(e.target)) {
-      modal.style.display = "none";
+      let content = modal.getElementsByClassName("content")[0];
+      content.classList.add("out");
+      modal.classList.add("out");
+      content.addEventListener("animationend", function () {
+        modal.style.display = "none";
+        content.classList.remove("out");
+        modal.classList.remove("out");
+      }, { once: true });
     }
   }
   let datachanges = document.getElementsByClassName("datachange");
@@ -251,12 +273,27 @@ document.addEventListener('click', function (e) {
   }
 });
 document.getElementById("cancel").addEventListener("click", function () {
-  this.parentElement.parentElement.parentElement.style.display = "none";
+  let content = this.parentElement.parentElement;
+  let modal = content.parentElement;
+  content.classList.add("out");
+  modal.classList.add("out");
+  content.addEventListener("animationend", function() {
+    modal.style.display = "none";
+    content.classList.remove("out");
+    modal.classList.remove("out");
+  }, {once: true});
 });
 document.addEventListener("keydown", (e) => {
   if (e.keyCode == 27) {//ESC
     for (modal of document.getElementsByClassName("modal")) {
-      modal.style.display = "none";
+      let content = modal.getElementsByClassName("content")[0];
+      content.classList.add("out");
+      modal.classList.add("out");
+      content.addEventListener("animationend", function () {
+        modal.style.display = "none";
+        content.classList.remove("out");
+        modal.classList.remove("out");
+      }, { once: true });
     }
     for (popup of document.getElementsByClassName("popup")) {
       popup.style.display = "none";
@@ -618,7 +655,7 @@ function addRowToTable(college) {
       remove.src = "./icons/remove.svg";
       remove.addEventListener("click", () => {
         document.getElementById(college).remove();
-        createToast(getFromColleges(college)["ID"] + " Removed", function() {
+        createToast(getFromColleges(college)["ID"] + " Removed", function () {
           colleges.push({ "ID": college, "Notes": "" });
           addRowToTable(college);
           writeUserData();
