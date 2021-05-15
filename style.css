@@ -1,22 +1,60 @@
+/*Colors and dark mode*/
+:root {
+  --light0: #fff;
+  --light1: #efefef;
+  --light2: #cfcfcf;
+  --light3: #afafaf;
+  --dark0: #000;
+  --high0: #e67d73;
+  --high1: #F9AD66;
+  --high2: #FFD666;
+  --high3: #AFCF6F;
+  --high4: #57BB8A;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --light0: #000;
+    --light1: #202020;
+    --light2: #404040;
+    --light3: #606060;
+    --dark0: #dfdfdf;
+    --high0: #b04e47;
+    --high1: #c37e39;
+    --high2: #c9a536;
+    --high3: #7e9e41;
+    --high4: #1e8a5d;
+  }
+}
+
 body {
   margin: 0;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: var(--dark0);
+  background-color: var(--light0);
+}
+
+/*Icons*/
+.icon {
+  cursor: pointer;
+  color: grey;
+}
+.icon:hover {
+  color: var(--dark0);
 }
 
 /*Inputs*/
-input[type=text], input[type=number] {
+input[type=text], input[type=number], select {
   border-radius: 4px;
   border: none;
-  background-color: #ddd;
+  background-color: var(--light2);
+  color: var(--dark0);
 }
 select {
-  border-radius: 4px;
-  border: none;
-  background-color: #ddd;
   padding: 2px 2px;
 }
 option {
-  background-color: #fff;
+  background-color: var(--light0);
+  color: var(--dark0);
 }
 
 /*User info*/
@@ -36,7 +74,7 @@ option {
   margin: 4px 2px;
   border-radius: 4px;
   padding: 2px 2px;
-  background-color: #f1f1f1;
+  background-color: var(--light1);
 }
 .userinfo input {
   padding: 2px 4px;
@@ -56,7 +94,7 @@ option {
   font-size: 14px;
   margin: 4px 2px;
   cursor: pointer;
-  background-color: #f1f1f1;
+  background-color: var(--light1);
   border: none;
 	border-radius: 4px;
   text-decoration: none;
@@ -64,7 +102,7 @@ option {
   padding: 6px 8px;
 }
 .hidebutton.clicked {
-  background-color: #ddd;
+  background-color: var(--light2);
 }
 
 /*Add a college*/
@@ -81,7 +119,7 @@ option {
 #suggestions {
   display: none;
   position: absolute;
-  border: 1px solid #ddd;
+  border: 1px solid var(--light2);
   border-radius: 0 0 4px 4px;
   border-bottom: none;
   border-top: none;
@@ -92,11 +130,11 @@ option {
 #suggestions div {
   padding: 10px;
   cursor: pointer;
-  background-color: #fff;
-  border-bottom: 1px solid #ddd;
+  background-color: var(--light0);
+  border-bottom: 1px solid var(--light2);
 }
 #suggestions div:hover {
-  background-color: #ddd;
+  background-color: var(--light2);
 }
 #suggestions div.active {
   background: linear-gradient(90deg, #61cae3, #3489c9);
@@ -108,9 +146,10 @@ option {
 /*Table*/
 #tableholder {
   overflow: auto;
+  padding: 1px 0;
 }
 table, th, td {
-  border: 1px solid black;
+  border: 1px solid var(--dark0);
   border-collapse: collapse;
 }
 th, td {
@@ -118,15 +157,20 @@ th, td {
 }
 .actionsdiv {
   display: flex;
+  align-items: center;
   justify-content: space-around;
 }
-.up, .down {
-  cursor: pointer;
-  width: 20px;
+.arrowdiv {
+  display: flex;
+  flex-direction: column;
+}
+.arrow {
+  font-size: 36px;
+  line-height: 24px;
 }
 .removeicon {
-  cursor: pointer;
-  width: 20px;
+  font-size: 36px;
+  display: block;
 }
 .scoreicon {
   width: 40px;
@@ -151,7 +195,7 @@ th, td {
 /*Header*/
 #header {
   overflow: hidden;
-  background-color: #f1f1f1;
+  background-color: var(--light1);
   padding: 2px;
   display: flex;
   align-items: center;
@@ -161,7 +205,7 @@ th, td {
   margin: 5px;
 }
 #header a {
-  color: black;
+  color: var(--dark0);
   text-align: center;
   padding: 10px;
   text-decoration: none;
@@ -185,7 +229,7 @@ th, td {
   line-height: 0;
 }
 #header a:hover {
-  background-color: #ddd;
+  background-color: var(--light2);
 }
 #header #login {
   background: linear-gradient(90deg, #61cae3, #3489c9);
@@ -200,12 +244,19 @@ th, td {
   align-items: center;
 }
 #userimg {
-  width: 35px;
-  height: 35px;
   margin-right: 5px;
   margin-left: 5px;
-  cursor: pointer;
   border-radius: 100%;
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+}
+#usersvg {
+  margin-right: 5px;
+  margin-left: 5px;
+  border-radius: 100%;
+  font-size: 35px;
+  cursor: pointer;
 }
 
 /*Modals*/
@@ -222,6 +273,7 @@ th, td {
   height: 100%; 
   background-color: rgba(0, 0, 0, 0.5);
   animation: fadein 0.4s;
+  backdrop-filter: blur(1px);
 }
 @keyframes fadeout {
   from {opacity:1}
@@ -236,7 +288,7 @@ th, td {
 }
 .modal .content {
   position: relative;
-  background-color: white;
+  background-color: var(--light0);
   padding: 20px;
   margin: 0 auto;
   width: fit-content;
@@ -256,13 +308,13 @@ th, td {
 }
 .modal .content .close {
   float: right; 
-  color: #666; 
+  color: grey; 
   font-size: 24px;  
   font-weight: bold;
   cursor: pointer;
 }
 .modal .content .close:hover {
-  color: #000;
+  color: var(--dark0);
 }
 .modal h1 {
   margin: 0;
@@ -274,9 +326,8 @@ th, td {
 /*Pop Up*/
 .popup {
   position: absolute;
-  background-color: white;
+  background-color: var(--light0);
   width: fit-content;
-  max-width: 200px;
   border-radius: 4px;
   display: none;
   box-shadow: 0 0 20px grey;
@@ -296,7 +347,7 @@ th, td {
 
 /*Modal and Popup Buttons*/
 .modal .buttons, .popup a {
-  color: black;
+  color: var(--dark0);
   text-align: center;
   padding: 5px;
   text-decoration: none;
@@ -307,10 +358,10 @@ th, td {
   cursor: pointer;
 }
 .modal .buttons:hover, .popup a:hover {
-  background-color: #ddd;
+  background-color: var(--light2);
 }
 .modal .mainbtn, .popup .mainbtn {
-  color: white;
+  color: var(--light0);
   background: linear-gradient(90deg, #d80000, #eb0000);
 }
 .modal .mainbtn:hover, .popup .mainbtn:hover {
@@ -326,7 +377,7 @@ th, td {
 }
 #reset:hover, #deleteaccnt:hover {
   background: linear-gradient(90deg, #eb0000, #f00);
-  color: white;
+  color: var(--light0);
 }
 
 /*Sliders*/
@@ -374,9 +425,9 @@ th, td {
   float: left;
 }
 .plus {
-  width: 10px;
   float: right;
-  cursor: pointer;
+  font-size: 24px;
+  line-height: 16px;
 }
 .scorecontrol {
   width: 100px;
@@ -389,6 +440,7 @@ th, td {
   display: none;
   flex-wrap: wrap;
   justify-content: space-around;
+  max-width: 200px;
 }
 .break {
   flex-basis: 100%;
@@ -442,7 +494,7 @@ th, td {
   margin: 0 10px 10px auto;
   height: 34px;
   width: fit-content;
-  background-color: #ddd;
+  background-color: var(--light2);
   border-radius: 8px;
   padding: 5px;
   /*box-shadow: 0 0 5px grey;*/
@@ -469,7 +521,7 @@ th, td {
 }
 .toast a {
   display: inline-block;
-  color: black;
+  color: var(--dark0);
   text-align: center;
   padding: 5px;
   text-decoration: none;
@@ -480,5 +532,5 @@ th, td {
   cursor: pointer;
 }
 .toast a:hover {
-  background-color: #aaa;
+  background-color: var(--light3);
 }

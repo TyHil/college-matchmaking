@@ -1,5 +1,5 @@
 //Donation button configuration
-window.DonorBox = { widgetLinkClassName: 'custom-dbox-popup' }
+window.DonorBox = { widgetLinkClassName: 'custom-dbox-popup' };
 //Firebase configuration
 let firebaseConfig = {
   apiKey: "AIzaSyB-vU0SztGZ7O1pcoEw50FM481-AAEJP7g",
@@ -16,16 +16,21 @@ firebase.analytics();
 const databaseRef = firebase.database().ref();
 let ui = new firebaseui.auth.AuthUI(firebase.auth());
 
-function singedIn(loadData) {
+function signedIn(loadData) {
   loggedIn = 1;
   window.onbeforeunload = '';
   document.getElementById("login").style.display = "none";
-  img = document.createElement("img");
+  let img = document.createElement("img");
   img.id = "userimg";
   if (firebase.auth().currentUser.photoURL == null) {
-    img.src = "icons/profile.svg";
+    img = document.createElement("span");
+    img.id = "usersvg";
+    img.classList.add("icon");
+    img.classList.add("material-icons");
+    img.innerText = "account_circle";
+    /*img.src = "icons/profile.svg";
     img.style.width = "30px";
-    img.style.height = "30px";
+    img.style.height = "30px";*/
   } else {
     img.src = firebase.auth().currentUser.photoURL;
   }
@@ -45,20 +50,20 @@ function singedIn(loadData) {
   });
   let useractions = document.getElementById("useractions");
   document.getElementById("headerright").appendChild(img);
-  useractions.getElementsByTagName("h2")[0].innerHTML = firebase.auth().currentUser.displayName;
-  useractions.getElementsByTagName("h3")[0].innerHTML = firebase.auth().currentUser.email;
+  useractions.getElementsByTagName("h2")[0].innerText = firebase.auth().currentUser.displayName;
+  useractions.getElementsByTagName("h3")[0].innerText = firebase.auth().currentUser.email;
   document.getElementById("reset").addEventListener("click", function () {
     let confirmmodal = document.getElementById("confirmmodal");
-    confirmmodal.getElementsByTagName("h1")[0].innerHTML = "Confirm Match Score Reset";
-    confirmmodal.getElementsByTagName("p")[0].innerHTML = "This will remove all customization from your match scores and return them to their default state.";
+    confirmmodal.getElementsByTagName("h1")[0].innerText = "Confirm Match Score Reset";
+    confirmmodal.getElementsByTagName("p")[0].innerText = "This will remove all customization from your match scores and return them to their default state.";
     confirmmodal.style.display = "block";
     document.getElementById("confirm").onclick = function () {
       loadJSON("./UserData/" + scoreNames[0] + ".json").then(response => {
         scores[0] = JSON.parse(response);
-        writeUserData();
+        writeUserData(1);
         setSliders();
         for (const college of colleges) {
-          updateRowMatchScores(college["ID"]);
+          updateRowMatchScores(college.ID);
         }
       }, error => {
         createToast("Load " + scoreNames[0] + " Score Failed!");
@@ -84,8 +89,8 @@ function singedIn(loadData) {
   });
   document.getElementById("deleteaccnt").addEventListener("click", function () {
     let confirmmodal = document.getElementById("confirmmodal");
-    confirmmodal.getElementsByTagName("h1")[0].innerHTML = "Confirm Delete Account";
-    confirmmodal.getElementsByTagName("p")[0].innerHTML = "This delete your account with College Matchmaking and all of it's associated data.";
+    confirmmodal.getElementsByTagName("h1")[0].innerText = "Confirm Delete Account";
+    confirmmodal.getElementsByTagName("p")[0].innerText = "This delete your account with College Matchmaking and all of it's associated data.";
     confirmmodal.style.display = "block";
     document.getElementById("confirm").onclick = function () {
       firebase.auth().currentUser.reauthenticateWithPopup(new firebase.auth.GoogleAuthProvider())
@@ -103,40 +108,42 @@ function singedIn(loadData) {
   if (loadData) {
     let scoresLoaded = loadFirebaseJSON("/users/" + firebase.auth().currentUser.uid).then(response => {
       for (const college of colleges) {
-        document.getElementById(college["ID"]).remove();
+        document.getElementById(college.ID).remove();
       }
-      colleges = response["colleges"];
+      colleges = response.colleges;
       collegesData = {};
       for (const college of colleges) {
-        addRowToTable(college["ID"]);
+        addRowToTable(college.ID);
       }
       scores[0] = response[scoreNames[0]];
-      userinfo = response["userinfo"];
-      document.getElementById("testscore").getElementsByTagName("select")[0].value = userinfo["test"];
+      userinfo = response.userinfo;
+      document.getElementById("testscore").getElementsByTagName("select")[0].value = userinfo.test;
       let input = document.getElementById("testscore").getElementsByTagName("input")[0];
-      if (userinfo["test"] == "none") {
+      if (userinfo.test == "none") {
         input.style.display = "none";
-      } else if (userinfo["test"] == "act") {
+      } else if (userinfo.test == "act") {
         input.style.display = "inline-block";
         input.min = 1;
         input.max = 36;
         input.step = 1;
-        input.value = userinfo[userinfo["test"]];
-      } else if (userinfo["test"] == "sat") {
+        input.value = userinfo[userinfo.test];
+      } else if (userinfo.test == "sat") {
         input.style.display = "inline-block";
         input.min = 400;
         input.max = 1600;
         input.step = 10;
-        input.value = userinfo[userinfo["test"]];
+        input.value = userinfo[userinfo.test];
       }
-      document.getElementById("gpa").getElementsByTagName("input")[0].value = userinfo["gpa"];
-      document.getElementById("needaid").getElementsByTagName("input")[0].checked = userinfo["needaid"];
-      document.getElementById("income").getElementsByTagName("select")[0].value = userinfo["income"];
+      document.getElementById("gpa").getElementsByTagName("input")[0].value = userinfo.gpa;
+      document.getElementById("needaid").getElementsByTagName("input")[0].checked = userinfo.needaid;
+      document.getElementById("income").getElementsByTagName("select")[0].value = userinfo.income;
     }, error => {
       createToast("Load User Data Failed!");
       console.error("Load User Data Failed!", error);
     });
     allLoaded.push(scoresLoaded);
+  } else {
+    writeUserData(1);
   }
 }
 
@@ -145,12 +152,12 @@ let uiConfig = {
     signInSuccessWithAuthResult: function (authResult) {//User successfully signed in
       document.getElementById("loginmodal").style.display = "none";
       if (authResult.additionaluseractions.isNewUser) {
-        writeUserData();
+        writeUserData(1);
       }
       signedIn(!authResult.additionaluseractions.isNewUser);
     },
     uiShown: function () {//The widget is rendered
-      document.getElementById("loginmodal").getElementsByTagName("h1")[0].innerHTML = "Sign In or Sign Up";
+      document.getElementById("loginmodal").getElementsByTagName("h1")[0].innerText = "Sign In or Sign Up";
     }
   },
   signInFlow: 'popup',
@@ -168,32 +175,51 @@ function createToast(text, callback = 0) {
   let div = document.createElement("div");
   div.classList.add("toast");
   let p = document.createElement("p");
-  p.innerHTML = text;
+  p.innerText = text;
   div.appendChild(p);
   if (callback) {
     let undo = document.createElement("a");
-    undo.innerHTML = "Undo";
-    undo.onclick = callback;
+    undo.innerText = "Undo";
+    undo.addEventListener("click", function() {
+      callback();
+      div.classList.add("animateout");
+      div.addEventListener("animationend", function () {
+        div.remove();
+      });
+    });
     div.appendChild(undo);
   }
-  setTimeout(function () {
+  let clearTimer = setTimeout(function () {
     div.classList.add("animateout");
     div.addEventListener("animationend", function () {
       div.remove();
     });
   }, 6000);
+  div.addEventListener("mouseover", function() {
+    clearTimeout(clearTimer);
+  });
+  div.addEventListener("mouseout", function() {
+    clearTimer = setTimeout(function () {
+      div.classList.add("animateout");
+      div.addEventListener("animationend", function () {
+        div.remove();
+      });
+    }, 6000);
+  });
   document.getElementById("toasts").appendChild(div);
   div.classList.add("animatein");
 }
 
-function writeUserData() {
+function writeUserData(toast) {
   if (loggedIn) {
     firebase.database().ref('/users/' + firebase.auth().currentUser.uid).set({
       colleges: colleges,
       FLOAT: scores[0],
       userinfo: userinfo
     });
-    createToast("Saved!");
+    if (toast) {
+      createToast("Saved!");
+    }
   } else {
     window.onbeforeunload = () => '';
   }
@@ -216,7 +242,7 @@ document.querySelectorAll(".close").forEach(item => {
       content.classList.remove("out");
       modal.classList.remove("out");
     }, {once: true});
-  })
+  });
 });
 document.addEventListener('click', function (e) {
   for (const modal of document.getElementsByClassName("modal")) {
@@ -258,12 +284,12 @@ document.addEventListener('click', function (e) {
       }
     }
     if (!datachangeBool && !sliderBool && !plusBool) {
-      writeUserData();
+      writeUserData(1);
       for (const datachange of datachanges) {
         datachange.style.display = "none";
       }
       for (const college of colleges) {
-        updateRowMatchScores(college["ID"]);
+        updateRowMatchScores(college.ID);
       }
     }
   }
@@ -285,7 +311,7 @@ document.getElementById("cancel").addEventListener("click", function () {
 });
 document.addEventListener("keydown", (e) => {
   if (e.keyCode == 27) {//ESC
-    for (modal of document.getElementsByClassName("modal")) {
+    for (const modal of document.getElementsByClassName("modal")) {
       let content = modal.getElementsByClassName("content")[0];
       content.classList.add("out");
       modal.classList.add("out");
@@ -295,7 +321,7 @@ document.addEventListener("keydown", (e) => {
         modal.classList.remove("out");
       }, { once: true });
     }
-    for (popup of document.getElementsByClassName("popup")) {
+    for (const popup of document.getElementsByClassName("popup")) {
       popup.style.display = "none";
     }
   }
@@ -306,10 +332,10 @@ document.getElementById("testscore").getElementsByTagName("select")[0].addEventL
   let input = this.parentElement.getElementsByTagName("input")[0];
   if (this.value == "none") {
     input.style.display = "none";
-    userinfo["test"] = "none";
-    delete userinfo["sat"];
-    delete userinfo["act"];
-    writeUserData();
+    userinfo.test = "none";
+    delete userinfo.sat;
+    delete userinfo.act;
+    writeUserData(1);
   } else if (this.value == "act") {
     input.style.display = "inline-block";
     input.min = 1;
@@ -318,10 +344,10 @@ document.getElementById("testscore").getElementsByTagName("select")[0].addEventL
     if (input.value >= 400) {
       input.value = Math.round((35 / 1200) * (input.value - 400) + 1);
     }
-    userinfo["test"] = "act";
-    delete userinfo["sat"];
-    userinfo["act"] = parseInt(input.value);
-    writeUserData();
+    userinfo.test = "act";
+    delete userinfo.sat;
+    userinfo.act = parseInt(input.value);
+    writeUserData(1);
   } else if (this.value == "sat") {
     input.style.display = "inline-block";
     input.min = 400;
@@ -330,44 +356,42 @@ document.getElementById("testscore").getElementsByTagName("select")[0].addEventL
     if (input.value < 400) {
       input.value = Math.round(((1200 / 35) * (input.value - 1) + 400) / 10) * 10;
     }
-    userinfo["test"] = "sat";
-    delete userinfo["act"];
-    userinfo["sat"] = parseInt(input.value);
-    writeUserData();
+    userinfo.test = "sat";
+    delete userinfo.act;
+    userinfo.sat = parseInt(input.value);
+    writeUserData(1);
   }
 });
 document.getElementById("testscore").getElementsByTagName("input")[0].addEventListener("change", function () {
   this.value = Math.max(Math.min(this.value, this.max), this.min);
   userinfo[this.parentElement.getElementsByTagName("select")[0].value] = parseInt(this.value);
-  writeUserData();
+  writeUserData(1);
 });
 document.getElementById("gpa").getElementsByTagName("input")[0].addEventListener("change", function () {
   this.value = Math.max(Math.min(this.value, this.max), this.min);
-  userinfo["gpa"] = parseFloat(this.value);
-  writeUserData();
+  userinfo.gpa = parseFloat(this.value);
+  writeUserData(1);
 });
 document.getElementById("needaid").getElementsByTagName("input")[0].addEventListener("click", function () {
-  userinfo["needaid"] = this.checked ? 1 : 0;
-  writeUserData();
+  userinfo.needaid = this.checked ? 1 : 0;
+  writeUserData(1);
 });
 document.getElementById("income").getElementsByTagName("select")[0].addEventListener("change", function () {
-  userinfo["income"] = this.value;
-  writeUserData();
+  userinfo.income = this.value;
+  writeUserData(1);
 });
 
 let loggedIn = 0;
 firebase.auth().onAuthStateChanged(function (user) {
   if (user) {
-    singedIn(1);
+    signedIn(1);
   } else {
     let genericmodal = document.getElementById("genericmodal");
     genericmodal.style.display = "block";
-    genericmodal.getElementsByTagName("h1")[0].innerHTML = "Welcome";
-    genericmodal.getElementsByTagName("p")[0].innerHTML = "Put a bunch of intro material here";
+    genericmodal.getElementsByTagName("h1")[0].innerText = "Welcome";
+    genericmodal.getElementsByTagName("p")[0].innerText = "Put a bunch of intro material here";
   }
 });
-
-highlightColors = ["#E67C73", "#F9AD66", "#FFD666", "#AFCF6F", "#57BB8A"];
 
 function loadJSON(link) {//load local or external json
   return new Promise(function (resolve, reject) {
@@ -417,7 +441,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
       button.classList.add("hidebutton");
       button.classList.add("clicked");
       button.id = category.replace(/\s+/g, '');
-      button.innerHTML = category;
+      button.innerText = category;
       button.addEventListener("click", function () {
         let cats = document.getElementsByClassName(category.replace(/\s+/g, ''));
         if (cats[0].style.display == "none") {
@@ -436,7 +460,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
     }
     let categoryth = document.createElement("th");
     let h2 = document.createElement("h2");
-    h2.innerHTML = category
+    h2.innerText = category;
     categoryth.appendChild(h2);
     if (Array.isArray(headers[category])) {
       categoryth.rowSpan = 2;
@@ -452,14 +476,14 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
             img.addEventListener("click", function () {
               let genericmodal = document.getElementById("genericmodal");
               genericmodal.style.display = "block";
-              genericmodal.getElementsByTagName("h1")[0].innerHTML = scoreNames[i] + " Score";
-              genericmodal.getElementsByTagName("p")[0].innerHTML = scoreModalInfo[i];
+              genericmodal.getElementsByTagName("h1")[0].innerText = scoreNames[i] + " Score";
+              genericmodal.getElementsByTagName("p")[0].innerText = scoreModalInfo[i];
             });
             datath.appendChild(img);
           }
         }
         let h3 = document.createElement("h3");
-        h3.innerHTML = key
+        h3.innerText = key;
         datath.appendChild(h3);
         datath.classList.add(category.replace(/\s+/g, ''));
         datath.classList.add(headers[category][key][0]);
@@ -494,7 +518,7 @@ for (let i = 0; i < 3; i++) {//load all scores
 
 function getFromColleges(college) {
   for (const coll of colleges) {
-    if (coll["ID"] == college) {
+    if (coll.ID == college) {
       return coll;
     }
   }
@@ -550,7 +574,7 @@ function updateRowMatchScores(college) {
             scoreCat += scoreDat * weight;
             weightSumCat += 5 * weight;
             if (i == 0) {
-              document.getElementById(college).getElementsByClassName(key)[0].style.backgroundColor = highlightColors[scoreDat - 1];//cell highlights
+              document.getElementById(college).getElementsByClassName(key)[0].style.backgroundColor = "var(--high" + (scoreDat - 1) +")";//cell highlights
             }
           }
         }
@@ -567,8 +591,8 @@ function updateRowMatchScores(college) {
     } else {
       score = (scoreTot / weightSumTot + 4 * floatScore) / 5;
     }
-    document.getElementById(college).getElementsByClassName(scoreNames[i])[0].innerHTML = Math.round(score * 10000) / 100 + "%";
-    document.getElementById(college).getElementsByClassName(scoreNames[i])[0].style.backgroundColor = highlightColors[Math.trunc(score * 5)];//score highlight
+    document.getElementById(college).getElementsByClassName(scoreNames[i])[0].innerText = Math.round(score * 10000) / 100 + "%";
+    document.getElementById(college).getElementsByClassName(scoreNames[i])[0].style.backgroundColor = "var(--high" + (Math.trunc(score * 5)) + ")";//score highlight
   }
 }
 
@@ -577,7 +601,7 @@ function updateRowData(college) {
     collegesData[college] = response;
     for (const category in headers) {//update data in table
       if (category == "Notes") {
-        document.getElementById(college).getElementsByClassName("Notes")[0].getElementsByTagName("textarea")[0].value = getFromColleges(college)["Notes"];
+        document.getElementById(college).getElementsByClassName("Notes")[0].getElementsByTagName("textarea")[0].value = getFromColleges(college).Notes;
       } else if (category != "Actions") {
         for (const key in headers[category]) {
           let fill = "No Data";
@@ -594,7 +618,7 @@ function updateRowData(college) {
               fill = Math.round(fill * 100) / 100 + "°F";
             }
           }
-          document.getElementById(college).getElementsByClassName(headers[category][key][0])[0].innerHTML = fill;
+          document.getElementById(college).getElementsByClassName(headers[category][key][0])[0].innerText = fill;
         }
       }
     }
@@ -616,56 +640,61 @@ function addRowToTable(college) {
       actionsdiv.classList.add("actionsdiv");
       let arrowdiv = document.createElement("div");
       arrowdiv.classList.add("arrowdiv");
-      up = document.createElement("img");
-      up.classList.add("up");
-      up.src = "./icons/up.svg";
+      let up = document.createElement("span");
+      up.classList.add("icon");
+      up.classList.add("arrow");
+      up.classList.add("material-icons");
+      up.innerText = "expand_less";
       up.addEventListener("click", () => {
         for (let i = 1; i < colleges.length; i++) {
-          if (colleges[i]["ID"] == college) {
-            document.getElementById("table").insertBefore(document.getElementById(colleges[i]["ID"]), document.getElementById(colleges[i - 1]["ID"]));
+          if (colleges[i].ID == college) {
+            document.getElementById("table").insertBefore(document.getElementById(colleges[i].ID), document.getElementById(colleges[i - 1].ID));
             let temp = colleges[i - 1];
             colleges[i - 1] = colleges[i];
             colleges[i] = temp;
+            writeUserData(1);
             break;
           }
         }
-        writeUserData();
       });
       arrowdiv.appendChild(up);
-      arrowdiv.appendChild(document.createElement("br"));
-      down = document.createElement("img");
-      down.classList.add("down");
-      down.src = "./icons/down.svg";
+      let down = document.createElement("span");
+      down.classList.add("icon");
+      down.classList.add("arrow");
+      down.classList.add("material-icons");
+      down.innerText = "expand_more";
       down.addEventListener("click", () => {
         for (let i = 0; i < colleges.length - 1; i++) {
-          if (colleges[i]["ID"] == college) {
-            document.getElementById("table").insertBefore(document.getElementById(colleges[i + 1]["ID"]), document.getElementById(colleges[i]["ID"]));
+          if (colleges[i].ID == college) {
+            document.getElementById("table").insertBefore(document.getElementById(colleges[i + 1].ID), document.getElementById(colleges[i].ID));
             let temp = colleges[i];
             colleges[i] = colleges[i + 1];
             colleges[i + 1] = temp;
+            writeUserData(1);
             break;
           }
         }
-        writeUserData();
       });
       arrowdiv.appendChild(down);
       actionsdiv.appendChild(arrowdiv);
-      remove = document.createElement("img");
+      let remove = document.createElement("span");
+      remove.classList.add("icon");
+      remove.classList.add("material-icons");
       remove.classList.add("removeicon");
-      remove.src = "./icons/remove.svg";
+      remove.innerText = "delete";
       remove.addEventListener("click", () => {
         document.getElementById(college).remove();
-        createToast(getFromColleges(college)["ID"] + " Removed", function () {
+        createToast(collegesData[getFromColleges(college).ID].Name + " Removed", function () {
           colleges.push({ "ID": college, "Notes": "" });
           addRowToTable(college);
-          writeUserData();
+          writeUserData(1);
         });
         for (let i = 0; i < colleges.length; i++) {
-          if (colleges[i]["ID"] == college) {
+          if (colleges[i].ID == college) {
             colleges.splice(i, 1);
           }
         }
-        writeUserData();
+        writeUserData(0);
       });
       actionsdiv.appendChild(remove);
       td.appendChild(actionsdiv);
@@ -676,8 +705,8 @@ function addRowToTable(college) {
       let textarea = document.createElement("textarea");
       textarea.maxlength = "10";
       textarea.addEventListener("blur", function () {
-        getFromColleges(college)["Notes"] = this.value;
-        writeUserData();
+        getFromColleges(college).Notes = this.value;
+        writeUserData(1);
       });
       td.appendChild(textarea);
       let button = document.getElementById(category.replace(/\s+/g, ''));
@@ -703,9 +732,9 @@ function addRowToTable(college) {
         scoreSlider.classList.add("slider");
         scoreSlider.classList.add("over");
         if (category in getFromColleges(college)) {
-          score.innerHTML = getFromColleges(college)[category];
+          score.innerText = getFromColleges(college)[category];
           scoreSlider.value = getFromColleges(college)[category];
-          overridetd.style.backgroundColor = highlightColors[getFromColleges(college)[category] - 1];
+          overridetd.style.backgroundColor = "var(--high" + (getFromColleges(college)[category] - 1) + ")";
           colorBool = 1;
         } else {
           scoreSlider.style.display = "none";
@@ -715,36 +744,36 @@ function addRowToTable(college) {
           if (this.checked) {
             scoreSlider.style.display = "block";
             score.style.display = "block";
-            score.innerHTML = 3;
+            score.innerText = 3;
             scoreSlider.value = 3;
             getFromColleges(college)[category] = 3;
-            writeUserData();
-            overridetd.style.backgroundColor = highlightColors[2];
+            writeUserData(1);
+            overridetd.style.backgroundColor = "var(--high2)";
             for (const key in scores[0][category][1]) {
-              tr.getElementsByClassName(key)[0].style.backgroundColor = highlightColors[2];
+              tr.getElementsByClassName(key)[0].style.backgroundColor = "var(--high2)";
             }
             updateRowMatchScores(college);
           } else {
             scoreSlider.style.display = "none";
             score.style.display = "none";
             delete getFromColleges(college)[category];
-            writeUserData();
-            overridetd.style.backgroundColor = "#fff";
+            writeUserData(1);
+            overridetd.style.backgroundColor = "var(--light0)";
             updateRowMatchScores(college);
           }
         });
         overridetd.appendChild(checkbox);
         overridetd.appendChild(score);
         scoreSlider.addEventListener("input", function () {
-          score.innerHTML = this.value;
-          overridetd.style.backgroundColor = highlightColors[this.value - 1];
+          score.innerText = this.value;
+          overridetd.style.backgroundColor = "var(--high" + (this.value - 1) + ")";
           for (const key in scores[0][category][1]) {
-            tr.getElementsByClassName(key)[0].style.backgroundColor = highlightColors[this.value - 1];
+            tr.getElementsByClassName(key)[0].style.backgroundColor = "var(--high" + (this.value - 1) + ")";
           }
         });
         scoreSlider.addEventListener("change", function () {
           getFromColleges(college)[category] = parseInt(this.value);
-          writeUserData();
+          writeUserData(1);
           updateRowMatchScores(college);
         });
         overridetd.appendChild(scoreSlider);
@@ -759,7 +788,7 @@ function addRowToTable(college) {
         td.classList.add(category.replace(/\s+/g, ''));
         td.classList.add(headers[category][key][0]);
         if (colorBool && headers[category][key][0] in scores[0][category][1]) {
-          td.style.backgroundColor = highlightColors[getFromColleges(college)[category] - 1];
+          td.style.backgroundColor = "var(--high" + (getFromColleges(college)[category] - 1) + ")";
         }
         let button = document.getElementById(category.replace(/\s+/g, ''));
         if (button != null && !button.classList.contains("clicked")) {
@@ -770,7 +799,7 @@ function addRowToTable(college) {
       }
     }
   }
-  table.appendChild(tr);
+  document.getElementById("table").appendChild(tr);
   updateRowData(college);
 }
 
@@ -778,11 +807,11 @@ function setSliders() {
   for (const category in scores[0]) {
     let cell = document.getElementsByClassName(category.replace(/\s+/g, ''))[0];
     cell.getElementsByClassName("slider")[0].value = scores[0][category][0];
-    cell.getElementsByClassName("weight")[0].innerHTML = "Weight: " + scores[0][category][0];
+    cell.getElementsByClassName("weight")[0].innerText = "Weight: " + scores[0][category][0];
     for (const key in scores[0][category][1]) {
       let cell = document.getElementsByClassName(key)[0];
       cell.getElementsByClassName("slider")[0].value = scores[0][category][1][key][0];
-      cell.getElementsByClassName("weight")[0].innerHTML = "Weight: " + scores[0][category][1][key][0];
+      cell.getElementsByClassName("weight")[0].innerText = "Weight: " + scores[0][category][1][key][0];
     }
   }
 }
@@ -792,16 +821,16 @@ function createSlider(nameClass, val) {
   div.classList.add("scorecontrol");
   let weight = document.createElement("p");
   weight.classList.add("weight");
-  weight.innerHTML = "Weight: " + val;
+  weight.innerText = "Weight: " + val;
   div.appendChild(weight);
   let range = document.createElement("input");
   range.type = "range";
   range.min = "0";
-  range.max = "5"
+  range.max = "5";
   range.value = val;
   range.classList.add("slider");
   range.addEventListener("input", function () {
-    this.parentElement.getElementsByTagName("p")[0].innerHTML = "Weight: " + this.value;
+    this.parentElement.getElementsByTagName("p")[0].innerText = "Weight: " + this.value;
   });
   div.appendChild(range);
   div.style.width = "100px";
@@ -813,7 +842,7 @@ function datachangePos(datachange, plus) {
   datachange.style.left = plus.parentElement.getBoundingClientRect().x + (window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft || 0) + "px";
 }
 
-datachangePlusPairs = [];
+let datachangePlusPairs = [];
 
 document.getElementById("tableholder").addEventListener("scroll", function () {
   datachangePlusPairs.forEach(function (item) {
@@ -829,9 +858,9 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
     if (category in scores[0]) {
       let rows = document.getElementById("table").getElementsByTagName("tr");
       rows[0].getElementsByClassName(category)[0].colSpan++;
-      let overrideth = document.createElement("th")
+      let overrideth = document.createElement("th");
       let h3 = document.createElement("h3");
-      h3.innerHTML = "Override";
+      h3.innerText = "Override";
       overrideth.appendChild(h3);
       overrideth.classList.add(category.replace(/\s+/g, ''));
       overrideth.classList.add("override");
@@ -839,32 +868,33 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
     }
   }
   for (const college of colleges) {
-    addRowToTable(college["ID"]);
+    addRowToTable(college.ID);
   }
   for (const category in scores[0]) {
     createSlider(category, scores[0][category][0]).addEventListener("change", function () {
       scores[0][category][0] = parseInt(this.value);
       for (const college of colleges) {
-        updateRowMatchScores(college["ID"]);
+        updateRowMatchScores(college.ID);
       }
-      writeUserData();
+      writeUserData(1);
     });
     for (const key in scores[0][category][1]) {
       let range = createSlider(key, scores[0][category][1][key][0]);
       range.addEventListener("change", function () {
         scores[0][category][1][key][0] = parseInt(this.value);
         for (const college of colleges) {
-          updateRowMatchScores(college["ID"]);
+          updateRowMatchScores(college.ID);
         }
-        writeUserData();
+        writeUserData(1);
       });
-      let plus = document.createElement("img");
+      let plus = document.createElement("span");
       let datachange = document.createElement("div");
       datachange.style.display = "none";
       datachangePlusPairs.push([datachange, plus]);
-      plus.classList.add("plus");
-      plus.src = "icons/plus.svg";
-      document.getElementsByClassName(key)[0].getElementsByClassName("scorecontrol")[0].insertBefore(plus, range);
+      plus.classList.add("plus");///
+      plus.classList.add("icon");
+      plus.classList.add("material-icons");
+      plus.innerText = "expand_more";      document.getElementsByClassName(key)[0].getElementsByClassName("scorecontrol")[0].insertBefore(plus, range);
       let scoreVals = [1, 2, 3, 4, 5];
       if (scores[0][category][1][key].length == 3) {//custom score ordering defined
         scoreVals = scores[0][category][1][key][2];
@@ -872,17 +902,17 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
       datachange.classList.add("popup");
       datachange.classList.add("datachange");
       let h2 = document.createElement("h2");
-      h2.innerHTML = "Change Range";
+      h2.innerText = "Change Range";
       datachange.appendChild(h2);
       let h3 = document.createElement("h3");
-      h3.innerHTML = "Redefine what makes a good score.";
+      h3.innerText = "Redefine what makes a good score.";
       datachange.appendChild(h3);
       let barbox = document.createElement("div");
       barbox.classList.add("barbox");
       for (let i = 0; i < 5; i++) {
         let bar = document.createElement("bar");
         bar.classList.add("bar");
-        bar.style.backgroundColor = highlightColors[scoreVals[i] - 1];
+        bar.style.backgroundColor = "var(--high" + (scoreVals[i] - 1) + ")";
         if (i > 0 && i < 4) {
           let range = scores[0][category][1][key][1];
           if (range.length == 2) {//min and max defined
@@ -899,28 +929,28 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
       datachange.appendChild(breakline1);
       let reset = document.createElement("a");
       reset.classList.add("mainbtn");
-      reset.innerHTML = "Reset";
+      reset.innerText = "Reset";
       reset.addEventListener("click", function () {
         loadJSON("UserData/" + scoreNames[0] + ".json").then(response => {
           scores[0][category][1][key] = JSON.parse(response)[category][1][key];
-          writeUserData();
+          writeUserData(1);
           datachange.style.display = "none";
           setSliders();
         }, error => {
-          createToast("Load " + scoreNames[i] + " Score Failed!");
-          console.error("Load " + scoreNames[i] + " Score Failed!", error);
+          createToast("Load " + scoreNames[0] + " Score Failed!");
+          console.error("Load " + scoreNames[0] + " Score Failed!", error);
         });
-      })
+      });
       datachange.appendChild(reset);
       let dropdown = document.createElement("select");
       dropdown.classList.add("dropdown");
       let short = document.createElement("option");
       short.value = "short";
-      short.innerHTML = "Short Range";
+      short.innerText = "Short Range";
       dropdown.appendChild(short);
       let long = document.createElement("option");
       long.value = "long";
-      long.innerHTML = "Long Range";
+      long.innerText = "Long Range";
       dropdown.appendChild(long);
       dropdown.addEventListener("change", function () {
         let rangeVals = this.parentElement.getElementsByClassName("rangeval");
@@ -960,7 +990,7 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
       let breakline2 = document.createElement("div");
       breakline2.classList.add("break");
       datachange.appendChild(breakline2);
-      let isPercent = (headers[category][Object.keys(headers[category]).find(keyh => headers[category][keyh][0] == key)][1] == "%")
+      let isPercent = (headers[category][Object.keys(headers[category]).find(keyh => headers[category][keyh][0] == key)][1] == "%");
       for (let i = 0; i < 4; i++) {
         let rangeVal = document.createElement("input");
         rangeVal.type = "number";
@@ -969,9 +999,9 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
         rangeVal.classList.add("rangeval");
         rangeVal.addEventListener("input", function () {
           if ((this.hasAttribute("min") && parseInt(this.value) < parseInt(this.min)) || (this.hasAttribute("max") && parseInt(this.value) > parseInt(this.max))) {
-            this.style.backgroundColor = highlightColors[0];
+            this.style.backgroundColor = "var(--high0)";
           } else {
-            this.style.backgroundColor = "#ddd";
+            this.style.backgroundColor = "var(--light2)";
             let bars = this.parentElement.getElementsByClassName("bar");
             for (let j = 0; j < 5; j++) {
               if (j > 0 && j < 4) {
@@ -996,7 +1026,7 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
           if (this.hasAttribute("max")) {
             this.value = Math.min(this.value, this.max);
           }
-          this.style.backgroundColor = "#ddd";
+          this.style.backgroundColor = "var(--light2)";
           scores[0][category][1][key][1][i] = parseInt(this.value);
           if (isPercent) {
             scores[0][category][1][key][1][i] /= 100;
@@ -1026,7 +1056,7 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
         let div = document.createElement("div");
         let score = document.createElement("p");
         score.classList.add("scorelabel");
-        score.innerHTML = scoreVals[i];
+        score.innerText = scoreVals[i];
         div.appendChild(score);
         let scoreSlider = document.createElement("input");
         scoreSlider.type = "range";
@@ -1036,8 +1066,8 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
         scoreSlider.classList.add("vert");
         scoreSlider.value = scoreVals[i];
         scoreSlider.addEventListener("input", function () {
-          score.innerHTML = this.value;
-          this.parentElement.parentElement.getElementsByClassName("bar")[i].style.backgroundColor = highlightColors[this.value - 1];
+          score.innerText = this.value;
+          this.parentElement.parentElement.getElementsByClassName("bar")[i].style.backgroundColor = "var(--high" + (this.value - 1) + ")";
         });
         scoreSlider.addEventListener("change", function () {
           if (scores[0][category][1][key].length == 2) {
@@ -1067,11 +1097,11 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
           if (scores[0][category][1][key].length == 3) {//custom score ordering defined
             scoreVals2 = scores[0][category][1][key][2];
           }
-          datachange.style.top = plus.getBoundingClientRect().y + plus.height + 30 + (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0) + "px";
+          datachange.style.top = plus.getBoundingClientRect().y + 16 + 26 + (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0) + "px";
           datachangePos(datachange, plus);
           let bars = datachange.getElementsByClassName("bar");
           for (let i = 0; i < 5; i++) {
-            bars[i].style.backgroundColor = highlightColors[scoreVals2[i] - 1];
+            bars[i].style.backgroundColor = "var(--high" + (scoreVals2[i] - 1) + ")";
             if (i > 0 && i < 4) {
               let range = scores[0][category][1][key][1];
               if (range.length == 2) {//min and max defined
@@ -1114,11 +1144,11 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
           let scoreLabels = datachange.getElementsByClassName("scorelabel");
           for (let i = 0; i < 5; i++) {
             scoreSliders[i].value = scoreVals2[i];
-            scoreLabels[i].innerHTML = scoreVals2[i];
+            scoreLabels[i].innerText = scoreVals2[i];
           }
           datachange.style.display = "flex";
         } else {
-          writeUserData();
+          writeUserData(1);
           datachange.style.display = "none";
         }
       });
@@ -1139,10 +1169,10 @@ function JaroWrinker(s1, s2) {
     return 1;
   }
   let range = (Math.floor(Math.max(s1.length, s2.length) / 2)) - 1, s1Matches = new Array(s1.length), s2Matches = new Array(s2.length);
-  for (i = 0; i < s1.length; i++) {
+  for (let i = 0; i < s1.length; i++) {
     let low = (i >= range) ? i - range : 0,
       high = (i + range <= s2.length) ? (i + range) : (s2.length - 1);
-    for (j = low; j <= high; j++) {
+    for (let j = low; j <= high; j++) {
       if (s1Matches[i] !== true && s2Matches[j] !== true && s1[i] === s2[j]) {
         ++m;
         s1Matches[i] = s2Matches[j] = true;
@@ -1153,9 +1183,11 @@ function JaroWrinker(s1, s2) {
   if (m === 0) {//Exit early if no matches were found.
     return 0;
   }
-  let k = n_trans = 0;//Count the transpositions.
-  for (i = 0; i < s1.length; i++) {
+  let k = 0;//Count the transpositions.
+  let n_trans = 0;
+  for (let i = 0; i < s1.length; i++) {
     if (s1Matches[i] === true) {
+      let j;
       for (j = k; j < s2.length; j++) {
         if (s2Matches[j] === true) {
           k = j + 1;
@@ -1208,7 +1240,7 @@ document.getElementById("textinput").addEventListener("click", function () {
         let itemVal = this.getElementsByTagName("input")[0].value;
         colleges.push({ "ID": itemVal, "Notes": "" });
         addRowToTable(itemVal);
-        writeUserData();
+        writeUserData(1);
         suggestions.style.display = "none";
         currentFocus = -1;
         let removeActive = suggestions.getElementsByClassName("active")[0];
@@ -1239,7 +1271,7 @@ document.getElementById("textinput").addEventListener("click", function () {
         }
         let items = suggestions.getElementsByTagName("div");
         for (let i = 0; i < 10; i++) {
-          items[i].getElementsByTagName("p")[0].innerHTML = results[i][results[i].length - 2];
+          items[i].getElementsByTagName("p")[0].innerText = results[i][results[i].length - 2];
           items[i].getElementsByTagName("input")[0].value = results[i][0];
         }
       }
@@ -1262,7 +1294,7 @@ document.getElementById("textinput").addEventListener("click", function () {
         if (document.getElementById(itemVal) == null) {
           colleges.push({ "ID": itemVal, "Notes": "" });
           addRowToTable(itemVal);
-          writeUserData();
+          writeUserData(1);
           suggestions.style.display = "none";
           currentFocus = -1;
           let removeActive = suggestions.getElementsByClassName("active")[0];
