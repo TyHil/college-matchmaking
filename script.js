@@ -137,28 +137,6 @@ function signedIn(loadData) {
             createToast("Delete User Failed!");
             console.error("Delete User Failed!", error);
           });
-          /*let credential;
-          switch(firebase.auth().currentUser.providerData[0].providerId) {
-            case "password":
-              let password = prompt("Please enter your password.");
-              if (password != null) {
-                credential = firebase.auth.EmailAuthProvider.credential(firebase.auth().currentUser.providerData[0].email, password);
-              }
-              break;
-            case "google.com":
-              credential = firebase.auth.GoogleAuthProvider.credential(googleUser.getAuthResponse().id_token);
-          }
-          firebase.auth().currentUser.reauthenticateWithCredential(credential).then(function() {
-            firebase.auth().currentUser.delete().then(function () {
-              location.reload();
-            }).catch(function (error) {
-              createToast("Delete User Failed!");
-              console.error("Delete User Failed!", error);
-            });
-          }).catch(function(error) {
-            createToast("Delete User Failed!");
-            console.error("Delete User Failed!", error);
-          });*/
         } else {
           createToast("Delete User Failed!");
           console.error("Delete User Failed!", error);

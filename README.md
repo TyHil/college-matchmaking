@@ -10,16 +10,10 @@ The College Matchmaking website.
 - [x] Table scroll.
 - [x] Suggestions popup.
 - [x] Change font.
-- [ ] Terms of Service.
-- [ ] Privacy Policy.
 - [x] Move colleges up and down.
 - [x] Add overrides.
 - [x] Actually store changed user data.
   - [x] Allow users to change ranges and score ranges.
-- [ ] Add info to intro popup.
-- [ ] Include all data points.
-  - [ ] Switch to Ellen's data.
-- [ ] Refine match scores (stop using dummy ones).
 - [x] Make categories of the table collapsible or split it onto multiple pages or split the table onto multiple lines so it scrolls vertically.
 - [x] Ability to change weights.
 - [x] Store college list and chosen weights somehow.
@@ -34,3 +28,10 @@ The College Matchmaking website.
 - [x] Add inputs above the table for: SAT/ACT/none, want financial aid.
 - [ ] Maybe use: datatables.net but make a pretty table.
 - [ ] Make Change Range popup intuitive.
+### Todo (including stuff Cy can do)
+- [ ] Include all data points in headers.json.
+  - [x] Switch to Ellen's data.
+- [ ] Refine match scores (stop using dummy ones).
+- [ ] Add info to intro popup.
+- [ ] Terms of Service.
+- [ ] Privacy Policy.
