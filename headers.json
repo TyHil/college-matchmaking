@@ -9,51 +9,16 @@
     "SWIM": ["SWIM", ""]
   },
   "Size": {
-    "Undergraduate Population": ["Undergraduates", "Integer"]
-  },
-  "Location": {
-    "City": ["City", "String"],
-    "State": ["State", "String"],
-    "Zip Code": ["Zip", "String"],
-    "Average Temperature": ["ZipWeather", "Degree"],
-    "Setting": ["Locale", "Replace"],
-    "Distance to You (km)": ["dist(0|0)", "Integer"]
-    },
-  "Academics": {
-    "Faculty Salary": ["Salary", "$"],
-    "Full Time Professors": ["FullTime", "%"],
-    "Expenditure on Each Student": ["Expenditure", "$"],
-    "Revenue From Each Student": ["Revenue", "$"]
+    "Undergraduate Population": ["NoofUgrads", "Integer"]
   },
   "Diversity": {
-    "White Students": ["RaceWhite", "%"],
-    "Black Students": ["RaceBlack", "%"],
-    "Hispanic Students": ["RaceHispanic", "%"],
-    "Asian Students": ["RaceAsian", "%"],
-    "American Indian/Alaska Native Students": ["RaceAIAN", "%"],
-    "Native Hawaiian/Pacific Islander Students": ["RaceNHPI", "%"],
-    "2 or More Race Students": ["Race2p", "%"],
-    "Non US Resident Students": ["RaceNonResident", "%"],
-    "First Generation Students": ["FirstGen", "%"],
-    "Students Over 23": ["Over23", "%"],
-    "Veteran Students": ["Veteran", "%"],
-    "Female Students": ["Female", "%"]
-  },
-  "Cost": {
-    "In State Cost": ["CostInState", "$"],
-    "Out of State Cost": ["CostOutOfState", "$"],
-    "Income of 110+ Cost": ["CostIncome110p", "$"],
-    "Debt": ["Debt", "$"],
-    "Salary After 10 Years": ["IndependentEarnings10yrs", "$"]
-  },
-  "Retention": {
-    "Completion Rate": ["Completion", "%"]
+    "White Students": ["PercentUndergrads_WHITE", "%"],
+    "Black Students": ["PercentUndergrads_BLACK", "%"],
+    "Hispanic Students": ["PercentUndergrads_HISPANIC", "%"]
   },
   "Testing": {
-    "25th Percentile SAT": ["SAT25", ""],
-    "75th Percentile SAT": ["SAT75", ""],
-    "25th Percentile ACT": ["ACT25", ""],
-    "75th Percentile ACT": ["ACT75", ""]
+    "25th Percentile ACT": ["ACT-Composite25thPercentile", ""],
+    "75th Percentile ACT": ["ACT-Composite75thPercentile", ""]
   },
   "Notes": ["Notes", ""]
 }

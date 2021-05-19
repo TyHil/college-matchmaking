@@ -11,6 +11,21 @@
   --high3: #AFCF6F;
   --high4: #57BB8A;
 }
+/*Scrollbar Webkit*/
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--light0);  
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.24);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.28);
+}
 @media (prefers-color-scheme: dark) {
   :root {
     --light0: #000;
@@ -23,6 +38,12 @@
     --high2: #c9a536;
     --high3: #7e9e41;
     --high4: #1e8a5d;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.24);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.28);
   }
 }
 
@@ -43,7 +64,7 @@ body {
 }
 
 /*Inputs*/
-input[type=text], input[type=number], select {
+input[type=text], input[type=number], select, textarea {
   border-radius: 4px;
   border: none;
   background-color: var(--light2);

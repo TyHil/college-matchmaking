@@ -1,14 +1,10 @@
 {
   "Size": [2, {
-    "Undergraduates": [3, [20000, 30000]]
-  }],
-  "Academics": [5, {
-    "Salary": [5, [10000, 20000, 30000, 40000], [2, 3, 2, 4, 5]],
-    "FullTime": [1, [0.2, 0.4, 0.6, 0.8]]
+    "NoofUgrads": [3, [20000, 30000]]
   }],
   "Diversity": [4, {
-    "RaceWhite": [2, [0.6, 0.7, 0.9, 1], [5, 4, 3, 2, 1]],
-    "RaceBlack": [5, [0.1, 0.2, 0.4, 0.5]],
-    "RaceHispanic": [5, [0.1, 0.2, 0.4, 0.5]]
+    "PercentUndergrads_WHITE": [2, [0.6, 0.7, 0.9, 1], [5, 4, 3, 2, 1]],
+    "PercentUndergrads_BLACK": [5, [0.1, 0.2, 0.4, 0.5]],
+    "PercentUndergrads_HISPANIC": [5, [0.1, 0.2, 0.4, 0.5]]
   }]
 }

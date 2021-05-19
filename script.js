@@ -28,9 +28,6 @@ function signedIn(loadData) {
     img.classList.add("icon");
     img.classList.add("material-icons");
     img.innerText = "account_circle";
-    /*img.src = "icons/profile.svg";
-    img.style.width = "30px";
-    img.style.height = "30px";*/
   } else {
     img.src = firebase.auth().currentUser.photoURL;
   }
@@ -44,7 +41,7 @@ function signedIn(loadData) {
   });
   document.addEventListener('click', function (e) {
     let useractions = document.getElementById("useractions");
-    if (!useractions.contains(e.target) && !document.getElementById("userimg").contains(e.target)) {
+    if (!useractions.contains(e.target) && ((document.getElementById("userimg") && !document.getElementById("userimg").contains(e.target)) || (document.getElementById("usersvg") && !document.getElementById("usersvg").contains(e.target)))) {
       useractions.style.display = "none";
     }
   });
@@ -93,16 +90,38 @@ function signedIn(loadData) {
     confirmmodal.getElementsByTagName("p")[0].innerText = "This delete your account with College Matchmaking and all of it's associated data.";
     confirmmodal.style.display = "block";
     document.getElementById("confirm").onclick = function () {
-      firebase.auth().currentUser.reauthenticateWithPopup(new firebase.auth.GoogleAuthProvider())
-        .then((UserCredential) => {
-          firebase.database().ref('/users/' + firebase.auth().currentUser.uid).remove();
-          firebase.auth().currentUser.delete().then(function () {
-            location.reload();
-          }).catch(function (error) {
+      firebase.database().ref('/users/' + firebase.auth().currentUser.uid).remove();
+      firebase.auth().currentUser.delete().then(function () {
+        location.reload();
+      }).catch(function (error) {
+        if (error.code == "auth/requires-recent-login") {
+          let credential;
+          switch(firebase.auth().currentUser.providerData[0].providerId) {
+            case "password":
+              let password = prompt("Please enter your password.");
+              if (password != null) {
+                credential = firebase.auth.EmailAuthProvider.credential(firebase.auth().currentUser.providerData[0].email, password);
+              }
+              break;
+            case "google.com":
+              credential = firebase.auth.GoogleAuthProvider.credential(googleUser.getAuthResponse().id_token);
+          }
+          firebase.auth().currentUser.reauthenticateWithCredential(credential).then(function() {
+            firebase.auth().currentUser.delete().then(function () {
+              location.reload();
+            }).catch(function (error) {
+              createToast("Delete User Failed!");
+              console.error("Delete User Failed!", error);
+            });
+          }).catch(function(error) {
             createToast("Delete User Failed!");
             console.error("Delete User Failed!", error);
           });
-        });
+        } else {
+          createToast("Delete User Failed!");
+          console.error("Delete User Failed!", error);
+        }
+      });
     };
   });
   if (loadData) {
@@ -116,6 +135,7 @@ function signedIn(loadData) {
         addRowToTable(college.ID);
       }
       scores[0] = response[scoreNames[0]];
+      setSliders();
       userinfo = response.userinfo;
       document.getElementById("testscore").getElementsByTagName("select")[0].value = userinfo.test;
       let input = document.getElementById("testscore").getElementsByTagName("input")[0];
@@ -382,9 +402,10 @@ document.getElementById("income").getElementsByTagName("select")[0].addEventList
 });
 
 let loggedIn = 0;
-firebase.auth().onAuthStateChanged(function (user) {
+let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
   if (user) {
     signedIn(1);
+    unsubscribe();
   } else {
     let genericmodal = document.getElementById("genericmodal");
     genericmodal.style.display = "block";
@@ -891,7 +912,7 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
       let datachange = document.createElement("div");
       datachange.style.display = "none";
       datachangePlusPairs.push([datachange, plus]);
-      plus.classList.add("plus");///
+      plus.classList.add("plus");
       plus.classList.add("icon");
       plus.classList.add("material-icons");
       plus.innerText = "expand_more";      document.getElementsByClassName(key)[0].getElementsByClassName("scorecontrol")[0].insertBefore(plus, range);
