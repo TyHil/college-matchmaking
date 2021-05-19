@@ -382,7 +382,7 @@ th, td {
   background-color: var(--light2);
 }
 .modal .mainbtn, .popup .mainbtn {
-  color: var(--light0);
+  color: white;
   background: linear-gradient(90deg, #d80000, #eb0000);
 }
 .modal .mainbtn:hover, .popup .mainbtn:hover {
@@ -398,7 +398,7 @@ th, td {
 }
 #reset:hover, #deleteaccnt:hover {
   background: linear-gradient(90deg, #eb0000, #f00);
-  color: var(--light0);
+  color: white;
 }
 
 /*Sliders*/

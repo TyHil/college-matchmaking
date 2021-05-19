@@ -49,6 +49,37 @@ function signedIn(loadData) {
   document.getElementById("headerright").appendChild(img);
   useractions.getElementsByTagName("h2")[0].innerText = firebase.auth().currentUser.displayName;
   useractions.getElementsByTagName("h3")[0].innerText = firebase.auth().currentUser.email;
+  function reAuth() {
+    return new Promise(function (resolve, reject) {
+      function finish(credential) {
+        firebase.auth().currentUser.reauthenticateWithCredential(credential).then(function() {
+          resolve()
+        }).catch(function(error) {
+          reject(error);
+        });
+      }
+      switch(firebase.auth().currentUser.providerData[0].providerId) {
+        case "password":
+          let password = prompt("Please enter your password.");
+          if (password != null) {
+            finish(firebase.auth.EmailAuthProvider.credential(firebase.auth().currentUser.providerData[0].email, password));
+          } else {
+            reject("No Password");
+          }
+          break;
+        case "google.com":
+          var provider = new firebase.auth.GoogleAuthProvider();
+          provider.addScope('profile');
+          provider.addScope('email');
+          firebase.auth().signInWithPopup(provider).then(function(result) {
+            finish(result.credential.accessToken);
+          }).catch(function(error) {
+            reject("Sign In Failed!");
+          });
+          break;
+      }
+    });
+  }
   document.getElementById("reset").addEventListener("click", function () {
     let confirmmodal = document.getElementById("confirmmodal");
     confirmmodal.getElementsByTagName("h1")[0].innerText = "Confirm Match Score Reset";
@@ -95,7 +126,18 @@ function signedIn(loadData) {
         location.reload();
       }).catch(function (error) {
         if (error.code == "auth/requires-recent-login") {
-          let credential;
+          reAuth().then(() => {
+            firebase.auth().currentUser.delete().then(function () {
+              location.reload();
+            }).catch(function (error) {
+              createToast("Delete User Failed!");
+              console.error("Delete User Failed!", error);
+            });
+          }, error => {
+            createToast("Delete User Failed!");
+            console.error("Delete User Failed!", error);
+          });
+          /*let credential;
           switch(firebase.auth().currentUser.providerData[0].providerId) {
             case "password":
               let password = prompt("Please enter your password.");
@@ -116,7 +158,7 @@ function signedIn(loadData) {
           }).catch(function(error) {
             createToast("Delete User Failed!");
             console.error("Delete User Failed!", error);
-          });
+          });*/
         } else {
           createToast("Delete User Failed!");
           console.error("Delete User Failed!", error);
@@ -124,6 +166,65 @@ function signedIn(loadData) {
       });
     };
   });
+  if (firebase.auth().currentUser.providerData[0].providerId == "password") {
+    document.getElementById("changeemail").addEventListener("click", function () {
+      let email = prompt("Please enter your new email.");
+      if (email != null) {
+        firebase.auth().currentUser.updateEmail(email).then(function() {
+          createToast("Email Changed!");
+        }).catch(function(error) {
+          if (error.code == "auth/requires-recent-login") {
+            reAuth().then(() => {
+              firebase.auth().currentUser.updateEmail(email).then(function() {
+                createToast("Email Changed!");
+              }).catch(function(error) {
+                createToast("Change Email Failed!");
+                console.error("Change Email Failed!", error);
+              });
+            }, error => {
+              createToast("Change Email Failed!");
+              console.error("Change Email Failed!", error);
+            });
+          } else {
+            createToast("Change Email Failed!");
+            console.error("Change Email Failed!", error);
+          }
+        });
+      } else {
+        createToast("Invalid Email!");
+      }
+    });
+    document.getElementById("changepass").addEventListener("click", function () {
+      let pass = prompt("Please enter your new password.");
+      if (pass != null) {
+        firebase.auth().currentUser.updatePassword(pass).then(function() {
+          createToast("Password Changed!");
+        }).catch(function(error) {
+          if (error.code == "auth/requires-recent-login") {
+            reAuth().then(() => {
+              firebase.auth().currentUser.updatePassword(pass).then(function() {
+                createToast("Password Changed!");
+              }).catch(function(error) {
+                createToast("Change Password Failed!");
+                console.error("Change Password Failed!", error);
+              });
+            }, error => {
+              createToast("Change Password Failed!");
+              console.error("Change Password Failed!", error);
+            });
+          } else {
+            createToast("Change Password Failed!");
+            console.error("Change Password Failed!", error);
+          }
+        });
+      } else {
+        createToast("Invalid Password!");
+      }
+    });
+  } else {
+    document.getElementById("changeemail").style.display = "none";
+    document.getElementById("changepass").style.display = "none";
+  }
   if (loadData) {
     let scoresLoaded = loadFirebaseJSON("/users/" + firebase.auth().currentUser.uid).then(response => {
       for (const college of colleges) {
@@ -236,10 +337,16 @@ function writeUserData(toast) {
       colleges: colleges,
       FLOAT: scores[0],
       userinfo: userinfo
+    }).then(() => {
+      if (toast) {
+        createToast("Saved!");
+      }
+      window.onbeforeunload = '';
+    }).catch((error) => {
+      window.onbeforeunload = () => '';
+      createToast("Save Data Failed!");
+      console.error("Save Data Failed!", error);
     });
-    if (toast) {
-      createToast("Saved!");
-    }
   } else {
     window.onbeforeunload = () => '';
   }
@@ -1167,6 +1274,7 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
             scoreSliders[i].value = scoreVals2[i];
             scoreLabels[i].innerText = scoreVals2[i];
           }
+          document.body.appendChild(datachange);//move to front
           datachange.style.display = "flex";
         } else {
           writeUserData(1);
