@@ -698,7 +698,7 @@ function updateRowMatchScores(college) {
       score = (scoreTot / weightSumTot + 4 * floatScore) / 5;
     }
     document.getElementById(college).getElementsByClassName(scoreNames[i])[0].innerText = Math.round(score * 10000) / 100 + "%";
-    document.getElementById(college).getElementsByClassName(scoreNames[i])[0].style.backgroundColor = "var(--high" + (Math.trunc(score * 5)) + ")";//score highlight
+    document.getElementById(college).getElementsByClassName(scoreNames[i])[0].style.backgroundColor = "var(--high" + (Math.min(Math.trunc(score * 5),4)) + ")";//score highlight
   }
 }
 
@@ -1323,7 +1323,7 @@ document.getElementById("textinput").addEventListener("click", function () {
   loadFirebaseJSON("/search").then(response => {
     for (const key in response) {
       if (Array.isArray(response[key])) {
-        for (let i = 0; i < response[key].length; i++) {//(const alias of response[key]) {
+        for (let i = 0; i < response[key].length; i++) {
           let arr = [key, response[key][i]];
           if (i != 0) {
             arr.push(response[key][0]);
@@ -1345,6 +1345,7 @@ document.getElementById("textinput").addEventListener("click", function () {
       suggestions.appendChild(div);
       div.addEventListener("click", function () {
         let itemVal = this.getElementsByTagName("input")[0].value;
+        if (document.getElementById(itemVal) == null) {
         colleges.push({ "ID": itemVal, "Notes": "" });
         addRowToTable(itemVal);
         writeUserData(1);
@@ -1353,6 +1354,9 @@ document.getElementById("textinput").addEventListener("click", function () {
         let removeActive = suggestions.getElementsByClassName("active")[0];
         if (removeActive != undefined) {
           removeActive.classList.remove("active");
+        }
+        } else {
+          createToast("College already exists!");
         }
       });
     }
