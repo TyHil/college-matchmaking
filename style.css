@@ -358,12 +358,14 @@ th, td {
   line-height: 20px;
   margin: 10px 10px 5px 10px;
   text-align: center;
+  display: inline-block;
 }
 .popup h3 {
   font-size: 18px;
   line-height: 18px;
   margin: 5px 10px;
   font-weight: normal;
+  display: inline-block;
 }
 
 /*Modal and Popup Buttons*/
@@ -394,11 +396,20 @@ th, td {
   top: 60px;
   right: 10px;
   flex-direction: column;
-  align-items: initial;
+  align-items: center;
 }
 #reset:hover, #deleteaccnt:hover {
   background: linear-gradient(90deg, #eb0000, #f00);
   color: white;
+}
+.editicon {
+  font-size: 12px;
+  margin-right: 10px;
+  vertical-align: text-top;
+}
+#useractions a {
+  width: 100%;
+  padding: 5px 0;
 }
 
 /*Sliders*/
