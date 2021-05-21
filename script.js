@@ -869,9 +869,10 @@ function addRowToTable(college) {
         scoreSlider.classList.add("slider");
         scoreSlider.classList.add("over");
         if (category in getFromColleges(college)) {
-          score.innerText = getFromColleges(college)[category];
-          scoreSlider.value = getFromColleges(college)[category];
-          overridetd.style.backgroundColor = "var(--high" + (getFromColleges(college)[category] - 1) + ")";
+          overrideVal = getFromColleges(college)[category];
+          score.innerText = overrideVal;
+          scoreSlider.value = overrideVal;
+          overridetd.style.backgroundColor = "var(--high" + (overrideVal - 1) + ")";
           colorBool = 1;
         } else {
           scoreSlider.style.display = "none";
@@ -895,7 +896,9 @@ function addRowToTable(college) {
             score.style.display = "none";
             delete getFromColleges(college)[category];
             writeUserData(1);
-            overridetd.style.backgroundColor = "var(--light0)";
+            for (const td of tr.getElementsByClassName(category.replace(/\s+/g, ''))) {
+              td.style.backgroundColor = "var(--light0)";
+            }
             updateRowMatchScores(college);
           }
         });
