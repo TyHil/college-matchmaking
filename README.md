@@ -34,4 +34,4 @@ The College Matchmaking website.
 - [ ] Refine match scores (stop using dummy ones).
 - [ ] Add info to intro popup.
 - [ ] Terms of Service.
-- [ ] Privacy Policy.
+- [x] Privacy Policy.
