@@ -110,6 +110,12 @@ option {
   height: 19px;
 }
 
+/*Bug report*/
+#bug {
+  float: right;
+  margin: 4px 2px;
+}
+
 /*Table Buttons*/
 .hidebutton {
   font-size: 14px;

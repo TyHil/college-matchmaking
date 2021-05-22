@@ -16,6 +16,10 @@ firebase.analytics();
 const databaseRef = firebase.database().ref();
 let ui = new firebaseui.auth.AuthUI(firebase.auth());
 
+document.getElementById("bug").addEventListener("click", function() {
+  window.open("https://docs.google.com/forms/d/e/1FAIpQLScEzG3d7yneyI6youXBKUULJeV5sv_6Znjw6CJvkHUF5tPy9A/viewform?usp=sf_link", "_blank");
+});
+
 function signedIn(loadData) {
   loggedIn = 1;
   window.onbeforeunload = '';
@@ -616,6 +620,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
             let img = document.createElement("img");
             img.src = "icons/" + scoreNames[i] + ".svg";
             img.classList.add("scoreicon");
+            img.title = scoreNames[i] + " Score Info"
             img.addEventListener("click", function () {
               let genericmodal = document.getElementById("genericmodal");
               genericmodal.style.display = "block";
@@ -797,6 +802,7 @@ function addRowToTable(college) {
       up.classList.add("icon");
       up.classList.add("arrow");
       up.classList.add("material-icons");
+      up.title = "Move College Up";
       up.innerText = "expand_less";
       up.addEventListener("click", () => {
         for (let i = 1; i < colleges.length; i++) {
@@ -815,6 +821,7 @@ function addRowToTable(college) {
       down.classList.add("icon");
       down.classList.add("arrow");
       down.classList.add("material-icons");
+      down.title = "Move College Down"
       down.innerText = "expand_more";
       down.addEventListener("click", () => {
         for (let i = 0; i < colleges.length - 1; i++) {
@@ -834,6 +841,7 @@ function addRowToTable(college) {
       remove.classList.add("icon");
       remove.classList.add("material-icons");
       remove.classList.add("removeicon");
+      remove.title = "Remove College";
       remove.innerText = "delete";
       remove.addEventListener("click", () => {
         document.getElementById(college).remove();
