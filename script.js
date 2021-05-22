@@ -587,6 +587,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
       button.innerText = category;
       button.addEventListener("click", function () {
         if (!this.classList.contains("clicked")) {
+          this.classList.remove("doubleclicked");
           for (const buttons of document.getElementsByClassName("hidebutton")) {
             buttons.classList.remove("clicked");
           }
@@ -594,13 +595,23 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
           for (const cat of document.getElementsByClassName(category.replace(/\s+/g, ''))) {
             cat.style.display = "table-cell";
           }
-          [document.getElementsByTagName("th"), document.getElementsByTagName("td")].forEach(element => {
+          for (const butcat of document.getElementsByClassName("hidebutton")) {
+            if (butcat.id != "Actions" && butcat.id != "Info" && butcat.id != category.replace(/\s+/g, '') && !butcat.classList.contains("doubleclicked")) {
+              for (const cat of document.getElementsByClassName(butcat.id)) {
+                cat.style.display = "none";
+              }
+            }
+          }
+          /*[document.getElementsByTagName("th"), document.getElementsByTagName("td")].forEach(element => {
             for (const cat of element) {
               if (!cat.classList.contains("Actions") && !cat.classList.contains("Info") && !cat.classList.contains(category.replace(/\s+/g, ''))) {
                 cat.style.display = "none";
               }
             }
-          });
+          });*/
+        } else {
+          this.classList.remove("clicked");
+          this.classList.add("doubleclicked");
         }
       });
       document.body.insertBefore(button, document.getElementById("addcollege"));
@@ -862,7 +873,7 @@ function addRowToTable(college) {
       tr.appendChild(td);
     } else {
       let button = document.getElementById(category.replace(/\s+/g, ''))
-      let showhide = button != null && !button.classList.contains("clicked");
+      let showhide = button != null && !button.classList.contains("clicked") && !button.classList.contains("doubleclicked");
       for (const key in headers[category]) {
         let td = document.createElement("td");
         td.classList.add(category.replace(/\s+/g, ''));
@@ -1046,7 +1057,7 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
   /*Load Overrides, Subscores, and Notes*/
   for (const category in headers) {
     let button = document.getElementById(category.replace(/\s+/g, ''))
-    let showhide = button != null && !button.classList.contains("clicked");
+    let showhide = button != null && !button.classList.contains("clicked") && !button.classList.contains("doubleclicked");
     if (category in scores[0]) {
       let rows = document.getElementById("table").getElementsByTagName("tr");
       rows[0].getElementsByClassName(category.replace(/\s+/g, ''))[0].colSpan += 2;

@@ -131,6 +131,11 @@ option {
 .hidebutton.clicked {
   background-color: var(--light2);
 }
+.hidebutton.doubleclicked {
+  background-color: var(--light2);
+  border: 3px solid var(--light3);
+  padding: 3px 5px;
+}
 
 /*Add a college*/
 #addcollege {

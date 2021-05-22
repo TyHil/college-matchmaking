@@ -1,7 +1,5 @@
 # College Matchmaking
 The College Matchmaking website.
-## Documentation
-[JSON Documentation](https://docs.google.com/document/d/1eRywNeOZg6bmokPfr1w0Q88CdCXvMOuLnuUajdLSmAc/edit?usp=sharing)
 ## Todo
 - [x] Notifications for data saved, college already exists, and errors
 - [x] Changes not saved chrome pop up
@@ -30,14 +28,15 @@ The College Matchmaking website.
 - [ ] Maybe use: datatables.net but make a pretty table.
 - [ ] Make Change Range popup intuitive.
 - [x] Tab simulation
-  - [ ] Double click tabs to make permanent?
+  - [x] Double click tabs to make permanent.
 - [x] Show subscores.
 - [x] Category notes.
 - [ ] Add a welcome wizard (low priority) to put in:
   - [ ] userinfo
   - [ ] category weights
   - [ ] at least 3 schools
-- [ ] Sort columns in table
+- [ ] Sort columns in table (low priority).
+- [x] Bug report
 ### Stuff Cy can do
 - [ ] Include all data points in headers.json.
   - [x] Switch to Ellen's data.
