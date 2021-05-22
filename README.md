@@ -23,12 +23,22 @@ The College Matchmaking website.
   - [x] FLOAT, SAIL, and SWIM icons.
 - [x] Add match score descriptions.
 - [ ] Add category descriptions.
+  - [ ] Show links and desc not in popup
 - [x] Add header with an icon, name, and donation page.
   - [x] Donate button (through donorbox).
 - [x] Add inputs above the table for: SAT/ACT/none, want financial aid.
 - [ ] Maybe use: datatables.net but make a pretty table.
 - [ ] Make Change Range popup intuitive.
-### Todo (including stuff Cy can do)
+- [x] Tab simulation
+  - [ ] Double click tabs to make permanent?
+- [x] Show subscores.
+- [x] Category notes.
+- [ ] Add a welcome wizard (low priority) to put in:
+  - [ ] userinfo
+  - [ ] category weights
+  - [ ] at least 3 schools
+- [ ] Sort columns in table
+### Stuff Cy can do
 - [ ] Include all data points in headers.json.
   - [x] Switch to Ellen's data.
 - [ ] Refine match scores (stop using dummy ones).
