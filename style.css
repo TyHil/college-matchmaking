@@ -439,15 +439,15 @@ th, td {
 }*/
 
 /*Override*/
-.override input[type=checkbox] {
+.overcheckbox {
   display: inline;
 }
-.override p {
+.overlabel {
   display: block;
   margin: 0 5px;
   float: right;
 }
-.override .slider {
+.overslider {
   display: block; 
   width: 60px;
 }

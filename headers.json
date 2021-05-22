@@ -19,6 +19,5 @@
   "Testing": {
     "25th Percentile ACT": ["ACT-Composite25thPercentile", ""],
     "75th Percentile ACT": ["ACT-Composite75thPercentile", ""]
-  },
-  "Notes": ["Notes", ""]
+  }
 }
