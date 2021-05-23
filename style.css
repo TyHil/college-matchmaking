@@ -175,8 +175,11 @@ option {
 #suggestions div:hover {
   background-color: var(--light2);
 }
-#suggestions div.active {
-  background: linear-gradient(90deg, #61cae3, #3489c9);
+/*#suggestions:not(:hover) > #suggestions div {
+  background-color: #418242;
+}*/
+#suggestions div.currentFocus {
+  background: var(--light2);
 }
 #suggestions div p {
   margin: 0;
@@ -410,13 +413,13 @@ table th p {
 .modal .buttons, .popup a {
   color: var(--dark0);
   text-align: center;
-  padding: 5px;
   text-decoration: none;
   font-size: 16px;
   line-height: 20px;
   border-radius: 4px;
-  margin: 2px 0;
   cursor: pointer;
+  padding: 5px;
+  margin: 2px 0;
 }
 .modal .buttons {
   background-color: var(--light1);
@@ -424,12 +427,12 @@ table th p {
 .modal .buttons:hover, .popup a:hover {
   background-color: var(--light2);
 }
-.modal .mainbtn, .popup .mainbtn {
+.modal .mainbtn, .popup .mainbtn, #reset:hover, #deleteaccnt:hover {
   color: white;
-  background: linear-gradient(90deg, #d80000, #eb0000);
+  background-color: #bb000c;
 }
 .modal .mainbtn:hover, .popup .mainbtn:hover {
-  background: linear-gradient(90deg, #eb0000, #f00);
+  background-color: #d81a1a;
 }
 
 /*User actions*/
@@ -439,10 +442,6 @@ table th p {
   flex-direction: column;
   align-items: center;
 }
-#reset:hover, #deleteaccnt:hover {
-  background: linear-gradient(90deg, #eb0000, #f00);
-  color: white;
-}
 .editicon {
   font-size: 12px;
   margin-right: 10px;
@@ -450,7 +449,8 @@ table th p {
 }
 #useractions a {
   width: 100%;
-  padding: 5px 0;
+  padding: 7px 0;
+  margin: 0;
 }
 
 /*Sliders*/
@@ -520,7 +520,7 @@ table th p {
   height: 0;
 }
 .dropdown {
-  margin: 5px 10px;
+  margin: 5px 0;
 }
 .barbox {
   width: fit-content;
@@ -570,7 +570,6 @@ table th p {
   background-color: var(--light2);
   border-radius: 8px;
   padding: 5px;
-  /*box-shadow: 0 0 5px grey;*/
 }
 @keyframes slidein {
   from { transform: translateX(120%); }
