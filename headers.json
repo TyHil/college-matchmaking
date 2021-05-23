@@ -1,15 +1,22 @@
 {
-  "Actions": ["Actions", ""],
+  "Actions": "Actions",
   "Info": {
     "Name": ["Name", "String"]
   },
   "Match Scores": {
-    "FLOAT": ["FLOAT", ""],
-    "SAIL": ["SAIL", ""],
-    "SWIM": ["SWIM", ""]
+    "FLOAT": "FLOAT",
+    "SAIL": "SAIL",
+    "SWIM": "SWIM"
   },
   "Size": {
-    "Undergraduate Population": ["NoofUgrads", "Integer"]
+    "Undergraduate Population": ["NoofUgrads", "Integer"],
+    "Size": "."
+  },
+  "Location": {
+    "City": "Location",
+    "Zip Code": "ZipCode",
+    "Setting": "Setting",
+    "Temperature": ["average_temp_degreesF", "Degree"]
   },
   "Diversity": {
     "White Students": ["PercentUndergrads_WHITE", "%"],
@@ -17,7 +24,7 @@
     "Hispanic Students": ["PercentUndergrads_HISPANIC", "%"]
   },
   "Testing": {
-    "25th Percentile ACT": ["ACT-Composite25thPercentile", ""],
-    "75th Percentile ACT": ["ACT-Composite75thPercentile", ""]
+    "25th Percentile ACT": "ACT-Composite25thPercentile",
+    "75th Percentile ACT": "ACT-Composite75thPercentile"
   }
 }

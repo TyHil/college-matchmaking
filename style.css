@@ -26,6 +26,9 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.28);
 }
+.modal {
+  background-color: rgba(0, 0, 0, 0.5);
+}
 @media (prefers-color-scheme: dark) {
   :root {
     --light0: #000;
@@ -44,6 +47,9 @@
   }
   ::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.28);
+  }
+  .modal {
+    background-color: rgba(255, 255, 255, 0.1);
   }
 }
 
@@ -160,6 +166,7 @@ option {
   right: 0;
 }
 #suggestions div {
+  width: 200px;
   padding: 10px;
   cursor: pointer;
   background-color: var(--light0);
@@ -208,17 +215,17 @@ th, td {
   width: 40px;
   cursor: pointer;
 }
-#table th h2 {
+table th h2 {
   font-size: 20px;
   line-height: 20px;
   margin: 0;
 }
-#table th h3 {
+table th h3 {
   font-size: 14px;
   line-height: 14px;
   margin: 0;
 }
-#table th p {
+table th p {
   font-size: 10px;
   line-height: 16px;
   margin: 0;
@@ -302,8 +309,7 @@ th, td {
   left: 0; 
   top: 0;
   width: 100%;
-  height: 100%; 
-  background-color: rgba(0, 0, 0, 0.5);
+  height: 100%;
   animation: fadein 0.4s;
   backdrop-filter: blur(1px);
 }
@@ -352,7 +358,28 @@ th, td {
   margin: 0;
 }
 .modal .buttonbox {
+  margin-top: 10px;
   float: right;
+}
+
+/*Welcome Modal*/
+#welcomeweights {
+  margin: 0 auto;
+}
+#welcomecolleges div {
+  background-color: var(--light1);
+  border-radius: 4px;
+  padding: 2px 8px;
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  margin-bottom: 10px;
+}
+#welcomecolleges p {
+  margin: 0;
+}
+#welcomecolleges span {
+  margin-right: 8px;
 }
 
 /*Pop Up*/
@@ -390,6 +417,9 @@ th, td {
   border-radius: 4px;
   margin: 2px 0;
   cursor: pointer;
+}
+.modal .buttons {
+  background-color: var(--light1);
 }
 .modal .buttons:hover, .popup a:hover {
   background-color: var(--light2);

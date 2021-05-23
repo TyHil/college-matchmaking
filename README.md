@@ -20,8 +20,8 @@ The College Matchmaking website.
 - [x] Make website icon.
   - [x] FLOAT, SAIL, and SWIM icons.
 - [x] Add match score descriptions.
-- [ ] Add category descriptions.
-  - [ ] Show links and desc not in popup
+- [ ] **Add category descriptions.**
+  - [ ] **Show links and desc not in popup.**
 - [x] Add header with an icon, name, and donation page.
   - [x] Donate button (through donorbox).
 - [x] Add inputs above the table for: SAT/ACT/none, want financial aid.
@@ -31,14 +31,14 @@ The College Matchmaking website.
   - [x] Double click tabs to make permanent.
 - [x] Show subscores.
 - [x] Category notes.
-- [ ] Add a welcome wizard (low priority) to put in:
-  - [ ] userinfo
-  - [ ] category weights
-  - [ ] at least 3 schools
+- [x] Add a welcome wizard to put in:
+  - [x] userinfo
+  - [x] category weights
+  - [x] schools
 - [ ] Sort columns in table (low priority).
 - [x] Bug report
 ### Stuff Cy can do
-- [ ] Include all data points in headers.json.
+- [ ] **Include all data points in headers.json.**
   - [x] Switch to Ellen's data.
 - [ ] Refine match scores (stop using dummy ones).
 - [ ] Add info to intro popup.

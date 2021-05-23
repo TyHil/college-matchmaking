@@ -16,7 +16,7 @@ firebase.analytics();
 const databaseRef = firebase.database().ref();
 let ui = new firebaseui.auth.AuthUI(firebase.auth());
 
-document.getElementById("bug").addEventListener("click", function() {
+document.getElementById("bug").addEventListener("click", function () {
   window.open("https://docs.google.com/forms/d/e/1FAIpQLScEzG3d7yneyI6youXBKUULJeV5sv_6Znjw6CJvkHUF5tPy9A/viewform?usp=sf_link", "_blank");
 });
 
@@ -526,11 +526,88 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
   if (user) {
     signedIn(1);
     unsubscribe();
-  } else {
+  } else {//Welcome Modal
     let genericmodal = document.getElementById("genericmodal");
     genericmodal.style.display = "block";
-    genericmodal.getElementsByTagName("h1")[0].innerText = "Welcome to College Matchmaking!";
-    genericmodal.getElementsByTagName("p")[0].innerText = "Put a bunch of intro material here";
+    const observer = new MutationObserver(function (list) {
+      if (genericmodal.style.display == "none") {
+        genericmodal.getElementsByClassName("buttonbox")[0].style.display = "none";
+        document.body.insertBefore(document.getElementById("userinfo"), document.getElementsByClassName("hidebutton")[0]);
+        if (document.getElementById("welcomeweights")) {
+          document.getElementById("welcomeweights").remove();
+        }
+        setSliders();
+        document.getElementById("suggestions").style.position = "absolute";
+        document.body.insertBefore(document.getElementById("addcollege"), document.getElementById("tableholder"));
+        if (document.getElementById("welcomecolleges")) {
+          document.getElementById("welcomecolleges").remove();
+        }
+        observer.disconnect();
+      }
+    });
+    observer.observe(genericmodal, { attributes: true, attributeFilter: ['style'] });
+    genericmodal.getElementsByClassName("buttonbox")[0].getElementsByClassName("buttons")[0].onclick = function () {
+      let content = genericmodal.getElementsByClassName("content")[0];
+      let buttonbox = genericmodal.getElementsByClassName("buttonbox")[0];
+      genericmodal.getElementsByTagName("h1")[0].innerText = "Personal Info";
+      genericmodal.getElementsByTagName("p")[0].innerText = "We'll use this for acceptance calulations.";
+      content.insertBefore(document.getElementById("userinfo"), buttonbox);//userinfo
+      this.innerText = "Next";
+      this.onclick = function () {
+        document.body.insertBefore(document.getElementById("userinfo"), document.getElementsByClassName("hidebutton")[0]);
+        genericmodal.getElementsByTagName("h1")[0].innerText = "Category Weights";
+        genericmodal.getElementsByTagName("p")[0].innerText = "Use the sliders to choose how important each category is to you. We'll use this to calculte your personalized match scores.";
+        let welcometable = document.createElement("table");//weights
+        welcometable.id = "welcomeweights";
+        for (const category in scores[0]) {
+          let tr = document.createElement("tr");
+          let th1 = document.createElement("th");
+          th1.innerText = category;
+          tr.appendChild(th1);
+          let th2 = document.createElement("th");
+          let sliderDiv = createSlider(scores[0][category][0]);
+          sliderDiv.getElementsByClassName("slider")[0].addEventListener("change", function () {
+            scores[0][category][0] = parseInt(this.value);
+            for (const college of colleges) {
+              updateRowMatchScores(college.ID);
+            }
+          });
+          th2.appendChild(sliderDiv);
+          tr.appendChild(th2);
+          welcometable.appendChild(tr);
+        }
+        content.insertBefore(welcometable, buttonbox);
+        this.onclick = function () {
+          document.getElementById("textinput").removeEventListener("click", searchSetup, { once: true });
+          searchSetup();
+          if (document.getElementById("welcomeweights")) {
+            document.getElementById("welcomeweights").remove();
+          }
+          let welcomecolleges = document.createElement("div");
+          welcomecolleges.id = "welcomecolleges";
+          content.insertBefore(welcomecolleges, buttonbox);
+          for (const college of colleges) {
+            document.getElementById(college.ID).remove();
+          }
+          colleges = [];
+          collegesData = {};
+          genericmodal.getElementsByTagName("h1")[0].innerText = "Colleges";
+          genericmodal.getElementsByTagName("p")[0].innerText = "Add some colleges you're considering attending.";
+          this.innerText = "Done";
+          document.getElementById("suggestions").style.position = "relative";//colleges
+          content.insertBefore(document.getElementById("addcollege"), buttonbox);
+          this.onclick = function () {
+            content.classList.add("out");
+            genericmodal.classList.add("out");
+            content.addEventListener("animationend", function () {
+              genericmodal.style.display = "none";
+              content.classList.remove("out");
+              genericmodal.classList.remove("out");
+            }, { once: true });
+          }
+        }
+      }
+    }
   }
 });
 
@@ -580,7 +657,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
     if (category != "Actions" && category != "Info") {
       let button = document.createElement("a");
       button.classList.add("hidebutton");
-      if (category == "Size") {
+      if (category == "Match Scores") {
         button.classList.add("clicked");
       }
       button.id = category.replace(/\s+/g, '');
@@ -602,13 +679,6 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
               }
             }
           }
-          /*[document.getElementsByTagName("th"), document.getElementsByTagName("td")].forEach(element => {
-            for (const cat of element) {
-              if (!cat.classList.contains("Actions") && !cat.classList.contains("Info") && !cat.classList.contains(category.replace(/\s+/g, ''))) {
-                cat.style.display = "none";
-              }
-            }
-          });*/
         } else {
           this.classList.remove("clicked");
           this.classList.add("doubleclicked");
@@ -620,7 +690,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
     let h2 = document.createElement("h2");
     h2.innerText = category;
     categoryth.appendChild(h2);
-    if (Array.isArray(headers[category])) {
+    if (typeof headers[category] == "string") {
       categoryth.rowSpan = 2;
     } else {
       let length = 0;
@@ -645,8 +715,8 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
         h3.innerText = key;
         datath.appendChild(h3);
         datath.classList.add(category.replace(/\s+/g, ''));
-        datath.classList.add(headers[category][key][0]);
-        if (category != "Actions" && category != "Info" && category != "Size") {
+        datath.classList.add(Array.isArray(headers[category][key]) ? headers[category][key][0] : headers[category][key]);
+        if (category != "Actions" && category != "Info" && category != "Match Scores") {
           datath.style.display = "none";
         }
         datatr.appendChild(datath);
@@ -655,7 +725,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
       categoryth.colSpan = length;
     }
     categoryth.classList.add(category.replace(/\s+/g, ''));
-    if (category != "Actions" && category != "Info" && category != "Size") {
+    if (category != "Actions" && category != "Info" && category != "Match Scores") {
       categoryth.style.display = "none";
     }
     categorytr.appendChild(categoryth);
@@ -752,6 +822,8 @@ function updateRowMatchScores(college) {
           subscore.innerText = Math.round(scoreCat / weightSumCat * 5 * weightCat * 100) / 100;
           subscore.style.backgroundColor = "var(--high" + (Math.round(scoreCat / weightSumCat * 5) - 1) + ")";
         }
+      } else if (category in scores[0]) {
+        document.getElementById(college).getElementsByClassName(category.replace(/\s+/g, '') + " subscore")[0].innerText = "No Data";
       }
       weightSumTot += weightCat;
     }
@@ -770,24 +842,50 @@ function updateRowMatchScores(college) {
 function updateRowData(college) {
   loadFirebaseJSON("/colleges/" + college).then(response => {
     collegesData[college] = response;
+    if (document.getElementById("welcomecolleges")) {//add college to the welcome list if open
+      let div = document.createElement("div");
+      let x = document.createElement("span");
+      x.classList.add("close");
+      x.innerHTML = "&times;";
+      x.addEventListener("click", function() {
+        div.remove();
+        document.getElementById(college).remove();
+        for (let i = 0; i < colleges.length; i++) {
+          if (colleges[i].ID == college) {
+            colleges.splice(i, 1);
+          }
+        }
+      });
+      div.appendChild(x);
+      let p = document.createElement("p");
+      p.innerText = collegesData[college].Name;
+      div.appendChild(p);
+      document.getElementById("welcomecolleges").appendChild(div);
+    }
     for (const category in headers) {//update data in table
       if (category != "Actions") {
         for (const key in headers[category]) {
           let fill = "No Data";
-          if (headers[category][key][0] in response) {//format numbers
-            fill = response[headers[category][key][0]];
-            if (headers[category][key][1] == "Integer" || headers[category][key][1] == "$") {
-              fill = fill.toLocaleString();
-              if (headers[category][key][1] == "$") {
-                fill = "$" + fill;
+          if (Array.isArray(headers[category][key])) {
+            if (headers[category][key][0] in response) {//format numbers
+              fill = response[headers[category][key][0]];
+              if (headers[category][key][1] == "Integer" || headers[category][key][1] == "$") {
+                fill = fill.toLocaleString();
+                if (headers[category][key][1] == "$") {
+                  fill = "$" + fill;
+                }
+              } else if (headers[category][key][1] == "%") {
+                fill = Math.round(fill * 10000) / 100 + "%";
+              } else if (headers[category][key][1] == "Degree") {
+                fill = Math.round(fill * 100) / 100 + "°F";
               }
-            } else if (headers[category][key][1] == "%") {
-              fill = Math.round(fill * 10000) / 100 + "%";
-            } else if (headers[category][key][1] == "Degree") {
-              fill = Math.round(fill * 100) / 100 + "°F";
+            }
+          } else {
+            if (headers[category][key] in response) {
+              fill = response[headers[category][key]];
             }
           }
-          document.getElementById(college).getElementsByClassName(headers[category][key][0])[0].innerText = fill;
+          document.getElementById(college).getElementsByClassName(Array.isArray(headers[category][key]) ? headers[category][key][0] : headers[category][key])[0].innerText = fill;
         }
       }
     }
@@ -857,7 +955,7 @@ function addRowToTable(college) {
       remove.addEventListener("click", () => {
         document.getElementById(college).remove();
         createToast(collegesData[getFromColleges(college).ID].Name + " Removed", function () {
-          colleges.push({ "ID": college});
+          colleges.push({ "ID": college });
           addRowToTable(college);
           writeUserData(1);
         });
@@ -877,8 +975,8 @@ function addRowToTable(college) {
       for (const key in headers[category]) {
         let td = document.createElement("td");
         td.classList.add(category.replace(/\s+/g, ''));
-        td.classList.add(headers[category][key][0]);
-        if (category in getFromColleges(college) && "Override" in getFromColleges(college)[category] && headers[category][key][0] in scores[0][category][1]) {
+        td.classList.add(Array.isArray(headers[category][key]) ? headers[category][key][0] : headers[category][key]);
+        if (category in getFromColleges(college) && "Override" in getFromColleges(college)[category] && (Array.isArray(headers[category][key]) ? headers[category][key][0] : headers[category][key]) in scores[0][category][1]) {
           td.style.backgroundColor = "var(--high" + (getFromColleges(college)[category].Override - 1) + ")";
         }
         if (showhide) {
@@ -979,7 +1077,7 @@ function addRowToTable(college) {
           textarea.value = getFromColleges(college)[category].Notes;
         }
         textarea.addEventListener("blur", function () {
-          if (this.value == "") {
+          if (this.value == "" && category in getFromColleges(college)) {
             delete getFromColleges(college)[category].Notes;
           } else {
             if (!(category in getFromColleges(college))) {
@@ -1017,7 +1115,7 @@ function setSliders() {
   }
 }
 
-function createSlider(nameClass, val) {
+function createSlider(val) {
   let div = document.createElement("div");
   div.classList.add("scorecontrol");
   let weight = document.createElement("p");
@@ -1035,8 +1133,7 @@ function createSlider(nameClass, val) {
   });
   div.appendChild(range);
   div.style.width = "100px";
-  document.getElementsByClassName(nameClass)[0].appendChild(div);
-  return range;
+  return div;
 }
 
 function datachangePos(datachange, plus) {
@@ -1101,8 +1198,9 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
     addRowToTable(college.ID);
   }
   for (const category in scores[0]) {
-    let catSlider = createSlider(category.replace(/\s+/g, ''), scores[0][category][0]);
-    catSlider.addEventListener("change", function () {
+    let catSliderDiv = createSlider(scores[0][category][0]);
+    document.getElementsByClassName(category.replace(/\s+/g, ''))[0].appendChild(catSliderDiv);
+    catSliderDiv.getElementsByClassName("slider")[0].addEventListener("change", function () {
       scores[0][category][0] = parseInt(this.value);
       for (const college of colleges) {
         updateRowMatchScores(college.ID);
@@ -1110,7 +1208,9 @@ Promise.all(allLoaded).then(function () {//when headers, scores, and colleges ar
       writeUserData(1);
     });
     for (const key in scores[0][category][1]) {
-      let range = createSlider(key, scores[0][category][1][key][0]);
+      let sliderDiv = createSlider(scores[0][category][1][key][0]);
+      document.getElementsByClassName(key)[0].appendChild(sliderDiv);
+      let range = sliderDiv.getElementsByClassName("slider")[0];
       range.addEventListener("change", function () {
         scores[0][category][1][key][0] = parseInt(this.value);
         for (const college of colleges) {
@@ -1444,8 +1544,11 @@ function JaroWrinker(s1, s2) {
 }
 
 let search = [];
-document.getElementById("textinput").addEventListener("click", function () {
+function searchSetup() {
+  let textarea = document.getElementById("textinput");
+  textarea.placeholder = "Loading college search data...";
   loadFirebaseJSON("/search").then(response => {
+    textarea.placeholder = "Add a college";
     for (const key in response) {
       if (Array.isArray(response[key])) {
         for (let i = 0; i < response[key].length; i++) {
@@ -1459,8 +1562,8 @@ document.getElementById("textinput").addEventListener("click", function () {
         search.push([key, response[key]]);
       }
     }
-    let suggestions = document.getElementById("suggestions");
     let currentFocus;
+    let suggestions = document.getElementById("suggestions");
     for (let i = 0; i < 10; i++) {
       let div = document.createElement("div");
       div.appendChild(document.createElement("p"));
@@ -1470,8 +1573,8 @@ document.getElementById("textinput").addEventListener("click", function () {
       suggestions.appendChild(div);
       div.addEventListener("click", function () {
         let itemVal = this.getElementsByTagName("input")[0].value;
-        if (document.getElementById(itemVal) == null) {
-          colleges.push({ "ID": itemVal});
+        if (getFromColleges(itemVal) == undefined) {
+          colleges.push({ "ID": itemVal });
           addRowToTable(itemVal);
           writeUserData(1);
           suggestions.style.display = "none";
@@ -1481,11 +1584,11 @@ document.getElementById("textinput").addEventListener("click", function () {
             removeActive.classList.remove("active");
           }
         } else {
-          createToast("College already exists!");
+          createToast("College already on your list!");
         }
       });
     }
-    document.getElementById("textinput").addEventListener("input", function (event) {//text box suggestion generator
+    textarea.addEventListener("input", function (event) {//text box suggestion generator
       if (this.value != "") {
         suggestions.style.display = "block";
         let results = JSON.parse(JSON.stringify(search));
@@ -1510,9 +1613,11 @@ document.getElementById("textinput").addEventListener("click", function () {
           items[i].getElementsByTagName("p")[0].innerText = results[i][results[i].length - 2];
           items[i].getElementsByTagName("input")[0].value = results[i][0];
         }
+      } else {
+        suggestions.style.display = "none";
       }
     });
-    this.addEventListener("keydown", function (e) {
+    textarea.addEventListener("keydown", function (e) {
       let items = document.getElementById("suggestions").getElementsByTagName("div");
       if (e.keyCode == 40) {//Down
         currentFocus = (currentFocus + 1) % 10;
@@ -1531,8 +1636,8 @@ document.getElementById("textinput").addEventListener("click", function () {
         }
       } else if (event.keyCode === 13 && currentFocus != -1) {
         let itemVal = suggestions.getElementsByTagName("div")[currentFocus].getElementsByTagName("input")[0].value;
-        if (document.getElementById(itemVal) == null) {
-          colleges.push({ "ID": itemVal});
+        if (getFromColleges(itemVal) == undefined) {
+          colleges.push({ "ID": itemVal });
           addRowToTable(itemVal);
           writeUserData(1);
           suggestions.style.display = "none";
@@ -1542,12 +1647,12 @@ document.getElementById("textinput").addEventListener("click", function () {
             removeActive.classList.remove("active");
           }
         } else {
-          createToast("College already exists!");
+          createToast("College already on your list!");
         }
       }
     });
-    this.addEventListener("focusin", function () {
-      if (this.value != "") {
+    textarea.addEventListener("focusin", function () {
+      if (this.value != "" && this.value != undefined) {
         suggestions.style.display = "block";
       }
     });
@@ -1555,4 +1660,5 @@ document.getElementById("textinput").addEventListener("click", function () {
     createToast("Load Search Data Failed!");
     console.error("Load Search Data Failed!", error);
   });
-}, { once: true });
+}
+document.getElementById("textinput").addEventListener("click", searchSetup, { once: true });
