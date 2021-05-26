@@ -1,5 +1,11 @@
 # College Matchmaking
 The College Matchmaking website.
+## Dependencies
+- [Firebase](https://firebase.google.com/)
+  - [Realtime Database](https://firebase.google.com/docs/database)
+  - [Authentication](https://firebase.google.com/docs/auth)
+- [Google Icons](https://fonts.google.com/icons)
+- [DonorBox](https://donorbox.org/)
 ## Todo
 - [x] Notifications for data saved, college already exists, and errors
 - [x] Changes not saved chrome pop up
@@ -42,5 +48,5 @@ The College Matchmaking website.
   - [x] Switch to Ellen's data.
 - [ ] Refine match scores (stop using dummy ones).
 - [ ] Add info to intro popup.
-- [ ] Terms of Service.
+- [x] Terms of Service.
 - [x] Privacy Policy.
