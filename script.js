@@ -304,8 +304,8 @@ let uiConfig = {
     firebase.auth.EmailAuthProvider.PROVIDER_ID,
     firebase.auth.GoogleAuthProvider.PROVIDER_ID
   ],
-  tosUrl: './legal/termsofservice.txt',//Terms of service url
-  privacyPolicyUrl: './legal/privacypolicy.txt'//Privacy policy url
+  tosUrl: './legal/termsofservice.html',//Terms of service url
+  privacyPolicyUrl: './legal/privacypolicy.html'//Privacy policy url
 };
 
 function createToast(text, callback = 0) {
