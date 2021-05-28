@@ -508,7 +508,11 @@ document.getElementById("testscore").getElementsByTagName("select")[0].addEventL
 });
 document.getElementById("testscore").getElementsByTagName("input")[0].addEventListener("change", function () {
   this.value = Math.max(Math.min(this.value, this.max), this.min);
-  userinfo[this.parentElement.getElementsByTagName("select")[0].value] = parseInt(this.value);
+  let testType = this.parentElement.getElementsByTagName("select")[0].value;
+  if (testType == "sat") {
+    this.value = Math.round(this.value / 10) * 10;
+  }
+  userinfo[testType] = parseInt(this.value);
   writeUserData(1);
 });
 document.getElementById("gpa").getElementsByTagName("input")[0].addEventListener("change", function () {
@@ -808,7 +812,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
           let isPercent = (headers[category][Object.keys(headers[category]).find(keyh => headers[category][keyh][0] == key)][1] == "%");
           for (let i = 0; i < 4; i++) {
             let rangeVal = document.createElement("input");
-            rangeVal.type = "number";
+            rangeVal.type = "tel";
             rangeVal.step = "any";
             rangeVal.size = "8";
             rangeVal.classList.add("rangeval");

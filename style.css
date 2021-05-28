@@ -70,7 +70,7 @@ body {
 }
 
 /*Inputs*/
-input[type=text], input[type=number], select, textarea {
+input[type=text], input[type=tel], select, textarea {
   border-radius: 4px;
   border: none;
   background-color: var(--light2);
