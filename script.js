@@ -812,7 +812,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
           let isPercent = (headers[category][Object.keys(headers[category]).find(keyh => headers[category][keyh][0] == key)][1] == "%");
           for (let i = 0; i < 4; i++) {
             let rangeVal = document.createElement("input");
-            rangeVal.type = "tel";
+            rangeVal.type = "number";
             rangeVal.step = "any";
             rangeVal.size = "8";
             rangeVal.classList.add("rangeval");
