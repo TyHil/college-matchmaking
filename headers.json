@@ -36,7 +36,7 @@
   "Cost": {
     "In-state tuition and fees":"In-statetuitionandfees",
     "Out-of-state tuition and fees":"Out-of-statetuitionandfees",
-    "Cost of Attendance":"Averagecostofattendance","Aid Calculator":["AidCalculator","link"],"Income-based Net Price":"Averagenetpricefor0-30,000familyincome","Percent of need met": ["avg_pc_need_met","%"],"Average need-based award":"avg_need_based_award","Percent of students receiving merit aid":["pc_students_receiving_merit_aid","%"],"Average merit award":"avg_merit_aid_award","Credit for AP Exams?":"ap_exam_credit","Percent with Loans":["percent_graduating_with_loans","%"],"Median Debt":"MedianDebt","Median Salary after 10 years":"MedianSalaryafter10yrs"
+    "Cost of Attendance":"Averagecostofattendance","Aid Calculator":["AidCalculator","link"],"Income-based Net Price":["Averagenetpriceforfamilyincome","$"],"Percent of need met": ["avg_pc_need_met","%"],"Average need-based award":"avg_need_based_award","Percent of students receiving merit aid":["pc_students_receiving_merit_aid","%"],"Average merit award":"avg_merit_aid_award","Credit for AP Exams?":"ap_exam_credit","Percent with Loans":["percent_graduating_with_loans","%"],"Median Debt":"MedianDebt","Median Salary after 10 years":"MedianSalaryafter10yrs"
   },
   "Campus Life": {
     "Freshmen in on-campus housing":["PercentFreshmanHousing","%"]
@@ -54,6 +54,6 @@
   "Testing": {
     "25th Percentile ACT": "ACT-Composite25thPercentile",
     "75th Percentile ACT": "ACT-Composite75thPercentile",
-    "SAT Verbal 25th Percentile": "SAT-Verbal25thPercentile","SAT Verbal 75th Percentile": "SAT-Verbal75thPercentile","SAT Math 25th Percentile": "SAT-Math25thPercentile","SAT Math 75th Percentile": "SAT-Math75thPercentile","SAT Average":"SATAverage"
+    "25th Percentile SAT Verbal": "SAT-Verbal25thPercentile","75th Percentile SAT Verbal": "SAT-Verbal75thPercentile","25th Percentile SAT Math": "SAT-Math25thPercentile","75th Percentile SAT Math": "SAT-Math75thPercentile","SAT Average":"SATAverage"
   }
 }
