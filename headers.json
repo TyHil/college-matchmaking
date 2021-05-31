@@ -20,11 +20,40 @@
   },
   "Diversity": {
     "White Students": ["PercentUndergrads_WHITE", "%"],
-    "Black Students": ["PercentUndergrads_BLACK", "%"],
-    "Hispanic Students": ["PercentUndergrads_HISPANIC", "%"]
+    "Historically Underrepresented Students": ["PercentHistoricallyUnderrepresented", "%"],
+    "Asian Students":["PercentUndergrads_ASIAN","%"],
+    "Veteran Students": ["VETERAN","%"],
+    "Non-resident/International Students": ["PercentUndergrads_Non-residentAliens","%"],
+    "First-Gen Students": ["FIRST_GEN","%"],
+    "Students over 25": ["Percentofugradsoverage25","%"],
+    "Students with need-based aid": ["pc_students_with_need","%"]
+  },
+  "Ranking": {
+    "Niche Rank": "NicheRank",
+    "Forbes Rank": "FORBESRANK","Wall St. Journal Rank":"WALLSTJOURNALRANK",
+    "College Consensus Rank": "college_consensus_ranking"
+  },
+  "Cost": {
+    "In-state tuition and fees":"In-statetuitionandfees",
+    "Out-of-state tuition and fees":"Out-of-statetuitionandfees",
+    "Cost of Attendance":"Averagecostofattendance","Aid Calculator":["AidCalculator","link"],"Income-based Net Price":"Averagenetpricefor0-30,000familyincome","Percent of need met": ["avg_pc_need_met","%"],"Average need-based award":"avg_need_based_award","Percent of students receiving merit aid":["pc_students_receiving_merit_aid","%"],"Average merit award":"avg_merit_aid_award","Credit for AP Exams?":"ap_exam_credit","Percent with Loans":["percent_graduating_with_loans","%"],"Median Debt":"MedianDebt","Median Salary after 10 years":"MedianSalaryafter10yrs"
+  },
+  "Campus Life": {
+    "Freshmen in on-campus housing":["PercentFreshmanHousing","%"]
+  },
+  "Majors":{
+
+  },
+  "Teaching/Resources":{
+    "Percent of classes smaller than 20 students":["Percentageofclassessmallerthan20","%"],"Number of students to one faculty member":"student_to_faculty_ratio","Average Faculty Salary":"Averagefacultysalary","Percent of faculty who are full-time":["Proportionoffacultythatisfull-time","%"],"$ spent on instruction per student":"Instructionalexpendituresperfull-timeequivalentstudent","Percent of net tuition revenue spent on instruction":["Percentoftuitionspentoninstructionalexpendituresperstudent","%"],"Endowment per student":"endowment_per_student"
+  },
+  "Programs":{"Co-op Program":["coop","boolean"],"Honors Program":"honors_college_program","Honors Program Link":["honors_url","link"],"Sports":"athletic_division_name"
+  },
+  "Retention":{"Freshmen Retention":["FreshmenRetentionRate","%"],"Graduation Rate-4 years":["4yr_graduation_rate","%"],"Graduation Rate-6 years":["6yr-completionrate","%"],"Percent admitted who enroll":["Percentofadmittedstudentswhoenroll","%"]
   },
   "Testing": {
     "25th Percentile ACT": "ACT-Composite25thPercentile",
-    "75th Percentile ACT": "ACT-Composite75thPercentile"
+    "75th Percentile ACT": "ACT-Composite75thPercentile",
+    "SAT Verbal 25th Percentile": "SAT-Verbal25thPercentile","SAT Verbal 75th Percentile": "SAT-Verbal75thPercentile","SAT Math 25th Percentile": "SAT-Math25thPercentile","SAT Math 75th Percentile": "SAT-Math75thPercentile","SAT Average":"SATAverage"
   }
 }
