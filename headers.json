@@ -54,6 +54,19 @@
   "Testing": {
     "25th Percentile ACT": "ACT-Composite25thPercentile",
     "75th Percentile ACT": "ACT-Composite75thPercentile",
-    "25th Percentile SAT Verbal": "SAT-Verbal25thPercentile","75th Percentile SAT Verbal": "SAT-Verbal75thPercentile","25th Percentile SAT Math": "SAT-Math25thPercentile","75th Percentile SAT Math": "SAT-Math75thPercentile","SAT Average":"SATAverage","ACT Average":"ACT-CompositeMedian","Average GPA":"avg_freshmen_gpa","Test Scores":"TestScores","GPA":"reqt_hs_gpa","SAT-Superscore?":"sat_score_policy","Test Policy":"test_policy","Extracurriculars":"Extracurriculars",/*GPA or Test scores more important?*/"Rigor of HS Transcript":"HSRigor"
+    "25th Percentile SAT Verbal": "SAT-Verbal25thPercentile",
+    "75th Percentile SAT Verbal": "SAT-Verbal75thPercentile",
+    "25th Percentile SAT Math": "SAT-Math25thPercentile",
+    "75th Percentile SAT Math": "SAT-Math75thPercentile",
+    "SAT Average":"SATAverage",
+    "ACT Average":"ACT-CompositeMedian",
+    "Average GPA":"avg_freshmen_gpa",
+    "Test Scores":"TestScores",
+    "GPA":"reqt_hs_gpa",
+    "SAT-Superscore?":"sat_score_policy",
+    "Test Policy":"test_policy",
+    "Extracurriculars":"Extracurriculars",
+    "Rigor of HS Transcript":"HSRigor",
+    "Scatterplot Link":"NicheScatterplot"
   }
 }
