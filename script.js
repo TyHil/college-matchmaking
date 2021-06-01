@@ -246,7 +246,6 @@ function signedIn(loadData) {
     let userDataLoaded = loadFirebaseJSON("/users/" + firebase.auth().currentUser.uid).then(response => {
       colleges = response.colleges;
       scores[0] = response[scoreNames[0]];
-      ///setSliders();
       userinfo = response.userinfo;
       document.getElementById("testscore").getElementsByTagName("select")[0].value = userinfo.test;
       let input = document.getElementById("testscore").getElementsByTagName("input")[0];
@@ -526,6 +525,15 @@ document.getElementById("needaid").getElementsByTagName("input")[0].addEventList
 });
 document.getElementById("income").getElementsByTagName("select")[0].addEventListener("change", function () {
   userinfo.income = this.value;
+  for (const college of colleges) {
+    let cost;
+    if (this.value == "none") {
+      cost = "Income Not Specified";
+    } else {
+      cost = "$" + collegesData[college.ID]["Averagenetpricefor" + this.value + "familyincome"].toLocaleString();
+    }
+    document.getElementById(college.ID).getElementsByClassName("Averagenetpriceforfamilyincome")[0].innerText = cost;
+  }
   writeUserData(1);
 });
 
@@ -984,7 +992,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
     }
     collegesData = {};
     if (!isNewUser) {
-      for (const college of colleges) {////
+      for (const college of colleges) {
         addRowToTable(college.ID);
       }
       setSliders();
@@ -1075,8 +1083,10 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
       categoryth.rowSpan = 2;
     } else {
       let length = 0;
+      let income = 1;
       for (const key in headers[category]) {
         let datath = document.createElement("th");
+        let keyName = Array.isArray(headers[category][key]) ? headers[category][key][0] : headers[category][key];
         for (let i = 0; i < 3; i++) {
           if (key == scoreNames[i]) {
             let img = document.createElement("img");
@@ -1097,7 +1107,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
         h3.innerText = key;
         datath.appendChild(h3);
         datath.classList.add(category.replace(/\s+/g, ''));
-        datath.classList.add(Array.isArray(headers[category][key]) ? headers[category][key][0] : headers[category][key]);
+        datath.classList.add(keyName);
         if (category != "Actions" && category != "Info" && category != "Match Scores") {
           datath.style.display = "none";
         }
@@ -1240,10 +1250,17 @@ function updateRowData(college) {
       if (category != "Actions") {
         for (const key in headers[category]) {
           let fill = "No Data";
+          let link = 0;
           if (Array.isArray(headers[category][key])) {
-            if (headers[category][key][0] in response) {//format numbers
-              fill = response[headers[category][key][0]];
-              if (headers[category][key][1] == "Integer" || headers[category][key][1] == "$") {
+            if (headers[category][key][0] in response || (headers[category][key][0] == "Averagenetpriceforfamilyincome" && userinfo.income != "none")) {//format numbers
+              if (headers[category][key][0] == "Averagenetpriceforfamilyincome") {
+                fill = response["Averagenetpricefor" + document.getElementById("income").getElementsByTagName("select")[0].value + "familyincome"];
+              } else {
+                fill = response[headers[category][key][0]];
+              }
+              if (headers[category][key][1] == "link") {
+                link = 1;
+              } else if (headers[category][key][1] == "Integer" || headers[category][key][1] == "$") {
                 fill = fill.toLocaleString();
                 if (headers[category][key][1] == "$") {
                   fill = "$" + fill;
@@ -1252,14 +1269,37 @@ function updateRowData(college) {
                 fill = Math.round(fill * 10000) / 100 + "%";
               } else if (headers[category][key][1] == "Degree") {
                 fill = Math.round(fill * 100) / 100 + "°F";
+              } else if (headers[category][key][1] == "boolean") {
+                if (fill) {
+                  fill = "Yes";
+                } else {
+                  fill = "No";
+                }
               }
+            } else if (headers[category][key][0] == "Averagenetpriceforfamilyincome" && userinfo.income == "none") {
+              fill = "Income Not Specified";
             }
           } else {
             if (headers[category][key] in response) {
               fill = response[headers[category][key]];
             }
           }
-          document.getElementById(college).getElementsByClassName(Array.isArray(headers[category][key]) ? headers[category][key][0] : headers[category][key])[0].innerText = fill;
+          if (link) {
+            let linker = document.createElement("span");
+            linker.classList.add("icon");
+            linker.classList.add("material-icons");
+            linker.title = "Move College Up";
+            linker.innerText = "open_in_new";
+            if (fill.substr(0,7) != "http://" && fill.substr(0,8) != "https://") {
+              fill = "http://" + fill;
+            }
+            linker.addEventListener("click", () => {
+              window.open(fill, "_blank");
+            });
+            document.getElementById(college).getElementsByClassName(headers[category][key][0])[0].appendChild(linker);
+          } else {
+            document.getElementById(college).getElementsByClassName(Array.isArray(headers[category][key]) ? headers[category][key][0] : headers[category][key])[0].innerText = fill;
+          }
         }
       }
     }
@@ -1348,9 +1388,10 @@ function addRowToTable(college) {
       let showhide = button != null && !button.classList.contains("clicked") && !button.classList.contains("doubleclicked");
       for (const key in headers[category]) {
         let td = document.createElement("td");
+        let keyName = Array.isArray(headers[category][key]) ? headers[category][key][0] : headers[category][key];
         td.classList.add(category.replace(/\s+/g, ''));
-        td.classList.add(Array.isArray(headers[category][key]) ? headers[category][key][0] : headers[category][key]);
-        if (category in getFromColleges(college) && "Override" in getFromColleges(college)[category] && (Array.isArray(headers[category][key]) ? headers[category][key][0] : headers[category][key]) in scores[0][category][1]) {
+        td.classList.add(keyName);
+        if (category in getFromColleges(college) && "Override" in getFromColleges(college)[category] && keyName in scores[0][category][1]) {
           td.style.backgroundColor = "var(--high" + (getFromColleges(college)[category].Override - 1) + ")";
         }
         if (showhide) {

@@ -42,7 +42,7 @@
     "Freshmen in on-campus housing":["PercentFreshmanHousing","%"]
   },
   "Majors":{
-
+    "Temp": "Temp"
   },
   "Teaching/Resources":{
     "Percent of classes smaller than 20 students":["Percentageofclassessmallerthan20","%"],"Number of students to one faculty member":"student_to_faculty_ratio","Average Faculty Salary":"Averagefacultysalary","Percent of faculty who are full-time":["Proportionoffacultythatisfull-time","%"],"$ spent on instruction per student":"Instructionalexpendituresperfull-timeequivalentstudent","Percent of net tuition revenue spent on instruction":["Percentoftuitionspentoninstructionalexpendituresperstudent","%"],"Endowment per student":"endowment_per_student"
