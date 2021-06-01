@@ -67,6 +67,6 @@
     "Test Policy":"test_policy",
     "Extracurriculars":"Extracurriculars",
     "Rigor of HS Transcript":"HSRigor",
-    "Scatterplot Link":"NicheScatterplot"
+    "Scatterplot Link":["NicheScatterplot","link"]
   }
 }
