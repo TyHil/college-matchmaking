@@ -49,7 +49,7 @@
   },
   "Programs":{"Co-op Program":["coop","boolean"],"Honors Program":"honors_college_program","Honors Program Link":["honors_url","link"],"Sports":"athletic_division_name"
   },
-  "Retention":{"Freshmen Retention":["FreshmenRetentionRate","%"],"Graduation Rate-4 years":["4yr_graduation_rate","%"],"Graduation Rate-6 years":["6yr-completionrate","%"],"Percent admitted who enroll":["Percentofadmittedstudentswhoenroll","%"]
+  "Retention":{"Freshmen Retention":["FreshmenRetentionRate","%"],"Graduation Rate-4 years":["4yr_graduation_rate","%"],"Graduation Rate-6 years":["6-yrcompletionrate","%"],"Percent admitted who enroll":["Percentofadmittedstudentswhoenroll","%"]
   },
   "Testing": {
     "25th Percentile ACT": "ACT-Composite25thPercentile",

@@ -3,8 +3,7 @@
     "NoofUgrads": [3, [20000, 30000]]
   }],
   "Diversity": [4, {
-    "PercentUndergrads_WHITE": [2, [0.6, 0.7, 0.9, 1], [5, 4, 3, 2, 1]],
-    "PercentUndergrads_BLACK": [5, [0.1, 0.2, 0.4, 0.5]],
-    "PercentUndergrads_HISPANIC": [5, [0.1, 0.2, 0.4, 0.5]]
+    "PercentUndergrads_WHITE": [3, [0.2, 0.35, 0.45, 0.6], [5, 4, 3, 2, 1]],
+    "PercentHistoricallyUnderrepresented": [5, [0.1, 0.2, 0.4, 0.5]]
   }]
 }

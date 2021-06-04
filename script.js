@@ -1285,18 +1285,22 @@ function updateRowData(college) {
             }
           }
           if (link) {
-            let linker = document.createElement("span");
-            linker.classList.add("icon");
-            linker.classList.add("material-icons");
-            linker.title = "Move College Up";
-            linker.innerText = "open_in_new";
-            if (fill.substr(0,7) != "http://" && fill.substr(0,8) != "https://") {
-              fill = "http://" + fill;
+            if (typeof fill == "string") {
+              let linker = document.createElement("span");
+              linker.classList.add("icon");
+              linker.classList.add("material-icons");
+              linker.title = "Move College Up";
+              linker.innerText = "open_in_new";
+              if (fill.substr(0, 7) != "http://" && fill.substr(0, 8) != "https://") {
+                fill = "http://" + fill;
+              }
+              linker.addEventListener("click", () => {
+                window.open(fill, "_blank");
+              });
+              document.getElementById(college).getElementsByClassName(headers[category][key][0])[0].appendChild(linker);
+            } else {
+              document.getElementById(college).getElementsByClassName(Array.isArray(headers[category][key]) ? headers[category][key][0] : headers[category][key])[0].innerText = "No Data";
             }
-            linker.addEventListener("click", () => {
-              window.open(fill, "_blank");
-            });
-            document.getElementById(college).getElementsByClassName(headers[category][key][0])[0].appendChild(linker);
           } else {
             document.getElementById(college).getElementsByClassName(Array.isArray(headers[category][key]) ? headers[category][key][0] : headers[category][key])[0].innerText = fill;
           }
