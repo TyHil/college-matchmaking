@@ -44,9 +44,9 @@ The College Matchmaking website.
 - [ ] Sort columns in table (low priority).
 - [x] Bug report
 ### Stuff Cy can do
-- [x] **Include all data points in headers.json.**
+- [x] Include all data points in headers.json.
   - [x] Switch to Ellen's data.
 - [ ] Refine match scores (stop using dummy ones).
-- [ ] Add info to intro popup.
+- [x] Add info to intro popup.
 - [x] Terms of Service.
 - [x] Privacy Policy.

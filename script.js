@@ -23,7 +23,7 @@ document.getElementById("bug").addEventListener("click", function () {
 function signedIn(loadData) {
   loggedIn = 1;
   window.onbeforeunload = '';
-  document.getElementById("login").style.display = "none";
+  document.getElementById("signuplogin").style.display = "none";
   let img = document.createElement("img");
   img.id = "userimg";
   if (firebase.auth().currentUser.photoURL == null) {
@@ -368,12 +368,13 @@ function writeUserData(toast) {
   }
 }
 
-document.getElementById("login").addEventListener("click", event => {
+function openLogInModal() {
   if (!ui.isPendingRedirect()) {
     document.getElementById("loginmodal").style.display = "block";
     ui.start('#firebaseui-auth-container', uiConfig);
   }
-});
+}
+document.getElementById("signuplogin").addEventListener("click", openLogInModal);
 document.querySelectorAll(".close").forEach(item => {
   item.addEventListener('click', event => {
     let content = item.parentElement;
@@ -582,9 +583,20 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
       }
     });
     observer.observe(genericmodal, { attributes: true, attributeFilter: ['style'] });
-    genericmodal.getElementsByClassName("buttonbox")[0].getElementsByClassName("buttons")[0].onclick = function () {
-      let content = genericmodal.getElementsByClassName("content")[0];
-      let buttonbox = genericmodal.getElementsByClassName("buttonbox")[0];
+    let content = genericmodal.getElementsByClassName("content")[0];
+    let buttonbox = genericmodal.getElementsByClassName("buttonbox")[0];
+    document.getElementById("modallogin").addEventListener("click", () => {
+      content.classList.add("out");
+      genericmodal.classList.add("out");
+      content.addEventListener("animationend", function () {
+        genericmodal.style.display = "none";
+        content.classList.remove("out");
+        genericmodal.classList.remove("out");
+        openLogInModal();
+      }, { once: true });
+    });
+    document.getElementById("setupwizard").onclick = function () {
+      document.getElementById("modallogin").style.display = "none";
       genericmodal.getElementsByTagName("h1")[0].innerText = "Personal Info";
       genericmodal.getElementsByTagName("p")[0].innerText = "We'll use this for acceptance calulations.";
       content.insertBefore(document.getElementById("userinfo"), buttonbox);//userinfo
@@ -630,6 +642,9 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
           genericmodal.getElementsByTagName("h1")[0].innerText = "Colleges";
           genericmodal.getElementsByTagName("p")[0].innerText = "Add some colleges you're considering attending.";
           this.innerText = "Done";
+          let modallogin = document.getElementById("modallogin");
+          modallogin.innerText = "Sign Up"
+          modallogin.style.display = "inline";
           document.getElementById("suggestions").style.position = "relative";//colleges
           content.insertBefore(document.getElementById("addcollege"), buttonbox);
           this.onclick = function () {

@@ -273,7 +273,7 @@ table th p {
 #header a:hover {
   background-color: var(--light2);
 }
-#header #login {
+#header #signuplogin {
   background: linear-gradient(90deg, #61cae3, #3489c9);
 }
 @media screen and (max-width: 680px) {
