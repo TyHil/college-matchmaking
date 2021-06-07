@@ -677,33 +677,18 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
           overrideth.appendChild(h3one);
           overrideth.classList.add(category.replace(/\s+/g, ''));
           overrideth.classList.add("override");
-          let catList = rows[1].getElementsByClassName(category.replace(/\s+/g, ''));
-          rows[1].insertBefore(overrideth, catList[catList.length - 1].nextSibling);
+          let notesth = document.getElementsByClassName("Notes " + category.replace(/\s+/g, ''))[0];
+          rows[1].insertBefore(overrideth, notesth);
           let subscoreth = document.createElement("th");
           let h3two = document.createElement("h3");
           h3two.innerText = "Subscore";
           subscoreth.appendChild(h3two);
           subscoreth.classList.add(category.replace(/\s+/g, ''));
           subscoreth.classList.add("subscore");
-          rows[1].insertBefore(subscoreth, catList[catList.length - 1].nextSibling);
+          rows[1].insertBefore(subscoreth, notesth);
           if (showhide) {
             overrideth.style.display = "none";
             subscoreth.style.display = "none";
-          }
-        }
-        if (category != "Actions" && category != "Info" && category != "Match Scores") {
-          let rows = document.getElementById("table").getElementsByTagName("tr");
-          rows[0].getElementsByClassName(category.replace(/\s+/g, ''))[0].colSpan++;
-          let notesth = document.createElement("th");
-          let h3 = document.createElement("h3");
-          h3.innerText = "Notes";
-          notesth.appendChild(h3);
-          notesth.classList.add(category.replace(/\s+/g, ''));
-          notesth.classList.add(category.replace(/\s+/g, ''));
-          let catList = rows[1].getElementsByClassName(category.replace(/\s+/g, ''));
-          rows[1].insertBefore(notesth, catList[catList.length - 1].nextSibling);
-          if (showhide) {
-            notesth.style.display = "none";
           }
         }
       }
@@ -1136,6 +1121,17 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
       categoryth.style.display = "none";
     }
     categorytr.appendChild(categoryth);
+    if (category != "Actions" && category != "Info" && category != "Match Scores") {
+      categoryth.colSpan++;
+      let notesth = document.createElement("th");
+      let h3 = document.createElement("h3");
+      h3.innerText = "Notes";
+      notesth.appendChild(h3);
+      notesth.classList.add(category.replace(/\s+/g, ''));
+      notesth.classList.add("Notes");
+      datatr.appendChild(notesth);
+      notesth.style.display = "none";
+    }
   }
   table.appendChild(categorytr);
   table.appendChild(datatr);

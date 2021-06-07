@@ -34,32 +34,55 @@
     "College Consensus Rank": "college_consensus_ranking"
   },
   "Cost": {
-    "In-state tuition and fees":"In-statetuitionandfees",
-    "Out-of-state tuition and fees":"Out-of-statetuitionandfees",
-    "Cost of Attendance":"Averagecostofattendance","Aid Calculator":["AidCalculator","link"],"Income-based Net Price":["Averagenetpriceforfamilyincome","$"],"Percent of need met": ["avg_pc_need_met","%"],"Average need-based award":"avg_need_based_award","Percent of students receiving merit aid":["pc_students_receiving_merit_aid","%"],"Average merit award":"avg_merit_aid_award","Credit for AP Exams?":"ap_exam_credit","Percent with Loans":["percent_graduating_with_loans","%"],"Median Debt":"MedianDebt","Median Salary after 10 years":"MedianSalaryafter10yrs"
+    "In-state tuition and fees":["In-statetuitionandfees","$"],
+    "Out-of-state tuition and fees":["Out-of-statetuitionandfees","$"],
+    "Cost of Attendance":["Averagecostofattendance","$"],
+    "Aid Calculator":["AidCalculator","link"],
+    "Income-based Net Price":["Averagenetpriceforfamilyincome","$"],
+    "Percent of need met": ["avg_pc_need_met","%"],
+    "Average need-based award":["avg_need_based_award","$"],
+    "Percent of students receiving merit aid":["pc_students_receiving_merit_aid","%"],
+    "Average merit award":["avg_merit_aid_award","$"],
+    "Credit for AP Exams?":"ap_exam_credit",
+    "Percent with Loans":["percent_graduating_with_loans","%"],
+    "Median Debt":["MedianDebt","$"],
+    "Median Salary after 10 years":["MedianSalaryafter10yrs","$"]
   },
   "Campus Life": {
     "Freshmen in on-campus housing":["PercentFreshmanHousing","%"]
   },
-  "Majors":{
-    "Temp": "Temp"
+  "Majors": {
   },
-  "Teaching/Resources":{
-    "Percent of classes smaller than 20 students":["Percentageofclassessmallerthan20","%"],"Number of students to one faculty member":"student_to_faculty_ratio","Average Faculty Salary":"Averagefacultysalary","Percent of faculty who are full-time":["Proportionoffacultythatisfull-time","%"],"$ spent on instruction per student":"Instructionalexpendituresperfull-timeequivalentstudent","Percent of net tuition revenue spent on instruction":["Percentoftuitionspentoninstructionalexpendituresperstudent","%"],"Endowment per student":"endowment_per_student"
+  "Teaching/Resources": {
+    "Percent of classes smaller than 20 students":["Percentageofclassessmallerthan20","%"],
+    "Number of students to one faculty member":"student_to_faculty_ratio",
+    "Average Faculty Salary":["Averagefacultysalary","$"],
+    "Percent of faculty who are full-time":["Proportionoffacultythatisfull-time","%"],
+    "$ spent on instruction per student":["Instructionalexpendituresperfull-timeequivalentstudent","$"],
+    "Percent of net tuition revenue spent on instruction":["Percentoftuitionspentoninstructionalexpendituresperstudent","%"],
+    "Endowment per student":["endowment_per_student","$"]
   },
-  "Programs":{"Co-op Program":["coop","boolean"],"Honors Program":"honors_college_program","Honors Program Link":["honors_url","link"],"Sports":"athletic_division_name"
+  "Programs": {
+    "Co-op Program":["coop","boolean"],
+    "Honors Program":"honors_college_program",
+    "Honors Program Link":["honors_url","link"],
+    "Sports":"athletic_division_name"
   },
-  "Retention":{"Freshmen Retention":["FreshmenRetentionRate","%"],"Graduation Rate-4 years":["4yr_graduation_rate","%"],"Graduation Rate-6 years":["6-yrcompletionrate","%"],"Percent admitted who enroll":["Percentofadmittedstudentswhoenroll","%"]
+  "Retention": {
+    "Freshmen Retention":["FreshmenRetentionRate","%"],
+    "Graduation Rate-4 years":["4yr_graduation_rate","%"],
+    "Graduation Rate-6 years":["6-yrcompletionrate","%"],
+    "Percent admitted who enroll":["Percentofadmittedstudentswhoenroll","%"]
   },
   "Testing": {
     "25th Percentile ACT": "ACT-Composite25thPercentile",
     "75th Percentile ACT": "ACT-Composite75thPercentile",
+    "ACT Average":"ACT-CompositeMedian",
     "25th Percentile SAT Verbal": "SAT-Verbal25thPercentile",
     "75th Percentile SAT Verbal": "SAT-Verbal75thPercentile",
     "25th Percentile SAT Math": "SAT-Math25thPercentile",
     "75th Percentile SAT Math": "SAT-Math75thPercentile",
     "SAT Average":"SATAverage",
-    "ACT Average":"ACT-CompositeMedian",
     "Average GPA":"avg_freshmen_gpa",
     "Test Scores":"TestScores",
     "GPA":"reqt_hs_gpa",
