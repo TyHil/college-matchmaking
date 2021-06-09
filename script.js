@@ -1052,7 +1052,12 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
       button.id = category.replace(/\s+/g, '');
       button.innerText = category;
       button.addEventListener("click", function () {
-        if (!this.classList.contains("clicked")) {
+        if (this.classList.contains("doubleclicked") && (document.getElementsByClassName("clicked").length || document.getElementsByClassName("doubleclicked").length > 1)) {
+          this.classList.remove("doubleclicked");
+          for (const cat of document.getElementsByClassName(category.replace(/\s+/g, ''))) {
+            cat.style.display = "none";
+          }
+        } else if (!this.classList.contains("clicked")) {
           this.classList.remove("doubleclicked");
           for (const buttons of document.getElementsByClassName("hidebutton")) {
             buttons.classList.remove("clicked");
