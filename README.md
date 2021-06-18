@@ -43,11 +43,12 @@ The College Matchmaking website.
   - [x] schools
 - [ ] Sort columns in table (low priority).
 - [x] Bug report
-- [ ] make unranked give a score of 1
-- [ ] income based net price in cost with an average when not specified
+- [x] make unranked give a score of 1
+- [x] income based net price in cost with an average when not specified
   - ""Averagenetpricefor0-30,000familyincome": [3, [5000, 20000, 30000, 45000], [5, 4, 3, 2, 1]],"
-- [ ] Only include "avg_pc_need_met" if user wants need based aid
-- [ ] Every tab gets a override and subscore
+- [x] Only include "avg_pc_need_met" if user wants need based aid
+  - User can just set the Percent of need met weight to 0
+- [x] Every tab gets an override and subscore
   - Call it Manual
 ### Stuff Cy can do
 - [x] Include all data points in headers.json.

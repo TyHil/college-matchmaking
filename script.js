@@ -265,7 +265,6 @@ function signedIn(loadData) {
         input.value = userinfo[userinfo.test];
       }
       document.getElementById("gpa").getElementsByTagName("input")[0].value = userinfo.gpa;
-      document.getElementById("needaid").getElementsByTagName("input")[0].checked = userinfo.needaid;
       document.getElementById("income").getElementsByTagName("select")[0].value = userinfo.income;
     }, error => {
       createToast("Load User Data Failed!");
@@ -471,7 +470,7 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-let userinfo = { "test": "sat", "sat": 1200, "gpa": 3.0, "needaid": 1, "income": "none" };
+let userinfo = { "test": "sat", "sat": 1200, "gpa": 3.0, "income": "none" };
 document.getElementById("testscore").getElementsByTagName("select")[0].addEventListener("change", function () {
   let input = this.parentElement.getElementsByTagName("input")[0];
   if (this.value == "none") {
@@ -520,20 +519,10 @@ document.getElementById("gpa").getElementsByTagName("input")[0].addEventListener
   userinfo.gpa = parseFloat(this.value);
   writeUserData(1);
 });
-document.getElementById("needaid").getElementsByTagName("input")[0].addEventListener("click", function () {
-  userinfo.needaid = this.checked ? 1 : 0;
-  writeUserData(1);
-});
 document.getElementById("income").getElementsByTagName("select")[0].addEventListener("change", function () {
   userinfo.income = this.value;
   for (const college of colleges) {
-    let cost;
-    if (this.value == "none") {
-      cost = "Income Not Specified";
-    } else {
-      cost = "$" + collegesData[college.ID]["Averagenetpricefor" + this.value + "familyincome"].toLocaleString();
-    }
-    document.getElementById(college.ID).getElementsByClassName("Averagenetpriceforfamilyincome")[0].innerText = cost;
+    document.getElementById(college.ID).getElementsByClassName("Averagenetpriceforfamilyincome")[0].innerText = "$" + collegesData[college.ID]["Averagenetpricefor" + this.value + "familyincome"].toLocaleString();
   }
   writeUserData(1);
 });
@@ -673,7 +662,11 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
           rows[0].getElementsByClassName(category.replace(/\s+/g, ''))[0].colSpan += 2;
           let overrideth = document.createElement("th");
           let h3one = document.createElement("h3");
-          h3one.innerText = "Override";
+          if (scores[0][category] == 1) {
+            h3one.innerText = "Manual";
+          } else {
+            h3one.innerText = "Override";
+          }
           overrideth.appendChild(h3one);
           overrideth.classList.add(category.replace(/\s+/g, ''));
           overrideth.classList.add("override");
@@ -1185,9 +1178,13 @@ function updateRowMatchScores(college) {
         scoreCat = getFromColleges(college)[category].Override;
         weightSumCat = 5;
       } else {
-        for (const key in scores[i][category][1]) {
-          if (key in collegesData[college]) {
-            const data = collegesData[college][key];
+        for (var key in scores[i][category][1]) {
+          if (key in collegesData[college] || (key == "Averagenetpriceforfamilyincome" && "Averagenetpricefor" + userinfo.income + "familyincome" in collegesData[college])) {
+            let dataKey = key;
+            if (key == "Averagenetpriceforfamilyincome") {
+              dataKey = "Averagenetpricefor" + userinfo.income + "familyincome";
+            }
+            const data = collegesData[college][dataKey];
             let scoreDat = 0;
             const weight = scores[i][category][1][key][0];
             let range = scores[i][category][1][key][1];
@@ -1210,6 +1207,9 @@ function updateRowMatchScores(college) {
             if (range[3] < data) {
               scoreDat = scoreVals[4];
             }
+            if (category == "Ranking" && data == "unranked") {
+              scoreDat = 1;
+            }
             scoreCat += scoreDat * weight;
             weightSumCat += 5 * weight;
             if (i == 0) {
@@ -1226,10 +1226,16 @@ function updateRowMatchScores(college) {
           subscore.innerText = Math.round(scoreCat / weightSumCat * 5 * weightCat * 100) / 100;
           subscore.style.backgroundColor = "var(--high" + (Math.round(scoreCat / weightSumCat * 5) - 1) + ")";
         }
+        weightSumTot += weightCat;
       } else if (category in scores[0]) {
-        document.getElementById(college).getElementsByClassName(category.replace(/\s+/g, '') + " subscore")[0].innerText = "No Data";
+        let subscoreCell = document.getElementById(college).getElementsByClassName(category.replace(/\s+/g, '') + " subscore")[0];
+        if (scores[0][category].length == 1) {
+          subscoreCell.innerText = "Unchosen";
+        } else {
+          subscoreCell.innerText = "No Data";
+        }
+        subscoreCell.style.backgroundColor = "var(--light0)";//remove highlight
       }
-      weightSumTot += weightCat;
     }
     let score;
     if (i == 0) {
@@ -1272,9 +1278,9 @@ function updateRowData(college) {
           let fill = "No Data";
           let link = 0;
           if (Array.isArray(headers[category][key])) {
-            if (headers[category][key][0] in response || (headers[category][key][0] == "Averagenetpriceforfamilyincome" && userinfo.income != "none")) {//format numbers
+            if (headers[category][key][0] in response || headers[category][key][0] == "Averagenetpriceforfamilyincome") {//format numbers
               if (headers[category][key][0] == "Averagenetpriceforfamilyincome") {
-                fill = response["Averagenetpricefor" + document.getElementById("income").getElementsByTagName("select")[0].value + "familyincome"];
+                fill = response["Averagenetpricefor" + userinfo.income + "familyincome"];
               } else {
                 fill = response[headers[category][key][0]];
               }
@@ -1296,8 +1302,6 @@ function updateRowData(college) {
                   fill = "No";
                 }
               }
-            } else if (headers[category][key][0] == "Averagenetpriceforfamilyincome" && userinfo.income == "none") {
-              fill = "Income Not Specified";
             }
           } else {
             if (headers[category][key] in response) {
@@ -1309,7 +1313,7 @@ function updateRowData(college) {
               let linker = document.createElement("span");
               linker.classList.add("icon");
               linker.classList.add("material-icons");
-              linker.title = "Move College Up";
+              linker.title = "Open In New Tab";
               linker.innerText = "open_in_new";
               if (fill.substr(0, 7) != "http://" && fill.substr(0, 8) != "https://") {
                 fill = "http://" + fill;

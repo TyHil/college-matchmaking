@@ -11,6 +11,7 @@
     "Percentofugradsoverage25": [3, [0.05, 0.1, 0.15, 0.2]],
     "VETERAN": [3, [0, 0.0025, 0.005, 0.01]]
   }],
+  "Location": [3],
   "Ranking": [3, {
     "NicheRank": [3, [50, 100, 300, 800], [5, 4, 3, 2, 1]],
     "FORBESRANK": [3, [50, 100, 300, 800], [5, 4, 3, 2, 1]],
@@ -18,17 +19,22 @@
     "college_consensus_ranking": [3, [50, 100, 300, 800], [5, 4, 3, 2, 1]]
   }],
   "Cost": [3, {
+    "Averagenetpriceforfamilyincome": [3, [5000, 20000, 30000, 45000], [5, 4, 3, 2, 1]],
     "avg_pc_need_met": [3, [0, 1]],
     "pc_students_receiving_merit_aid": [3, [0, 1]]
   }],
+  "Campus Life": [3],
+  "Majors": [3],
   "Teaching and Resources": [3, {
     "Percentageofclassessmallerthan20": [3, [0, 1]],
     "student_to_faculty_ratio": [3, [10, 13, 16, 20], [5, 4, 3, 2, 1]],
     "Proportionoffacultythatisfull-time": [3, [0, 1]]
   }],
+  "Programs": [3],
   "Retention": [3, {
     "FreshmenRetentionRate": [4, [0.6, 0.8, 0.875, 0.95]],
     "4yr_graduation_rate": [2, [0, 1]],
     "6-yrcompletionrate": [2, [0, 1]]
-  }]
+  }],
+  "Testing": [3]
 }

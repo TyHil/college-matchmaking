@@ -9,8 +9,7 @@
     "SWIM": "SWIM"
   },
   "Size": {
-    "Undergraduate Population": ["NoofUgrads", "Integer"],
-    "Size": "."
+    "Undergraduate Population": ["NoofUgrads", "Integer"]
   },
   "Location": {
     "City": "Location",
