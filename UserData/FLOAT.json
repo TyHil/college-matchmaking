@@ -21,7 +21,7 @@
     "avg_pc_need_met": [3, [0, 1]],
     "pc_students_receiving_merit_aid": [3, [0, 1]]
   }],
-  "Teaching/Resources": [3, {
+  "Teaching and Resources": [3, {
     "Percentageofclassessmallerthan20": [3, [0, 1]],
     "student_to_faculty_ratio": [3, [10, 13, 16, 20], [5, 4, 3, 2, 1]],
     "Proportionoffacultythatisfull-time": [3, [0, 1]]
