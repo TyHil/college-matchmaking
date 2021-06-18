@@ -43,10 +43,20 @@ The College Matchmaking website.
   - [x] schools
 - [ ] Sort columns in table (low priority).
 - [x] Bug report
+- [ ] make unranked give a score of 1
+- [ ] income based net price in cost with an average when not specified
+  - ""Averagenetpricefor0-30,000familyincome": [3, [5000, 20000, 30000, 45000], [5, 4, 3, 2, 1]],"
+- [ ] Only include "avg_pc_need_met" if user wants need based aid
+- [ ] Every tab gets a override and subscore
+  - Call it Manual
 ### Stuff Cy can do
 - [x] Include all data points in headers.json.
   - [x] Switch to Ellen's data.
 - [ ] Refine match scores (stop using dummy ones).
+  - [x] FLOAT
+    - [ ] Double check
+  - [ ] SAIL
+  - [ ] SWIM
 - [x] Add info to intro popup.
 - [x] Terms of Service.
 - [x] Privacy Policy.

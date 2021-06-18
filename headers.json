@@ -21,17 +21,19 @@
   "Diversity": {
     "White Students": ["PercentUndergrads_WHITE", "%"],
     "Historically Underrepresented Students": ["PercentHistoricallyUnderrepresented", "%"],
-    "Asian Students":["PercentUndergrads_ASIAN","%"],
-    "Veteran Students": ["VETERAN","%"],
-    "Non-resident/International Students": ["PercentUndergrads_Non-residentAliens","%"],
     "First-Gen Students": ["FIRST_GEN","%"],
+    "Students with need-based aid": ["pc_students_with_need","%"],
+    "Non-resident/International Students": ["PercentUndergrads_Non-residentAliens","%"],
     "Students over 25": ["Percentofugradsoverage25","%"],
-    "Students with need-based aid": ["pc_students_with_need","%"]
+    "Veteran Students": ["VETERAN","%"],
+    "% Men": ["pc_undergraduate_men", "%"],
+    "% Women": ["pc_undergraduate_women", "%"]
   },
   "Ranking": {
-    "Niche Rank": "NicheRank",
-    "Forbes Rank": "FORBESRANK","Wall St. Journal Rank":"WALLSTJOURNALRANK",
-    "College Consensus Rank": "college_consensus_ranking"
+    "Niche Rank": ["NicheRank", "Integer"],
+    "Forbes Rank": ["FORBESRANK", "Integer"],
+    "Wall St. Journal Rank": ["WALLSTJOURNALRANK", "Integer"],
+    "College Consensus Rank": ["college_consensus_ranking", "Integer"]
   },
   "Cost": {
     "In-state tuition and fees":["In-statetuitionandfees","$"],

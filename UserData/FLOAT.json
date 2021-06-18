@@ -1,9 +1,34 @@
 {
-  "Size": [2, {
-    "NoofUgrads": [3, [20000, 30000]]
+  "Size": [3, {
+    "NoofUgrads": [3, [700, 3500, 9000, 18000], [1, 3, 5, 3, 1]]
   }],
-  "Diversity": [4, {
-    "PercentUndergrads_WHITE": [3, [0.2, 0.35, 0.45, 0.6], [5, 4, 3, 2, 1]],
-    "PercentHistoricallyUnderrepresented": [5, [0.1, 0.2, 0.4, 0.5]]
+  "Diversity": [3, {
+    "PercentUndergrads_WHITE": [3, [0.3, 0.5, 0.65, 0.8], [5, 4, 3, 2, 1]],
+    "PercentHistoricallyUnderrepresented": [3, [0.15, 0.3, 0.45, 0.6]],
+    "FIRST_GEN": [3, [0, 0.5]],
+    "pc_students_with_need": [3, [0.1, 0.2, 0.3, 0.45]],
+    "PercentUndergrads_Non-residentAliens": [3, [0.01, 0.05, 0.1, 0.15]],
+    "Percentofugradsoverage25": [3, [0.05, 0.1, 0.15, 0.2]],
+    "VETERAN": [3, [0, 0.0025, 0.005, 0.01]]
+  }],
+  "Ranking": [3, {
+    "NicheRank": [3, [50, 100, 300, 800], [5, 4, 3, 2, 1]],
+    "FORBESRANK": [3, [50, 100, 300, 800], [5, 4, 3, 2, 1]],
+    "WALLSTJOURNALRANK": [3, [50, 100, 300, 800], [5, 4, 3, 2, 1]],
+    "college_consensus_ranking": [3, [50, 100, 300, 800], [5, 4, 3, 2, 1]]
+  }],
+  "Cost": [3, {
+    "avg_pc_need_met": [3, [0, 1]],
+    "pc_students_receiving_merit_aid": [3, [0, 1]]
+  }],
+  "Teaching/Resources": [3, {
+    "Percentageofclassessmallerthan20": [3, [0, 1]],
+    "student_to_faculty_ratio": [3, [10, 13, 16, 20], [5, 4, 3, 2, 1]],
+    "Proportionoffacultythatisfull-time": [3, [0, 1]]
+  }],
+  "Retention": [3, {
+    "FreshmenRetentionRate": [4, [0.6, 0.8, 0.875, 0.95]],
+    "4yr_graduation_rate": [2, [0, 1]],
+    "6-yrcompletionrate": [2, [0, 1]]
   }]
 }

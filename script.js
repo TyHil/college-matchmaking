@@ -22,7 +22,7 @@ document.getElementById("bug").addEventListener("click", function () {
 
 function signedIn(loadData) {
   loggedIn = 1;
-  window.onbeforeunload = '';
+  window.onbeforeunload = undefined;
   document.getElementById("signuplogin").style.display = "none";
   let img = document.createElement("img");
   img.id = "userimg";
@@ -357,7 +357,7 @@ function writeUserData(toast) {
       if (toast) {
         createToast("Saved!");
       }
-      window.onbeforeunload = '';
+      window.onbeforeunload = undefined;
     }).catch((error) => {
       window.onbeforeunload = () => '';
       createToast("Save Data Failed!");
@@ -817,7 +817,11 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
           let breakline2 = document.createElement("div");
           breakline2.classList.add("break");
           datachange.appendChild(breakline2);
-          let isPercent = (headers[category][Object.keys(headers[category]).find(keyh => headers[category][keyh][0] == key)][1] == "%");
+          let tempHeaderData = headers[category][Object.keys(headers[category]).find(keyh => headers[category][keyh][0] == key)];
+          let isPercent = 0;
+          if (Array.isArray(tempHeaderData) && tempHeaderData[1] == "%") {
+            isPercent = 1;
+          }
           for (let i = 0; i < 4; i++) {
             let rangeVal = document.createElement("input");
             rangeVal.type = "number";
