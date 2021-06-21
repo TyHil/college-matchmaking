@@ -1,5 +1,5 @@
 {
-  "Testing": [3, {
+  "Acceptance": [3, {
     "ACT-Composite25thPercentile": [3, [1, 36]],
     "ACT-Composite75thPercentile": [3, [1, 36]]
   }]

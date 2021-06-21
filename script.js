@@ -697,7 +697,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
         });
         for (const key in scores[0][category][1]) {
           let sliderDiv = createSlider(scores[0][category][1][key][0]);
-          document.getElementsByClassName(key)[0].appendChild(sliderDiv);
+          document.getElementsByClassName(key + " " + category.replace(/\s+/g, ''))[0].appendChild(sliderDiv);
           let range = sliderDiv.getElementsByClassName("slider")[0];
           range.addEventListener("change", function () {
             scores[0][category][1][key][0] = parseInt(this.value);
@@ -714,7 +714,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
           plus.classList.add("icon");
           plus.classList.add("material-icons");
           plus.innerText = "expand_more";
-          document.getElementsByClassName(key)[0].getElementsByClassName("scorecontrol")[0].insertBefore(plus, range);
+          document.getElementsByClassName(key + " " + category.replace(/\s+/g, ''))[0].getElementsByClassName("scorecontrol")[0].insertBefore(plus, range);
           let scoreVals = [1, 2, 3, 4, 5];
           if (scores[0][category][1][key].length == 3) {//custom score ordering defined
             scoreVals = scores[0][category][1][key][2];
@@ -1040,7 +1040,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
   let categorytr = document.createElement("tr");
   let datatr = document.createElement("tr");
   for (const category in headers) {
-    if (category != "Actions" && category != "Info") {
+    if (category != "Actions" && category != "Name") {
       let button = document.createElement("a");
       button.classList.add("hidebutton");
       if (category == "Match Scores") {
@@ -1064,7 +1064,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
             cat.style.display = "table-cell";
           }
           for (const butcat of document.getElementsByClassName("hidebutton")) {
-            if (butcat.id != "Actions" && butcat.id != "Info" && butcat.id != category.replace(/\s+/g, '') && !butcat.classList.contains("doubleclicked")) {
+            if (butcat.id != "Actions" && butcat.id != "Name" && butcat.id != category.replace(/\s+/g, '') && !butcat.classList.contains("doubleclicked")) {
               for (const cat of document.getElementsByClassName(butcat.id)) {
                 cat.style.display = "none";
               }
@@ -1081,7 +1081,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
     let h2 = document.createElement("h2");
     h2.innerText = category;
     categoryth.appendChild(h2);
-    if (typeof headers[category] == "string") {
+    if (typeof headers[category] == "string") {///
       categoryth.rowSpan = 2;
     } else {
       let length = 0;
@@ -1110,7 +1110,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
         datath.appendChild(h3);
         datath.classList.add(category.replace(/\s+/g, ''));
         datath.classList.add(keyName);
-        if (category != "Actions" && category != "Info" && category != "Match Scores") {
+        if (category != "Actions" && category != "Name" && category != "Match Scores") {
           datath.style.display = "none";
         }
         datatr.appendChild(datath);
@@ -1119,11 +1119,11 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
       categoryth.colSpan = length;
     }
     categoryth.classList.add(category.replace(/\s+/g, ''));
-    if (category != "Actions" && category != "Info" && category != "Match Scores") {
+    if (category != "Actions" && category != "Name" && category != "Match Scores") {
       categoryth.style.display = "none";
     }
     categorytr.appendChild(categoryth);
-    if (category != "Actions" && category != "Info" && category != "Match Scores") {
+    if (category != "Actions" && category != "Name" && category != "Match Scores") {
       categoryth.colSpan++;
       let notesth = document.createElement("th");
       let h3 = document.createElement("h3");
@@ -1213,7 +1213,7 @@ function updateRowMatchScores(college) {
             scoreCat += scoreDat * weight;
             weightSumCat += 5 * weight;
             if (i == 0) {
-              document.getElementById(college).getElementsByClassName(key)[0].style.backgroundColor = "var(--high" + (scoreDat - 1) + ")";//cell highlights
+              document.getElementById(college).getElementsByClassName(key + " " + category.replace(/\s+/g, ''))[0].style.backgroundColor = "var(--high" + (scoreDat - 1) + ")";//cell highlights
             }
           }
         }
@@ -1273,11 +1273,15 @@ function updateRowData(college) {
       document.getElementById("welcomecolleges").appendChild(div);
     }
     for (const category in headers) {//update data in table
-      if (category != "Actions") {
+      if (category != "Actions") {///
         for (const key in headers[category]) {
           let fill = "No Data";
           let link = 0;
-          if (Array.isArray(headers[category][key])) {
+          if (typeof headers[category] == "string") {
+            if (headers[category] in response) {
+              fill = response[headers[category]];
+            }
+          } else if (Array.isArray(headers[category][key])) {
             if (headers[category][key][0] in response || headers[category][key][0] == "Averagenetpriceforfamilyincome") {//format numbers
               if (headers[category][key][0] == "Averagenetpriceforfamilyincome") {
                 fill = response["Averagenetpricefor" + userinfo.income + "familyincome"];
@@ -1326,7 +1330,15 @@ function updateRowData(college) {
               document.getElementById(college).getElementsByClassName(Array.isArray(headers[category][key]) ? headers[category][key][0] : headers[category][key])[0].innerText = "No Data";
             }
           } else {
-            document.getElementById(college).getElementsByClassName(Array.isArray(headers[category][key]) ? headers[category][key][0] : headers[category][key])[0].innerText = fill;
+            let keyName;
+            if (typeof headers[category] == "string") {// Name rowspan
+              keyName = headers[category];
+            } else if (Array.isArray(headers[category][key])) {
+              keyName = headers[category][key][0];
+            } else {
+              keyName = headers[category][key];
+            }
+            document.getElementById(college).getElementsByClassName(keyName + " " + category.replace(/\s+/g, ''))[0].innerText = fill;////
           }
         }
       }
@@ -1416,7 +1428,14 @@ function addRowToTable(college) {
       let showhide = button != null && !button.classList.contains("clicked") && !button.classList.contains("doubleclicked");
       for (const key in headers[category]) {
         let td = document.createElement("td");
-        let keyName = Array.isArray(headers[category][key]) ? headers[category][key][0] : headers[category][key];
+        let keyName;
+        if (typeof headers[category] == "string") {// Name rowspan
+          keyName = headers[category];
+        } else if (Array.isArray(headers[category][key])) {///
+          keyName = headers[category][key][0];
+        } else {
+          keyName = headers[category][key];
+        }
         td.classList.add(category.replace(/\s+/g, ''));
         td.classList.add(keyName);
         if (category in getFromColleges(college) && "Override" in getFromColleges(college)[category] && keyName in scores[0][category][1]) {
@@ -1426,6 +1445,9 @@ function addRowToTable(college) {
           td.style.display = "none";
         }
         tr.appendChild(td);
+        if (typeof headers[category] == "string") {// Name rowspan
+          break;
+        }
       }
       if (category in scores[0]) {
         let overridetd = document.createElement("td");
@@ -1465,7 +1487,7 @@ function addRowToTable(college) {
             writeUserData(1);
             overridetd.style.backgroundColor = "var(--high2)";
             for (const key in scores[0][category][1]) {
-              tr.getElementsByClassName(key)[0].style.backgroundColor = "var(--high2)";
+              tr.getElementsByClassName(key + " " + category.replace(/\s+/g, ''))[0].style.backgroundColor = "var(--high2)";
             }
             updateRowMatchScores(college);
           } else {
@@ -1488,7 +1510,7 @@ function addRowToTable(college) {
           score.innerText = this.value;
           overridetd.style.backgroundColor = "var(--high" + (this.value - 1) + ")";
           for (const key in scores[0][category][1]) {
-            tr.getElementsByClassName(key)[0].style.backgroundColor = "var(--high" + (this.value - 1) + ")";
+            tr.getElementsByClassName(key + " " + category.replace(/\s+/g, ''))[0].style.backgroundColor = "var(--high" + (this.value - 1) + ")";
           }
         });
         scoreSlider.addEventListener("change", function () {
@@ -1510,7 +1532,7 @@ function addRowToTable(college) {
           subscoretd.style.display = "none";
         }
       }
-      if (category != "Actions" && category != "Info" && category != "Match Scores") {
+      if (category != "Actions" && category != "Name" && category != "Match Scores") {
         let notesth = document.createElement("td");
         notesth.classList.add(category.replace(/\s+/g, ''));
         notesth.classList.add("notes");
@@ -1551,7 +1573,7 @@ function setSliders() {
     cell.getElementsByClassName("slider")[0].value = scores[0][category][0];
     cell.getElementsByClassName("weight")[0].innerText = "Weight: " + scores[0][category][0];
     for (const key in scores[0][category][1]) {
-      let cell = document.getElementsByClassName(key)[0];
+      let cell = document.getElementsByClassName(key + " " + category.replace(/\s+/g, ''))[0];
       cell.getElementsByClassName("slider")[0].value = scores[0][category][1][key][0];
       cell.getElementsByClassName("weight")[0].innerText = "Weight: " + scores[0][category][1][key][0];
     }

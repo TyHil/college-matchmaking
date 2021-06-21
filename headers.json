@@ -1,12 +1,21 @@
 {
   "Actions": "Actions",
-  "Info": {
-    "Name": ["Name", "String"]
-  },
+  "Name": "Name",
   "Match Scores": {
     "FLOAT": "FLOAT",
     "SAIL": "SAIL",
     "SWIM": "SWIM"
+  },
+  "General": {
+    "City": "Location",
+    "Undergraduate Population": ["NoofUgrads", "Integer"],
+    "Cost Rating": "COAConvertedto5-starrating",
+    "College Website": ["CollegeURL", "link"],
+    "Acceptance Rate": ["AcceptanceRate", "%"],
+    "Public or Private": "Public-private",
+    "Admission Deadline": "AdmissionDeadline",
+    "Uses the Common or Coalition App?": "SharedApplication",
+    "Summary Info": ["CollegeDataLink", "link"]
   },
   "Size": {
     "Undergraduate Population": ["NoofUgrads", "Integer"]
@@ -75,7 +84,7 @@
     "Graduation Rate-6 years":["6-yrcompletionrate","%"],
     "Percent admitted who enroll":["Percentofadmittedstudentswhoenroll","%"]
   },
-  "Testing": {
+  "Acceptance": {
     "25th Percentile ACT": "ACT-Composite25thPercentile",
     "75th Percentile ACT": "ACT-Composite75thPercentile",
     "ACT Average":"ACT-CompositeMedian",
