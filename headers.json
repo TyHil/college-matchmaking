@@ -101,5 +101,18 @@
     "Extracurriculars":"Extracurriculars",
     "Rigor of HS Transcript":"HSRigor",
     "Scatterplot Link":["NicheScatterplot","link"]
+  },
+  "Apply": {
+    "Admission Deadline": "AdmissionDeadline",
+    "Uses the Common or Coalition App?": "SharedApplication",
+    "Link for Applying": ["URLforApplying", "link"],
+    "Requires Recommendations": "reqt_recommendations",
+    "Application Fee": ["application_fee", "$"],
+    "Early Decision Option?": ["early_decision_available", "boolean"],
+    "Percent filled with early decision": ["percent_filled_w_early_decision", "%"],
+    "Early Decision Admit Rate": ["early_decision_admit_rate", "%"],
+    "Early Action Admit Rate": ["early_action_admit_rate", "%"],
+    "Regular Decision Admit Rate": ["reg_decision_admit_rate", "%"],
+    "Test Policy Details": "TestPolicyDetails"
   }
 }
