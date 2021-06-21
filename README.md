@@ -56,8 +56,8 @@ The College Matchmaking website.
 - [ ] Refine match scores (stop using dummy ones).
   - [x] FLOAT
     - [ ] Double check
-  - [ ] SAIL
-  - [ ] SWIM
+  - [x] SAIL
+  - [x] SWIM
 - [x] Add info to intro popup.
 - [x] Terms of Service.
 - [x] Privacy Policy.
