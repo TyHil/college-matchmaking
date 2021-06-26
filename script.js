@@ -574,7 +574,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
         }
         setSliders();
         document.getElementById("suggestions").style.position = "absolute";
-        document.body.insertBefore(document.getElementById("addcollege"), document.getElementById("tableholder"));
+        document.body.insertBefore(document.getElementById("addcollege"), document.getElementById("descriptions"));
         if (document.getElementById("welcomecolleges")) {
           document.getElementById("welcomecolleges").remove();
         }
@@ -703,7 +703,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
       }
       for (const category in scores[0]) {
         let catSliderDiv = createSlider(scores[0][category][0]);
-        document.getElementsByClassName(category.replace(/\s+/g, ''))[0].appendChild(catSliderDiv);
+        document.getElementById("table").getElementsByClassName(category.replace(/\s+/g, ''))[0].appendChild(catSliderDiv);
         catSliderDiv.getElementsByClassName("slider")[0].addEventListener("change", function () {
           scores[0][category][0] = parseInt(this.value);
           for (const college of colleges) {
@@ -1089,6 +1089,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
         } else {
           this.classList.remove("clicked");
           this.classList.add("doubleclicked");
+          document.getElementsByClassName(category.replace(/\s+/g, '') + " descriptions")[0].style.display = "none";
         }
       });
       document.body.insertBefore(button, document.getElementById("addcollege"));
@@ -1158,6 +1159,44 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
   console.error("Load Headers Failed!", error);
 });
 allLoaded.push(headersLoaded);
+
+let descriptions;
+let descriptionsLoaded = loadJSON("./descriptions.json").then(response => {//load descriptions from descriptions.json
+  descriptions = JSON.parse(response);
+  for (const category in descriptions) {
+    let div = document.createElement("div");
+    div.classList.add(category.replace(/\s+/g, ''));
+    div.classList.add("descriptions");
+    let h2 = document.createElement("h2");
+    h2.innerText = category;
+    div.appendChild(h2);
+    let p = document.createElement("p");
+    p.innerText = descriptions[category][0];
+    div.appendChild(p);
+    if (descriptions[category].length > 1) {
+      let h3 = document.createElement("h4");
+      h3.innerText = "Links for further reading:";
+      div.appendChild(h3);
+      for (const link in descriptions[category][1]) {
+        let a = document.createElement("a");
+        a.innerText = link;
+        a.href = descriptions[category][1][link];
+        a.target = "_blank";
+        div.appendChild(a);
+        div.appendChild(document.createElement("br"));
+      }
+      div.appendChild(document.createElement("br"));
+    }
+    if (category != "Match Scores") {
+      div.style.display = "none";
+    }
+    document.getElementById("descriptions").appendChild(div);
+  }
+}, error => {
+  createToast("Load Descriptions Failed!");
+  console.error("Load Descriptions Failed!", error);
+});
+allLoaded.push(descriptionsLoaded);
 
 let scores = [];//scores float, sail, and swim scores.
 let scoreNames = ["FLOAT", "SAIL", "SWIM"];

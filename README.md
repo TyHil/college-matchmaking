@@ -26,8 +26,7 @@ The College Matchmaking website.
 - [x] Make website icon.
   - [x] FLOAT, SAIL, and SWIM icons.
 - [x] Add match score descriptions.
-- [ ] **Add category descriptions.**
-  - [ ] **Show links and desc not in popup.**
+- [x] Add category descriptions.
 - [x] Add header with an icon, name, and donation page.
   - [x] Donate button (through donorbox).
 - [x] Add inputs above the table for: SAT/ACT/none, want financial aid.
@@ -43,13 +42,8 @@ The College Matchmaking website.
   - [x] schools
 - [ ] Sort columns in table (low priority).
 - [x] Bug report
-- [x] make unranked give a score of 1
-- [x] income based net price in cost with an average when not specified
-  - ""Averagenetpricefor0-30,000familyincome": [3, [5000, 20000, 30000, 45000], [5, 4, 3, 2, 1]],"
-- [x] Only include "avg_pc_need_met" if user wants need based aid
-  - User can just set the Percent of need met weight to 0
-- [x] Every tab gets an override and subscore
-  - Call it Manual
+- [ ] Location checkboxes
+- [ ] Programs checkboxes
 ### Stuff Cy can do
 - [x] Include all data points in headers.json.
   - [x] Switch to Ellen's data.
