@@ -1,14 +1,12 @@
 [
   {
     "ID":"CaliforniaInstituteofTechnology",
-    "Notes":"Caltech is a school",
     "Diversity": {
       "Notes": "Diversity Cal description"
     }
   },
   {
     "ID":"AustinCollege",
-    "Notes":"My description",
     "Size": {
       "Override": 3
     },
