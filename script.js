@@ -1293,7 +1293,11 @@ function updateRowMatchScores(college) {
       score = Math.min(scoreTot / weightSumTot + boost * 3 / 100, 1);
       document.getElementById(college).getElementsByClassName(scoreNames[i] + "Subscore")[0].innerText = Math.round(score * 10000) / 100 + "%";
       document.getElementById(college).getElementsByClassName(scoreNames[i] + "Subscore")[0].style.backgroundColor = "var(--high" + (Math.min(Math.trunc(score * 5), 4)) + ")";//score highlight
-      score = (score + 4 * floatScore) / 5;
+      if (i == 1) {
+        score = floatScore + 1.4 * (score - 0.85);
+      } else if (i == 2) {
+        score = floatScore + (score - 0.92);
+      }
     }
     document.getElementById(college).getElementsByClassName(scoreNames[i])[0].innerText = Math.round(score * 10000) / 100 + "%";
     document.getElementById(college).getElementsByClassName(scoreNames[i])[0].style.backgroundColor = "var(--high" + (Math.min(Math.trunc(score * 5), 4)) + ")";//score highlight
