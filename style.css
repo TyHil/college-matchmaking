@@ -332,8 +332,9 @@ table th p {
   background-color: var(--light0);
   padding: 20px;
   margin: 0 auto;
-  width: fit-content;
-  max-width: 75%;
+  /*width: fit-content;
+  max-width: 75%;*/
+  width: clamp(45ch, 50%, 75ch);
   max-height: 70%;
   border-radius: 8px;
   top: 15%;

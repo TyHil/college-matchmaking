@@ -1532,7 +1532,7 @@ function addRowToTable(college) {
         }
         td.classList.add(category.replace(/\s+/g, ''));
         td.classList.add(keyName);
-        if (category != "Acceptance" && category in getFromColleges(college) && "Override" in getFromColleges(college)[category] && keyName in scores[0][category][1]) {
+        if (category != "Acceptance" && category in getFromColleges(college) && "Override" in getFromColleges(college)[category] && scores[0][category].length > 1 && keyName in scores[0][category][1]) {
           td.style.backgroundColor = "var(--high" + (getFromColleges(college)[category].Override - 1) + ")";
         }
         if (showhide) {

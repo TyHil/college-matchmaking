@@ -1,18 +1,22 @@
 [
   {
-    "ID":"CaliforniaInstituteofTechnology",
-    "Diversity": {
-      "Notes": "Diversity Cal description"
+    "ID": "RiceUniversity",
+    "Size": {
+      "Notes": "You can write notes here."
     }
   },
   {
-    "ID":"AustinCollege",
+    "ID": "UniversityofTexasatAustin",
     "Size": {
-      "Override": 3
-    },
-    "Diversity": {
-      "Notes": "Diversity Aus description",
-      "Override": 5
+      "Notes": "And override scores with the checkbox.",
+      "Override": 4
+    }
+  },
+  {
+    "ID": "NewYorkUniversity",
+    "Location": {
+      "Override": 2,
+      "Notes": "Choose you own location score here."
     }
   }
 ]

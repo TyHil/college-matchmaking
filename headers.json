@@ -7,7 +7,7 @@
     "SWIM": "SWIM"
   },
   "General": {
-    "City": "Location",
+    "City": "CityState",
     "Undergraduate Population": ["NoofUgrads", "Integer"],
     "Cost Rating": "COAConvertedto5-starrating",
     "College Website": ["CollegeURL", "link"],
@@ -21,7 +21,7 @@
     "Undergraduate Population": ["NoofUgrads", "Integer"]
   },
   "Location": {
-    "City": "Location",
+    "City": "CityState",
     "Zip Code": "ZipCode",
     "Setting": "Setting",
     "Temperature": ["average_temp_degreesF", "Degree"]
