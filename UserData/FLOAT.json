@@ -32,7 +32,7 @@
   }],
   "Programs": [3],
   "Retention": [3, {
-    "FreshmenRetentionRate": [4, [0.6, 0.8, 0.875, 0.95]],
+    "FreshmanRetentionRate": [4, [0.6, 0.8, 0.875, 0.95]],
     "4yr_graduation_rate": [2, [0, 1]],
     "6-yrcompletionrate": [2, [0, 1]]
   }]

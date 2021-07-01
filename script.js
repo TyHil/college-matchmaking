@@ -674,7 +674,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
           let h3one = document.createElement("h3");
           if (category == "Acceptance") {
             h3one.innerText = "Boost";
-          } else if (scores[0][category] == 1) {
+          } else if (scores[0][category].length == 1) {
             h3one.innerText = "Manual";
           } else {
             h3one.innerText = "Override";
@@ -713,6 +713,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
         });
         for (const key in scores[0][category][1]) {
           let sliderDiv = createSlider(scores[0][category][1][key][0]);
+          console.log(key, category, document.getElementsByClassName(key + " " + category.replace(/\s+/g, ''))[0]);
           document.getElementsByClassName(key + " " + category.replace(/\s+/g, ''))[0].appendChild(sliderDiv);
           let range = sliderDiv.getElementsByClassName("slider")[0];
           range.addEventListener("change", function () {
@@ -1089,7 +1090,9 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
         } else {
           this.classList.remove("clicked");
           this.classList.add("doubleclicked");
-          document.getElementsByClassName(category.replace(/\s+/g, '') + " descriptions")[0].style.display = "none";
+          if (category in descriptions) {
+            document.getElementsByClassName(category.replace(/\s+/g, '') + " descriptions")[0].style.display = "none";
+          }
         }
       });
       document.body.insertBefore(button, document.getElementById("addcollege"));
