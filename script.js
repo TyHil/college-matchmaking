@@ -1192,40 +1192,39 @@ let descriptionsLoaded = loadJSON("./descriptions.json").then(response => {//loa
     h2.innerText = category;
     div.appendChild(h2);
     let p = document.createElement("p");
-    p.innerText = descriptions[category][0];
+    p.innerText = descriptions[category].Description;
     div.appendChild(p);
-    if (descriptions[category].length > 1) {
-      if ("Checkboxes" in descriptions[category][1]) {
-        checkboxes[category] = {};
-        let h3 = document.createElement("h4");
-        h3.innerText = "Checkboxes:";
-        div.appendChild(h3);
-        for (const value of descriptions[category][1].Checkboxes) {
-          checkboxes[category][value.replace(/\s+/g, '')] = 0;
-          let checkdiv = document.createElement("div");
-          checkdiv.classList.add("descCheckDiv");
-          let checkbox = document.createElement("input");
-          checkbox.classList.add(value.replace(/\s+/g, ''));
-          checkbox.type = "checkbox";
-          checkbox.addEventListener("click", function () {
-            checkboxes[category][value.replace(/\s+/g, '')] = this.checked ? 1 : 0;
-            writeUserData(1);
-          });
-          checkdiv.appendChild(checkbox);
-          let p = document.createElement("p");
-          p.innerText = value;
-          checkdiv.appendChild(p);
-          div.appendChild(checkdiv);
-        }
-        delete descriptions[category][1].Checkboxes;
+    if ("Checkboxes" in descriptions[category]) {
+      checkboxes[category] = {};
+      let h3 = document.createElement("h4");
+      h3.innerText = "Checkboxes:";
+      div.appendChild(h3);
+      for (const value of descriptions[category].Checkboxes) {
+        checkboxes[category][value.replace(/\s+/g, '')] = 0;
+        let checkdiv = document.createElement("div");
+        checkdiv.classList.add("descCheckDiv");
+        let checkbox = document.createElement("input");
+        checkbox.classList.add(value.replace(/\s+/g, ''));
+        checkbox.type = "checkbox";
+        checkbox.addEventListener("click", function () {
+          checkboxes[category][value.replace(/\s+/g, '')] = this.checked ? 1 : 0;
+          writeUserData(1);
+        });
+        checkdiv.appendChild(checkbox);
+        let p = document.createElement("p");
+        p.innerText = value;
+        checkdiv.appendChild(p);
+        div.appendChild(checkdiv);
       }
+    }
+    if ("Links" in descriptions[category]) {
       let h3 = document.createElement("h4");
       h3.innerText = "Links for further reading:";
       div.appendChild(h3);
-      for (const link in descriptions[category][1]) {
+      for (const link in descriptions[category].Links) {
         let a = document.createElement("a");
         a.innerText = link;
-        a.href = descriptions[category][1][link];
+        a.href = descriptions[category].Links[link];
         a.target = "_blank";
         div.appendChild(a);
         div.appendChild(document.createElement("br"));
