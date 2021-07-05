@@ -266,6 +266,14 @@ function signedIn(loadData) {
       }
       document.getElementById("gpa").getElementsByTagName("input")[0].value = userinfo.gpa;
       document.getElementById("income").getElementsByTagName("select")[0].value = userinfo.income;
+      if (response.checkboxes) {// Kinda temporary untill all users have checkboxes in their data
+        checkboxes = response.checkboxes;
+        for (const category in checkboxes) {
+          for (const value in checkboxes[category]) {
+            document.getElementsByClassName(category.replace(/\s+/g, '') + " descriptions")[0].getElementsByClassName(value)[0].checked = checkboxes[category][value];
+          }
+        }
+      }
     }, error => {
       createToast("Load User Data Failed!");
       console.error("Load User Data Failed!", error);
@@ -351,7 +359,8 @@ function writeUserData(toast) {
     firebase.database().ref('/users/' + firebase.auth().currentUser.uid).set({
       colleges: colleges,
       FLOAT: scores[0],
-      userinfo: userinfo
+      userinfo: userinfo,
+      checkboxes: checkboxes
     }).then(() => {
       if (toast) {
         createToast("Saved!");
@@ -713,7 +722,6 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
         });
         for (const key in scores[0][category][1]) {
           let sliderDiv = createSlider(scores[0][category][1][key][0]);
-          console.log(key, category, document.getElementsByClassName(key + " " + category.replace(/\s+/g, ''))[0]);
           document.getElementsByClassName(key + " " + category.replace(/\s+/g, ''))[0].appendChild(sliderDiv);
           let range = sliderDiv.getElementsByClassName("slider")[0];
           range.addEventListener("change", function () {
@@ -1116,13 +1124,22 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
             img.classList.add("scoreicon");
             img.title = scoreNames[i] + " Score Info"
             img.alt = scoreNames[i] + " Score Info"
-            img.addEventListener("click", function () {
+            let question = document.createElement("span");
+            question.classList.add("icon");
+            question.classList.add("material-icons");
+            question.classList.add("question");
+            question.title = "Remove College";
+            question.innerText = "help";
+            function infoPopup() {
               let genericmodal = document.getElementById("genericmodal");
               genericmodal.getElementsByTagName("h1")[0].innerText = scoreNames[i] + " Score";
               genericmodal.getElementsByTagName("p")[0].innerText = scoreModalInfo[i];
               genericmodal.style.display = "block";
-            });
+            }
+            img.addEventListener("click", infoPopup);
+            question.addEventListener("click", infoPopup);
             datath.appendChild(img);
+            datath.appendChild(question);
           }
         }
         let h3 = document.createElement("h3");
@@ -1164,6 +1181,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
 allLoaded.push(headersLoaded);
 
 let descriptions;
+let checkboxes = {};
 let descriptionsLoaded = loadJSON("./descriptions.json").then(response => {//load descriptions from descriptions.json
   descriptions = JSON.parse(response);
   for (const category in descriptions) {
@@ -1177,6 +1195,30 @@ let descriptionsLoaded = loadJSON("./descriptions.json").then(response => {//loa
     p.innerText = descriptions[category][0];
     div.appendChild(p);
     if (descriptions[category].length > 1) {
+      if ("Checkboxes" in descriptions[category][1]) {
+        checkboxes[category] = {};
+        let h3 = document.createElement("h4");
+        h3.innerText = "Checkboxes:";
+        div.appendChild(h3);
+        for (const value of descriptions[category][1].Checkboxes) {
+          checkboxes[category][value.replace(/\s+/g, '')] = 0;
+          let checkdiv = document.createElement("div");
+          checkdiv.classList.add("descCheckDiv");
+          let checkbox = document.createElement("input");
+          checkbox.classList.add(value.replace(/\s+/g, ''));
+          checkbox.type = "checkbox";
+          checkbox.addEventListener("click", function () {
+            checkboxes[category][value.replace(/\s+/g, '')] = this.checked ? 1 : 0;
+            writeUserData(1);
+          });
+          checkdiv.appendChild(checkbox);
+          let p = document.createElement("p");
+          p.innerText = value;
+          checkdiv.appendChild(p);
+          div.appendChild(checkdiv);
+        }
+        delete descriptions[category][1].Checkboxes;
+      }
       let h3 = document.createElement("h4");
       h3.innerText = "Links for further reading:";
       div.appendChild(h3);

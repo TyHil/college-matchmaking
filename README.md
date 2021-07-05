@@ -42,8 +42,9 @@ The College Matchmaking website.
   - [x] schools
 - [ ] Sort columns in table (low priority).
 - [x] Bug report
-- [ ] Location checkboxes
-- [ ] Programs checkboxes
+- [x] Location checkboxes
+- [x] Programs checkboxes
+- [ ] Frozen headers
 ### Stuff Cy can do
 - [x] Include all data points in headers.json.
   - [x] Switch to Ellen's data.
