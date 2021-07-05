@@ -1128,7 +1128,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
             question.classList.add("icon");
             question.classList.add("material-icons");
             question.classList.add("question");
-            question.title = "Remove College";
+            question.title = scoreNames[i] + " Score Info";
             question.innerText = "help";
             function infoPopup() {
               let genericmodal = document.getElementById("genericmodal");
