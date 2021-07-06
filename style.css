@@ -60,6 +60,22 @@ body {
   background-color: var(--light0);
 }
 
+/*Buttons*/
+button {
+  color: var(--dark0);
+  background-color: var(--light1);
+  text-align: center;
+  text-decoration: none;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+  margin: 4px 2px;
+  padding: 6px 8px;
+}
+button:hover {
+  background-color: var(--light2);
+}
+
 /*Icons*/
 .icon {
   cursor: pointer;
@@ -85,6 +101,9 @@ option {
 }
 
 /*User info*/
+#userinfo {
+  margin: 0 10px;
+}
 .userinfo p {
   display: inline;
   font-size: 14px;
@@ -119,18 +138,17 @@ option {
 /*Bug report*/
 #bug {
   float: right;
-  margin: 4px 2px;
+  margin: 4px 12px 4px 2px;
 }
 
 /*Table Buttons*/
+#buttonholder {
+  margin: 0 10px;
+}
 .hidebutton {
+  color: var(--dark0);
   font-size: 14px;
   margin: 4px 2px;
-  cursor: pointer;
-  background-color: var(--light1);
-  border: none;
-	border-radius: 4px;
-  text-decoration: none;
   display: inline-block;
   padding: 6px 8px;
 }
@@ -145,6 +163,7 @@ option {
 
 /*Add a college*/
 #addcollege {
+  margin-right: 10px;
   position: relative;
   display: inline-block;
 }
@@ -186,12 +205,22 @@ option {
 }
 
 /*Descriptions*/
+#descriptions {
+  margin: 0 10px;
+}
+.descriptions {
+  display: none;
+}
 .descCheckDiv input, .descCheckDiv p {
   display: inline;
+}
+.descsDropdown {
+  margin-bottom: 20px;
 }
 
 /*Table*/
 #tableholder {
+  margin: 0 10px;
   overflow: auto;
   padding: 1px 0;
 }
@@ -271,6 +300,7 @@ table th p {
   display: flex;
   align-items: center;
   margin-right: auto;
+  margin-left: 10px;
   text-align: left;
   padding: 0px;
 }
@@ -283,6 +313,7 @@ table th p {
   background-color: var(--light2);
 }
 #header #signuplogin {
+  margin-right: 10px;
   background: linear-gradient(90deg, #61cae3, #3489c9);
 }
 @media screen and (max-width: 680px) {
@@ -295,7 +326,7 @@ table th p {
   align-items: center;
 }
 #userimg {
-  margin-right: 5px;
+  margin-right: 15px;
   margin-left: 5px;
   border-radius: 100%;
   width: 35px;
@@ -420,14 +451,9 @@ table th p {
 }
 
 /*Modal and Popup Buttons*/
-.modal .buttons, .popup a {
-  color: var(--dark0);
-  text-align: center;
-  text-decoration: none;
+.modal .buttons, .popup button {
   font-size: 16px;
   line-height: 20px;
-  border-radius: 4px;
-  cursor: pointer;
   padding: 5px;
   margin: 2px 0;
 }
@@ -457,10 +483,14 @@ table th p {
   margin-right: 10px;
   vertical-align: text-top;
 }
-#useractions a {
+#useractions button {
+  background-color: var(--light0);
   width: 100%;
   padding: 7px 0;
   margin: 0;
+}
+#logout:hover, #changepass:hover {
+  background-color: var(--light1);
 }
 
 /*Sliders*/
@@ -601,18 +631,14 @@ table th p {
   font-size: 16px;
   line-height: 34px;
 }
-.toast a {
+.toast button {
   display: inline-block;
-  color: var(--dark0);
-  text-align: center;
+  background-color: var(--light2);
   padding: 5px;
-  text-decoration: none;
   font-size: 16px;
   line-height: 20px;
-  border-radius: 4px;
   margin: 2px 0;
-  cursor: pointer;
 }
-.toast a:hover {
+.toast button:hover {
   background-color: var(--light3);
 }

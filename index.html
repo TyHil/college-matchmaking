@@ -51,9 +51,11 @@
     </div>
   </div>
 
-  <div id="addcollege">
-    <input type="text" id="textinput" placeholder="Add a college" autocomplete="off">
-    <div id="suggestions"></div>
+  <div id="buttonholder">
+    <div id="addcollege">
+      <input type="text" id="textinput" placeholder="Add a college" autocomplete="off">
+      <div id="suggestions"></div>
+    </div>
   </div>
 
   <div id="descriptions"></div>
@@ -68,8 +70,8 @@
       <h1>Welcome to College Matchmaking!</h1>
       <p>We’re a high school student developed tool to help you narrow down your college list!<br><br>We'll help you decide what you want in your college experience and then generate match scores for each college on your list using aggregated public data and your personal preferences. We have three match scores: FLOAT is just the fit of the school while SAIL and SWIM include the fit but are higher for easier and harder schools, respectively.<br><br>You can click on the score icons on our main page to learn more about them and run our Setup Wizard to get started.</p>
       <div class="buttonbox">
-        <a id="modallogin" class="buttons">Log In</a>
-        <a id="setupwizard" class="buttons">Setup Wizard</a>
+        <button id="modallogin" class="buttons">Log In</button>
+        <button id="setupwizard" class="buttons">Setup Wizard</button>
       </div>
     </div>
   </div>
@@ -91,10 +93,10 @@
       <h3></h3>
       <span id="changeemail" class="material-icons editicon icon" title ="Change Email">edit</span>
     </div>
-    <a id="reset">Reset Match Scores</a>
-    <a id="changepass">Change Password</a>
-    <a id="logout">Log Out</a>
-    <a id="deleteaccnt">Delete Account</a>
+    <button id="reset">Reset Match Scores</button>
+    <button id="changepass">Change Password</button>
+    <button id="logout">Log Out</button>
+    <button id="deleteaccnt">Delete Account</button>
   </div>
 
   <div class="modal" id="confirmmodal">
@@ -103,8 +105,8 @@
       <h1>Confirm</h1>
       <p>This will</p>
       <div class="buttonbox">
-        <a id="cancel" class="buttons">Cancel</a>
-        <a id="confirm" class="buttons mainbtn">Confirm</a>
+        <button id="cancel" class="buttons">Cancel</button>
+        <button id="confirm" class="buttons mainbtn">Confirm</button>
       </div>
     </div>
   </div>

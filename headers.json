@@ -8,7 +8,7 @@
   },
   "General": {
     "City": "CityState",
-    "Undergraduate Population": ["NoofUgrads", "Integer"],
+    "Undergraduate Enrollment": ["NoofUgrads", "Integer"],
     "Cost Rating": "COAConvertedto5-starrating",
     "College Website": ["CollegeURL", "link"],
     "Acceptance Rate": ["AcceptanceRate", "%"],
@@ -18,7 +18,7 @@
     "Summary Info": ["CollegeDataLink", "link"]
   },
   "Size": {
-    "Undergraduate Population": ["NoofUgrads", "Integer"]
+    "Undergraduate Enrollment": ["NoofUgrads", "Integer"]
   },
   "Location": {
     "City": "CityState",

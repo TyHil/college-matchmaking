@@ -314,17 +314,17 @@ let uiConfig = {
   privacyPolicyUrl: './legal/privacypolicy.html'//Privacy policy url
 };
 
-function createToast(text, callback = 0) {
+function createToast(text, resolve = 0, reject = 0) {
   let div = document.createElement("div");
   div.classList.add("toast");
   let p = document.createElement("p");
   p.innerText = text;
   div.appendChild(p);
-  if (callback) {
-    let undo = document.createElement("a");
+  if (reject) {
+    let undo = document.createElement("button");
     undo.innerText = "Undo";
     undo.addEventListener("click", function () {
-      callback();
+      reject();//undo
       div.classList.add("animateout");
       div.addEventListener("animationend", function () {
         div.remove();
@@ -335,6 +335,9 @@ function createToast(text, callback = 0) {
   let clearTimer = setTimeout(function () {
     div.classList.add("animateout");
     div.addEventListener("animationend", function () {
+      if (resolve) {
+        resolve();
+      }
       div.remove();
     });
   }, 6000);
@@ -577,13 +580,14 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
     const observer = new MutationObserver(function (list) {
       if (genericmodal.style.display == "none") {
         genericmodal.getElementsByClassName("buttonbox")[0].style.display = "none";
-        document.body.insertBefore(document.getElementById("userinfo"), document.getElementsByClassName("hidebutton")[0]);
+        document.body.insertBefore(document.getElementById("userinfo"), document.getElementById("buttonholder"));
+        document.getElementsByClassName("Size descriptions")[0].appendChild(document.getElementById("sizeBtnDiv"));
         if (document.getElementById("welcomeweights")) {
           document.getElementById("welcomeweights").remove();
         }
         setSliders();
         document.getElementById("suggestions").style.position = "absolute";
-        document.body.insertBefore(document.getElementById("addcollege"), document.getElementById("descriptions"));
+        document.getElementById("buttonholder").appendChild(document.getElementById("addcollege"));
         if (document.getElementById("welcomecolleges")) {
           document.getElementById("welcomecolleges").remove();
         }
@@ -610,7 +614,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
       content.insertBefore(document.getElementById("userinfo"), buttonbox);//userinfo
       this.innerText = "Next";
       this.onclick = function () {
-        document.body.insertBefore(document.getElementById("userinfo"), document.getElementsByClassName("hidebutton")[0]);
+        document.body.insertBefore(document.getElementById("userinfo"), document.getElementById("buttonholder"));
         genericmodal.getElementsByTagName("h1")[0].innerText = "Category Weights";
         genericmodal.getElementsByTagName("p")[0].innerText = "Use the sliders to choose how important each category is to you. We'll use this to calculte your personalized match scores.";
         let welcometable = document.createElement("table");//weights
@@ -633,12 +637,12 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
           welcometable.appendChild(tr);
         }
         content.insertBefore(welcometable, buttonbox);
+        content.insertBefore(document.getElementById("sizeBtnDiv"), buttonbox);//size choice
         this.onclick = function () {
           document.getElementById("textinput").removeEventListener("click", searchSetup, { once: true });
           searchSetup();
-          if (document.getElementById("welcomeweights")) {
-            document.getElementById("welcomeweights").remove();
-          }
+          welcometable.remove();
+          document.getElementsByClassName("Size descriptions")[0].appendChild(document.getElementById("sizeBtnDiv"));
           let welcomecolleges = document.createElement("div");
           welcomecolleges.id = "welcomecolleges";
           content.insertBefore(welcomecolleges, buttonbox);
@@ -684,7 +688,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
           if (category == "Acceptance") {
             h3one.innerText = "Boost";
           } else if (scores[0][category].length == 1) {
-            h3one.innerText = "Manual";
+            h3one.innerText = "Enter Your Score Here";
           } else {
             h3one.innerText = "Override";
           }
@@ -772,7 +776,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
           let breakline1 = document.createElement("div");
           breakline1.classList.add("break");
           datachange.appendChild(breakline1);
-          let reset = document.createElement("a");
+          let reset = document.createElement("button");
           reset.classList.add("mainbtn");
           reset.innerText = "Reset";
           reset.addEventListener("click", function () {
@@ -909,8 +913,8 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
             div.appendChild(score);
             let scoreSlider = document.createElement("input");
             scoreSlider.type = "range";
-            scoreSlider.min = "1";
-            scoreSlider.max = "5";
+            scoreSlider.min = 1;
+            scoreSlider.max = 5;
             scoreSlider.classList.add("slider");
             scoreSlider.classList.add("vert");
             scoreSlider.value = scoreVals[i];
@@ -1066,7 +1070,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
   let datatr = document.createElement("tr");
   for (const category in headers) {
     if (category != "Actions" && category != "Name") {
-      let button = document.createElement("a");
+      let button = document.createElement("button");
       button.classList.add("hidebutton");
       if (category == "Match Scores") {
         button.classList.add("clicked");
@@ -1103,7 +1107,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
           }
         }
       });
-      document.body.insertBefore(button, document.getElementById("addcollege"));
+      document.getElementById("buttonholder").insertBefore(button, document.getElementById("addcollege"));
     }
     let categoryth = document.createElement("th");
     let h2 = document.createElement("h2");
@@ -1196,9 +1200,9 @@ let descriptionsLoaded = loadJSON("./descriptions.json").then(response => {//loa
     div.appendChild(p);
     if ("Checkboxes" in descriptions[category]) {
       checkboxes[category] = {};
-      let h3 = document.createElement("h4");
-      h3.innerText = "Checkboxes:";
-      div.appendChild(h3);
+      let h4 = document.createElement("h4");
+      h4.innerText = "Some things you might care about:";
+      div.appendChild(h4);
       for (const value of descriptions[category].Checkboxes) {
         checkboxes[category][value.replace(/\s+/g, '')] = 0;
         let checkdiv = document.createElement("div");
@@ -1218,9 +1222,9 @@ let descriptionsLoaded = loadJSON("./descriptions.json").then(response => {//loa
       }
     }
     if ("Links" in descriptions[category]) {
-      let h3 = document.createElement("h4");
-      h3.innerText = "Links for further reading:";
-      div.appendChild(h3);
+      let h4 = document.createElement("h4");
+      h4.innerText = "Links for further reading:";
+      div.appendChild(h4);
       for (const link in descriptions[category].Links) {
         let a = document.createElement("a");
         a.innerText = link;
@@ -1229,6 +1233,31 @@ let descriptionsLoaded = loadJSON("./descriptions.json").then(response => {//loa
         div.appendChild(a);
         div.appendChild(document.createElement("br"));
       }
+    }
+    if (category == "Size") {
+      let sizes = { "Tiny (less than 700)": [5, 3, 2, 1, 1], "Small (700-3,500)": [3, 5, 3, 2, 1], "Medium (3,500-9,000)": [1, 3, 5, 3, 1], "Large (9,000 to 19,000)": [1, 2, 3, 5, 3], "Huge (more than 19,000)": [1, 1, 2, 3, 5] };
+      let sizeBtnDiv = document.createElement("div");
+      sizeBtnDiv.id = "sizeBtnDiv";
+      let h4 = document.createElement("h4");
+      h4.innerText = "Choose a quick undergraduate enrollment calculation:";
+      sizeBtnDiv.appendChild(h4);
+      for (const size in sizes) {
+        let button = document.createElement("button");
+        button.innerText = size;
+        button.addEventListener("click", function () {
+          createToast("Updated!");
+          scores[0].Size[1].NoofUgrads[1] = [700, 3500, 9000, 18000];
+          scores[0].Size[1].NoofUgrads[2] = sizes[size];
+          for (const college of colleges) {
+            updateRowMatchScores(college.ID);
+          }
+          writeUserData(1);
+        });
+        sizeBtnDiv.appendChild(button);
+      }
+      div.appendChild(sizeBtnDiv);
+    }
+    if ("Links" in descriptions[category] || category == "Size") {
       div.appendChild(document.createElement("br"));
     }
     if (category != "Match Scores") {
@@ -1420,7 +1449,7 @@ function updateRowData(college) {
               fill = response[headers[category]];
             }
           } else if (Array.isArray(headers[category][key])) {
-            if (headers[category][key][0] in response || headers[category][key][0] == "Averagenetpriceforfamilyincome") {//format numbers
+            if (headers[category][key][0] in response || (headers[category][key][0] == "Averagenetpriceforfamilyincome" && "Averagenetpricefor" + userinfo.income + "familyincome" in response)) {//format numbers
               if (headers[category][key][0] == "Averagenetpriceforfamilyincome") {
                 fill = response["Averagenetpricefor" + userinfo.income + "familyincome"];
               } else {
@@ -1545,18 +1574,18 @@ function addRowToTable(college) {
       remove.title = "Remove College";
       remove.innerText = "delete";
       remove.addEventListener("click", () => {
-        document.getElementById(college).remove();
-        createToast(collegesData[getFromColleges(college).ID].Name + " Removed", function () {
-          colleges.push({ "ID": college });
-          addRowToTable(college);
-          writeUserData(1);
-        });
-        for (let i = 0; i < colleges.length; i++) {
-          if (colleges[i].ID == college) {
-            colleges.splice(i, 1);
+        document.getElementById(college).style.display = "none"
+        createToast(collegesData[getFromColleges(college).ID].Name + " Removed", function () {//resolve: remove
+          document.getElementById(college).remove();
+          for (let i = 0; i < colleges.length; i++) {
+            if (colleges[i].ID == college) {
+              colleges.splice(i, 1);
+            }
           }
-        }
-        writeUserData(0);
+          writeUserData(0);
+        }, function () {//reject: restore
+          document.getElementById(college).style.display = "table-row";
+        });
       });
       actionsdiv.appendChild(remove);
       td.appendChild(actionsdiv);
@@ -1599,7 +1628,7 @@ function addRowToTable(college) {
         score.classList.add("overlabel");
         let scoreSlider = document.createElement("input");
         scoreSlider.type = "range";
-        scoreSlider.min = "1";
+        scoreSlider.min = 1;
         scoreSlider.max = 5;
         scoreSlider.classList.add("slider");
         scoreSlider.classList.add("overslider");
@@ -1610,7 +1639,11 @@ function addRowToTable(college) {
           overridetd.style.backgroundColor = "var(--high" + (overrideVal - 1) + ")";
         } else {
           scoreSlider.style.display = "none";
-          score.style.display = "none";
+          if (category != "Acceptance" && scores[0][category].length == 1) {
+            score.innerText = "Click to choose";
+          } else {
+            score.style.display = "none";
+          }
         }
         checkbox.addEventListener("click", function () {
           if (this.checked) {
@@ -1632,7 +1665,11 @@ function addRowToTable(college) {
             updateRowMatchScores(college);
           } else {
             scoreSlider.style.display = "none";
-            score.style.display = "none";
+            if (category != "Acceptance" && scores[0][category].length == 1) {
+              score.innerText = "Click to choose";
+            } else {
+              score.style.display = "none";
+            }
             delete getFromColleges(college)[category].Override;
             if (Object.keys(getFromColleges(college)[category]).length == 0) {
               delete getFromColleges(college)[category];
@@ -1713,15 +1750,16 @@ function addRowToTable(college) {
   updateRowData(college);
 }
 
+let weightNames = ["Not a factor", "Barely a factor", "Less important", "Average", "Important", "Very important"];
 function setSliders() {
   for (const category in scores[0]) {
     let cell = document.getElementById("table").getElementsByTagName("tr")[0].getElementsByClassName(category.replace(/\s+/g, ''))[0];
     cell.getElementsByClassName("slider")[0].value = scores[0][category][0];
-    cell.getElementsByClassName("weight")[0].innerText = "Weight: " + scores[0][category][0];
+    cell.getElementsByClassName("weight")[0].innerText = weightNames[scores[0][category][0]];
     for (const key in scores[0][category][1]) {
       let cell = document.getElementsByClassName(key + " " + category.replace(/\s+/g, ''))[0];
       cell.getElementsByClassName("slider")[0].value = scores[0][category][1][key][0];
-      cell.getElementsByClassName("weight")[0].innerText = "Weight: " + scores[0][category][1][key][0];
+      cell.getElementsByClassName("weight")[0].innerText = weightNames[scores[0][category][1][key][0]];
     }
   }
 }
@@ -1731,16 +1769,16 @@ function createSlider(val) {
   div.classList.add("scorecontrol");
   let weight = document.createElement("p");
   weight.classList.add("weight");
-  weight.innerText = "Weight: " + val;
+  weight.innerText = weightNames[val];
   div.appendChild(weight);
   let range = document.createElement("input");
   range.type = "range";
-  range.min = "0";
-  range.max = "5";
+  range.min = 0;
+  range.max = 5;
   range.value = val;
   range.classList.add("slider");
   range.addEventListener("input", function () {
-    this.parentElement.getElementsByTagName("p")[0].innerText = "Weight: " + this.value;
+    this.parentElement.getElementsByTagName("p")[0].innerText = weightNames[this.value];
   });
   div.appendChild(range);
   div.style.width = "100px";
