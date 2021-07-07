@@ -20,6 +20,10 @@ document.getElementById("bug").addEventListener("click", function () {
   window.open("https://docs.google.com/forms/d/e/1FAIpQLScEzG3d7yneyI6youXBKUULJeV5sv_6Znjw6CJvkHUF5tPy9A/viewform?usp=sf_link", "_blank");
 });
 
+function removeSpaces(text) {
+  return text.replace(/\s+/g, '');
+}
+
 function signedIn(loadData) {
   loggedIn = 1;
   window.onbeforeunload = undefined;
@@ -59,7 +63,7 @@ function signedIn(loadData) {
     return new Promise(function (resolve, reject) {
       function finish(credential) {
         firebase.auth().currentUser.reauthenticateWithCredential(credential).then(function () {
-          resolve()
+          resolve();
         }).catch(function (error) {
           reject(error);
         });
@@ -270,7 +274,7 @@ function signedIn(loadData) {
         checkboxes = response.checkboxes;
         for (const category in checkboxes) {
           for (const value in checkboxes[category]) {
-            document.getElementsByClassName(category.replace(/\s+/g, '') + " descriptions")[0].getElementsByClassName(value)[0].checked = checkboxes[category][value];
+            document.getElementsByClassName(removeSpaces(category) + " descriptions")[0].getElementsByClassName(value)[0].checked = checkboxes[category][value];
           }
         }
       }
@@ -316,17 +320,17 @@ let uiConfig = {
   privacyPolicyUrl: './legal/privacypolicy.html'//Privacy policy url
 };
 
-function createToast(text, button = "", reject = 0, resolve = 0) {
+function createToast(text, button = "", buttonClick = 0, closed = 0) {
   let div = document.createElement("div");
   div.classList.add("toast");
   let p = document.createElement("p");
   p.innerText = text;
   div.appendChild(p);
-  if (reject) {
+  if (buttonClick) {
     let undo = document.createElement("button");
     undo.innerText = button;
     undo.addEventListener("click", function () {
-      reject();//undo
+      buttonClick();//undo
       div.classList.add("animateout");
       div.addEventListener("animationend", function () {
         div.remove();
@@ -337,8 +341,8 @@ function createToast(text, button = "", reject = 0, resolve = 0) {
   let clearTimer = setTimeout(function () {
     div.classList.add("animateout");
     div.addEventListener("animationend", function () {
-      if (resolve) {
-        resolve();
+      if (closed) {
+        closed();
       }
       div.remove();
     });
@@ -660,7 +664,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
           genericmodal.getElementsByTagName("p")[0].innerText = "Add some colleges you're considering attending.";
           this.innerText = "Done";
           let modallogin = document.getElementById("modallogin");
-          modallogin.innerText = "Sign Up"
+          modallogin.innerText = "Sign Up";
           modallogin.style.display = "inline";
           document.getElementById("suggestions").style.position = "relative";//colleges
           content.insertBefore(document.getElementById("addcollege"), buttonbox);
@@ -672,10 +676,10 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
               content.classList.remove("out");
               genericmodal.classList.remove("out");
             }, { once: true });
-          }
-        }
-      }
-    }
+          };
+        };
+      };
+    };
   }
   //Only load these once
   if (tableLoadOnce) {
@@ -683,11 +687,11 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
     Promise.all(allLoaded).then(function () {
       /*Load Overrides, Subscores, and Notes*/
       for (const category in headers) {
-        let button = document.getElementById(category.replace(/\s+/g, ''))
+        let button = document.getElementById(removeSpaces(category));
         let showhide = button != null && !button.classList.contains("clicked") && !button.classList.contains("doubleclicked");
         if (category in scores[0] || category == "Acceptance") {
           let rows = document.getElementById("table").getElementsByTagName("tr");
-          rows[0].getElementsByClassName(category.replace(/\s+/g, ''))[0].colSpan += 2;
+          rows[0].getElementsByClassName(removeSpaces(category))[0].colSpan += 2;
           let overrideth = document.createElement("th");
           let h3one = document.createElement("h3");
           if (category == "Acceptance") {
@@ -698,9 +702,9 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
             h3one.innerText = "Override";
           }
           overrideth.appendChild(h3one);
-          overrideth.classList.add(category.replace(/\s+/g, ''));
+          overrideth.classList.add(removeSpaces(category));
           overrideth.classList.add("override");
-          let notesth = document.getElementsByClassName("Notes " + category.replace(/\s+/g, ''))[0];
+          let notesth = document.getElementsByClassName("Notes " + removeSpaces(category))[0];
           rows[1].insertBefore(overrideth, notesth);
           if (showhide) {
             overrideth.style.display = "none";
@@ -710,7 +714,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
             let h3two = document.createElement("h3");
             h3two.innerText = "Subscore";
             subscoreth.appendChild(h3two);
-            subscoreth.classList.add(category.replace(/\s+/g, ''));
+            subscoreth.classList.add(removeSpaces(category));
             subscoreth.classList.add("subscore");
             rows[1].insertBefore(subscoreth, notesth);
             if (showhide) {
@@ -721,7 +725,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
       }
       for (const category in scores[0]) {
         let catSliderDiv = createSlider(scores[0][category][0]);
-        document.getElementById("table").getElementsByClassName(category.replace(/\s+/g, ''))[0].appendChild(catSliderDiv);
+        document.getElementById("table").getElementsByClassName(removeSpaces(category))[0].appendChild(catSliderDiv);
         catSliderDiv.getElementsByClassName("slider")[0].addEventListener("change", function () {
           scores[0][category][0] = parseInt(this.value);
           for (const college of colleges) {
@@ -731,7 +735,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
         });
         for (const key in scores[0][category][1]) {
           let sliderDiv = createSlider(scores[0][category][1][key][0]);
-          document.getElementsByClassName(key + " " + category.replace(/\s+/g, ''))[0].appendChild(sliderDiv);
+          document.getElementsByClassName(key + " " + removeSpaces(category))[0].appendChild(sliderDiv);
           let range = sliderDiv.getElementsByClassName("slider")[0];
           range.addEventListener("change", function () {
             scores[0][category][1][key][0] = parseInt(this.value);
@@ -748,7 +752,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
           plus.classList.add("icon");
           plus.classList.add("material-icons");
           plus.innerText = "expand_more";
-          document.getElementsByClassName(key + " " + category.replace(/\s+/g, ''))[0].getElementsByClassName("scorecontrol")[0].insertBefore(plus, range);
+          document.getElementsByClassName(key + " " + removeSpaces(category))[0].getElementsByClassName("scorecontrol")[0].insertBefore(plus, range);
           let scoreVals = [1, 2, 3, 4, 5];
           if (scores[0][category][1][key].length == 3) {//custom score ordering defined
             scoreVals = scores[0][category][1][key][2];
@@ -1082,12 +1086,12 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
       if (category == "Match Scores") {
         button.classList.add("clicked");
       }
-      button.id = category.replace(/\s+/g, '');
+      button.id = removeSpaces(category);
       button.innerText = category;
       button.addEventListener("click", function () {
         if (this.classList.contains("doubleclicked") && (document.getElementsByClassName("clicked").length || document.getElementsByClassName("doubleclicked").length > 1)) {
           this.classList.remove("doubleclicked");
-          for (const cat of document.getElementsByClassName(category.replace(/\s+/g, ''))) {
+          for (const cat of document.getElementsByClassName(removeSpaces(category))) {
             cat.style.display = "none";
           }
         } else if (!this.classList.contains("clicked")) {
@@ -1096,11 +1100,11 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
             buttons.classList.remove("clicked");
           }
           this.classList.add("clicked");
-          for (const cat of document.getElementsByClassName(category.replace(/\s+/g, ''))) {
+          for (const cat of document.getElementsByClassName(removeSpaces(category))) {
             cat.style.display = "table-cell";
           }
           for (const butcat of document.getElementsByClassName("hidebutton")) {
-            if (butcat.id != "Actions" && butcat.id != "Name" && butcat.id != category.replace(/\s+/g, '') && !butcat.classList.contains("doubleclicked")) {
+            if (butcat.id != "Actions" && butcat.id != "Name" && butcat.id != removeSpaces(category) && !butcat.classList.contains("doubleclicked")) {
               for (const cat of document.getElementsByClassName(butcat.id)) {
                 cat.style.display = "none";
               }
@@ -1110,7 +1114,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
           this.classList.remove("clicked");
           this.classList.add("doubleclicked");
           if (category in descriptions) {
-            document.getElementsByClassName(category.replace(/\s+/g, '') + " descriptions")[0].style.display = "none";
+            document.getElementsByClassName(removeSpaces(category) + " descriptions")[0].style.display = "none";
           }
         }
       });
@@ -1124,7 +1128,6 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
       categoryth.rowSpan = 2;
     } else {
       let length = 0;
-      let income = 1;
       for (const key in headers[category]) {
         let datath = document.createElement("th");
         let keyName = Array.isArray(headers[category][key]) ? headers[category][key][0] : headers[category][key];
@@ -1135,8 +1138,8 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
             img.classList.add("scoreicon");
             img.width = 40;
             img.height = 40;
-            img.title = scoreNames[i] + " Score Info"
-            img.alt = scoreNames[i] + " Score Info"
+            img.title = scoreNames[i] + " Score Info";
+            img.alt = scoreNames[i] + " Score Info";
             let question = document.createElement("span");
             question.classList.add("icon");
             question.classList.add("material-icons");
@@ -1158,7 +1161,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
         let h3 = document.createElement("h3");
         h3.innerText = key;
         datath.appendChild(h3);
-        datath.classList.add(category.replace(/\s+/g, ''));
+        datath.classList.add(removeSpaces(category));
         datath.classList.add(keyName);
         if (category != "Actions" && category != "Name" && category != "Match Scores") {
           datath.style.display = "none";
@@ -1168,7 +1171,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
       }
       categoryth.colSpan = length;
     }
-    categoryth.classList.add(category.replace(/\s+/g, ''));
+    categoryth.classList.add(removeSpaces(category));
     if (category != "Actions" && category != "Name" && category != "Match Scores") {
       categoryth.style.display = "none";
     }
@@ -1179,7 +1182,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
       let h3 = document.createElement("h3");
       h3.innerText = "Notes";
       notesth.appendChild(h3);
-      notesth.classList.add(category.replace(/\s+/g, ''));
+      notesth.classList.add(removeSpaces(category));
       notesth.classList.add("Notes");
       datatr.appendChild(notesth);
       notesth.style.display = "none";
@@ -1199,7 +1202,7 @@ let descriptionsLoaded = loadJSON("./descriptions.json").then(response => {//loa
   descriptions = JSON.parse(response);
   for (const category in descriptions) {
     let div = document.createElement("div");
-    div.classList.add(category.replace(/\s+/g, ''));
+    div.classList.add(removeSpaces(category));
     div.classList.add("descriptions");
     let h2 = document.createElement("h2");
     h2.innerText = category;
@@ -1213,14 +1216,14 @@ let descriptionsLoaded = loadJSON("./descriptions.json").then(response => {//loa
       h4.innerText = "Some things you might care about:";
       div.appendChild(h4);
       for (const value of descriptions[category].Checkboxes) {
-        checkboxes[category][value.replace(/\s+/g, '')] = 0;
+        checkboxes[category][removeSpaces(value)] = 0;
         let checkdiv = document.createElement("div");
         checkdiv.classList.add("descCheckDiv");
         let checkbox = document.createElement("input");
-        checkbox.classList.add(value.replace(/\s+/g, ''));
+        checkbox.classList.add(removeSpaces(value));
         checkbox.type = "checkbox";
         checkbox.addEventListener("click", function () {
-          checkboxes[category][value.replace(/\s+/g, '')] = this.checked ? 1 : 0;
+          checkboxes[category][removeSpaces(value)] = this.checked ? 1 : 0;
           writeUserData(1);
         });
         checkdiv.appendChild(checkbox);
@@ -1239,6 +1242,7 @@ let descriptionsLoaded = loadJSON("./descriptions.json").then(response => {//loa
         a.innerText = link;
         a.href = descriptions[category].Links[link];
         a.target = "_blank";
+        a.rel = "noopener";
         div.appendChild(a);
         div.appendChild(document.createElement("br"));
       }
@@ -1378,7 +1382,7 @@ function updateRowMatchScores(college) {
             scoreCat += scoreDat * weight;
             weightSumCat += 5 * weight;
             if (i == 0) {
-              document.getElementById(college).getElementsByClassName(key + " " + category.replace(/\s+/g, ''))[0].style.backgroundColor = "var(--high" + (scoreDat - 1) + ")";//cell highlights
+              document.getElementById(college).getElementsByClassName(key + " " + removeSpaces(category))[0].style.backgroundColor = "var(--high" + (scoreDat - 1) + ")";//cell highlights
             }
           }
         }
@@ -1387,13 +1391,13 @@ function updateRowMatchScores(college) {
       if (weightSumCat != 0) {
         scoreTot += scoreCat / weightSumCat * weightCat;
         if (category in scores[0]) {
-          let subscore = document.getElementById(college).getElementsByClassName(category.replace(/\s+/g, '') + " subscore")[0];
+          let subscore = document.getElementById(college).getElementsByClassName(removeSpaces(category) + " subscore")[0];
           subscore.innerText = Math.round(scoreCat / weightSumCat * 5 * weightCat * 100) / 100;
           subscore.style.backgroundColor = "var(--high" + (Math.round(scoreCat / weightSumCat * 5) - 1) + ")";
         }
         weightSumTot += weightCat;
       } else if (category in scores[0]) {
-        let subscoreCell = document.getElementById(college).getElementsByClassName(category.replace(/\s+/g, '') + " subscore")[0];
+        let subscoreCell = document.getElementById(college).getElementsByClassName(removeSpaces(category) + " subscore")[0];
         if (scores[0][category].length == 1) {
           subscoreCell.innerText = "Unchosen";
         } else {
@@ -1408,8 +1412,8 @@ function updateRowMatchScores(college) {
       floatScore = score;
     } else {
       let boost = 0;
-      if ("Acceptance" in getFromColleges(college) && "Override" in getFromColleges(college)["Acceptance"]) {
-        boost = getFromColleges(college)["Acceptance"].Override;
+      if ("Acceptance" in getFromColleges(college) && "Override" in getFromColleges(college).Acceptance) {
+        boost = getFromColleges(college).Acceptance.Override;
       }
       score = Math.min(scoreTot / weightSumTot + boost * 3 / 100, 1);
       document.getElementById(college).getElementsByClassName(scoreNames[i] + "Subscore")[0].innerText = Math.round(score * 10000) / 100 + "%";
@@ -1514,7 +1518,7 @@ function updateRowData(college) {
             } else {
               keyName = headers[category][key];
             }
-            document.getElementById(college).getElementsByClassName(keyName + " " + category.replace(/\s+/g, ''))[0].innerText = fill;
+            document.getElementById(college).getElementsByClassName(keyName + " " + removeSpaces(category))[0].innerText = fill;
           }
         }
       }
@@ -1532,7 +1536,7 @@ function addRowToTable(college) {
   for (const category in headers) {
     if (category == "Actions") {
       let td = document.createElement("td");
-      td.classList.add(category.replace(/\s+/g, ''));
+      td.classList.add(removeSpaces(category));
       let actionsdiv = document.createElement("div");
       actionsdiv.classList.add("actionsdiv");
       let arrowdiv = document.createElement("div");
@@ -1560,7 +1564,7 @@ function addRowToTable(college) {
       down.classList.add("icon");
       down.classList.add("arrow");
       down.classList.add("material-icons");
-      down.title = "Move College Down"
+      down.title = "Move College Down";
       down.innerText = "expand_more";
       down.addEventListener("click", () => {
         for (let i = 0; i < colleges.length - 1; i++) {
@@ -1583,10 +1587,10 @@ function addRowToTable(college) {
       remove.title = "Remove College";
       remove.innerText = "delete";
       remove.addEventListener("click", () => {
-        document.getElementById(college).style.display = "none"
-        createToast(collegesData[getFromColleges(college).ID].Name + " Removed", "Undo", function () {//reject: restore
+        document.getElementById(college).style.display = "none";
+        createToast(collegesData[getFromColleges(college).ID].Name + " Removed", "Undo", function () {//buttonClick: restore
           document.getElementById(college).style.display = "table-row";
-        }, function () {//resolve: remove
+        }, function () {//closed: remove
           document.getElementById(college).remove();
           for (let i = 0; i < colleges.length; i++) {
             if (colleges[i].ID == college) {
@@ -1600,7 +1604,7 @@ function addRowToTable(college) {
       td.appendChild(actionsdiv);
       tr.appendChild(td);
     } else {
-      let button = document.getElementById(category.replace(/\s+/g, ''))
+      let button = document.getElementById(removeSpaces(category));
       let showhide = button != null && !button.classList.contains("clicked") && !button.classList.contains("doubleclicked");
       for (const key in headers[category]) {
         let td = document.createElement("td");
@@ -1612,7 +1616,7 @@ function addRowToTable(college) {
         } else {
           keyName = headers[category][key];
         }
-        td.classList.add(category.replace(/\s+/g, ''));
+        td.classList.add(removeSpaces(category));
         td.classList.add(keyName);
         if (showhide) {
           td.style.display = "none";
@@ -1624,7 +1628,7 @@ function addRowToTable(college) {
       }
       if (category in scores[0] || category == "Acceptance") {
         let overridetd = document.createElement("td");
-        overridetd.classList.add(category.replace(/\s+/g, ''));
+        overridetd.classList.add(removeSpaces(category));
         overridetd.classList.add("override");
         let checkbox = document.createElement("input");
         checkbox.type = "checkbox";
@@ -1639,7 +1643,7 @@ function addRowToTable(college) {
         scoreSlider.classList.add("slider");
         scoreSlider.classList.add("overslider");
         if (category in getFromColleges(college) && "Override" in getFromColleges(college)[category]) {
-          overrideVal = getFromColleges(college)[category].Override;
+          const overrideVal = getFromColleges(college)[category].Override;
           score.innerText = overrideVal;
           scoreSlider.value = overrideVal;
           overridetd.style.backgroundColor = "var(--high" + (overrideVal - 1) + ")";
@@ -1676,7 +1680,7 @@ function addRowToTable(college) {
               delete getFromColleges(college)[category];
             }
             writeUserData(1);
-            for (const td of tr.getElementsByClassName(category.replace(/\s+/g, ''))) {
+            for (const td of tr.getElementsByClassName(removeSpaces(category))) {
               td.style.backgroundColor = "var(--light0)";
             }
             updateRowMatchScores(college);
@@ -1703,7 +1707,7 @@ function addRowToTable(college) {
         }
         if (category != "Acceptance") {
           let subscoretd = document.createElement("td");
-          subscoretd.classList.add(category.replace(/\s+/g, ''));
+          subscoretd.classList.add(removeSpaces(category));
           subscoretd.classList.add("subscore");
           tr.appendChild(subscoretd);
           if (showhide) {
@@ -1713,7 +1717,7 @@ function addRowToTable(college) {
       }
       if (category != "Actions" && category != "Name" && category != "Match Scores") {
         let notesth = document.createElement("td");
-        notesth.classList.add(category.replace(/\s+/g, ''));
+        notesth.classList.add(removeSpaces(category));
         notesth.classList.add("notes");
         let textarea = document.createElement("textarea");
         textarea.maxlength = "1000";
@@ -1749,11 +1753,11 @@ function addRowToTable(college) {
 let weightNames = ["Not a factor", "Barely a factor", "Less important", "Average", "Important", "Very important"];
 function setSliders() {
   for (const category in scores[0]) {
-    let cell = document.getElementById("table").getElementsByTagName("tr")[0].getElementsByClassName(category.replace(/\s+/g, ''))[0];
+    let cell = document.getElementById("table").getElementsByTagName("tr")[0].getElementsByClassName(removeSpaces(category))[0];
     cell.getElementsByClassName("slider")[0].value = scores[0][category][0];
     cell.getElementsByClassName("weight")[0].innerText = weightNames[scores[0][category][0]];
     for (const key in scores[0][category][1]) {
-      let cell = document.getElementsByClassName(key + " " + category.replace(/\s+/g, ''))[0];
+      let cell = document.getElementsByClassName(key + " " + removeSpaces(category))[0];
       cell.getElementsByClassName("slider")[0].value = scores[0][category][1][key][0];
       cell.getElementsByClassName("weight")[0].innerText = weightNames[scores[0][category][1][key][0]];
     }
