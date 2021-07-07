@@ -381,6 +381,10 @@ table th p {
   animation: slidedown 0.4s cubic-bezier(0.175, 0.885, 0.320, 1.275);
   overflow: auto;
 }
+#loginmodal .content, #aboutusmodal .content {
+  width: fit-content;
+  max-width: 75%;
+}
 @keyframes slideup {
   from {top:15%; opacity:1}
   to {transform: translateY(-120%); opacity:0}
@@ -641,4 +645,42 @@ table th p {
 }
 .toast button:hover {
   background-color: var(--light3);
+}
+
+/*About Us*/
+.headshot {
+  width: 200px;
+  border-radius: 50%;
+}
+#cylerdiv {
+  display: flex;
+  margin-top: 20px;
+}
+#cylerdiv h2, #cylerdiv p {
+  text-align: center;
+}
+#cylerdiv h2 {
+  margin-bottom: 0;
+}
+#cylerdiv p {
+  color: gray;
+}
+#cydiv, #tylerdiv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1 1 0px;
+}
+#tylerdiv {
+  margin-right: 10px;
+}
+#cydiv {
+  margin-left: 10px;
+}
+#acknowledgementsdiv p {
+  color: gray;
+  margin-bottom: 2px;
+}
+#acknowledgementsdiv h3 {
+  margin-top: 2px;
 }

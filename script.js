@@ -275,7 +275,9 @@ function signedIn(loadData) {
         }
       }
     }, error => {
-      createToast("Load User Data Failed!");
+      createToast("Load User Data Failed!", "Refresh", function() {
+        location.reload();
+      });
       console.error("Load User Data Failed!", error);
     });
     allLoaded.push(userDataLoaded);
@@ -314,7 +316,7 @@ let uiConfig = {
   privacyPolicyUrl: './legal/privacypolicy.html'//Privacy policy url
 };
 
-function createToast(text, resolve = 0, reject = 0) {
+function createToast(text, button = "", reject = 0, resolve = 0) {
   let div = document.createElement("div");
   div.classList.add("toast");
   let p = document.createElement("p");
@@ -322,7 +324,7 @@ function createToast(text, resolve = 0, reject = 0) {
   div.appendChild(p);
   if (reject) {
     let undo = document.createElement("button");
-    undo.innerText = "Undo";
+    undo.innerText = button;
     undo.addEventListener("click", function () {
       reject();//undo
       div.classList.add("animateout");
@@ -386,6 +388,9 @@ function openLogInModal() {
   }
 }
 document.getElementById("signuplogin").addEventListener("click", openLogInModal);
+document.getElementById("aboutus").addEventListener("click", function() {
+  document.getElementById("aboutusmodal").style.display = "block";
+});
 document.querySelectorAll(".close").forEach(item => {
   item.addEventListener('click', event => {
     let content = item.parentElement;
@@ -1014,7 +1019,9 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
   Promise.all(allLoaded).then(function () {//when headers, scores, and colleges are loaded
     if (loggedInToast) {
       loggedInToast.remove();
-      createToast("Data Loaded!");
+      if (typeof scores[0] !== "undefined") {
+        createToast("Data Loaded!");
+      }
     }
     collegesData = {};
     if (!isNewUser) {
@@ -1575,7 +1582,9 @@ function addRowToTable(college) {
       remove.innerText = "delete";
       remove.addEventListener("click", () => {
         document.getElementById(college).style.display = "none"
-        createToast(collegesData[getFromColleges(college).ID].Name + " Removed", function () {//resolve: remove
+        createToast(collegesData[getFromColleges(college).ID].Name + " Removed", "Undo", function () {//reject: restore
+          document.getElementById(college).style.display = "table-row";
+        }, function () {//resolve: remove
           document.getElementById(college).remove();
           for (let i = 0; i < colleges.length; i++) {
             if (colleges[i].ID == college) {
@@ -1583,8 +1592,6 @@ function addRowToTable(college) {
             }
           }
           writeUserData(0);
-        }, function () {//reject: restore
-          document.getElementById(college).style.display = "table-row";
         });
       });
       actionsdiv.appendChild(remove);

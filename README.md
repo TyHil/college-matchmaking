@@ -45,7 +45,7 @@ The College Matchmaking website.
 - [x] Location checkboxes
 - [x] Programs checkboxes
 - [ ] Frozen headers
-- [ ] About use
+- [x] About us
 - [ ] Reach/Target/Safety
 - [ ] Apply Table
 ### Stuff Cy can do

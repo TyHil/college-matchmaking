@@ -4,6 +4,9 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
+  <meta name="description" content="College Matchmaking makes narrowing down your college list easy with personalized data oriented match scores for each school on your list.">
+  <meta name="canonical" href="https://collegematchmaking.org">
+  <meta name="theme-color" content="#4BAAD6">
 	<title>College Matchmaking</title>
 	<link rel="icon" href="icons/collegematchmaking.svg">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -17,7 +20,8 @@
       <h1>College Matchmaking</h1>
     </a>
     <div id="headerright">
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLSdk4faLZq9uO6MXK0sra3D18xwSo15c5RcnGX4WilClYqbnGQ/viewform?usp=sf_link" target="_blank">Spreadsheet</a>
+      <!--<a href="https://docs.google.com/forms/d/e/1FAIpQLSdk4faLZq9uO6MXK0sra3D18xwSo15c5RcnGX4WilClYqbnGQ/viewform?usp=sf_link" target="_blank">Spreadsheet</a>-->
+      <a id="aboutus">About Us</a>
       <a class="custom-dbox-popup" href="https://donorbox.org/college-matchmaking-donation">Donate</a>
       <a id="signuplogin">Sign Up/Log in</a>
     </div>
@@ -68,7 +72,7 @@
     <div class="content">
       <span class="close">&times;</span>
       <h1>Welcome to College Matchmaking!</h1>
-      <p>We’re a high school student developed tool to help you narrow down your college list!<br><br>We'll help you decide what you want in your college experience and then generate match scores for each college on your list using aggregated public data and your personal preferences. We have three match scores: FLOAT is just the fit of the school while SAIL and SWIM include the fit but are higher for easier and harder schools, respectively.<br><br>You can click on the score icons on our main page to learn more about them and run our Setup Wizard to get started.</p>
+      <p>We’re a high school student developed tool to help you narrow down your college list!<br><br>We'll help you decide what you want in your college experience and then generate match scores for each college on your list using aggregated public data and your personal preferences.<br><br>You can click on the match score icons to learn more about each one and run our Setup Wizard to get started.</p>
       <div class="buttonbox">
         <button id="modallogin" class="buttons">Log In</button>
         <button id="setupwizard" class="buttons">Setup Wizard</button>
@@ -107,6 +111,56 @@
       <div class="buttonbox">
         <button id="cancel" class="buttons">Cancel</button>
         <button id="confirm" class="buttons mainbtn">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="aboutusmodal">
+    <div class="content">
+      <span class="close">&times;</span>
+      <h1>About Us</h1>
+      <div id="cylerdiv">
+        <div id="tylerdiv">
+          <img class="headshot" src="icons/tyler.jpg" alt="Tyler Hill headshot">
+          <h2>Tyler Hill</h2>
+          <p>A senior at the Liberal Arts and Science Academy High School with interests in computer science and design. Check out my other projects on my <a href="https://tylerghill.repl.co/" target="_blank">personal website</a>.</p>
+          <div>
+          </div>
+        </div>
+        <div id="cydiv">
+          <img class="headshot" src="icons/cy.jpg" alt="Cy Strain-Seymour headshot">
+          <h2>Cy Strain-Seymour</h2>
+          <p>A senior at the Liberal Arts and Science Academy High School with interests in linguistics, languages, and a little bit of computer science.</p>
+        </div>
+      </div>
+      <div id="acknowledgementsdiv">
+        <h2>Acknowledgements</h2>
+        <p>Subject Matter Consultant</p>
+        <h3>Ellen Strain-Seymour</h3>
+        <p>Technical Consultant</p>
+        <h3>Eamonn O'Brien-Strain</h3>
+      </div>
+      <div id="datasourcesdiv">
+        <h2>Data Sources</h2>
+        <ul>
+          <li><a href="https://www.commondataset.org" target="_blank">Common Data Set</a></li>
+          <li>U.S. Department of Education:</li>
+          <ul>
+            <li><a href="https://www.ope.ed.gov/dapip" target="_blank">Database of Accredited Postsecondary Institutions and Programs</a></li>
+            <li><a href="https://www.nces.ed.gov/ipeds" target="_blank">Integrated Postsecondary Education Data System</a></li>
+            <li><a href="https://www.collegescorecard.ed.gov" target="_blank">College Scorecard</a></li>
+            <li><a href="https://www.collegecost.ed.gov/affordability" target="_blank">College Affordability and Transparency</a></li>
+          </ul>
+          <li>Forbes, Niche, College, Consensus, and Wall Street Journal Rankings</li>
+          <li>Links to <a href="https://www.collegedata.com" target="_blank">collegedata.com</a></li>
+          <li><a href="https://www.WeatherDatabyZipCode.com" target="_blank">WeatherDatabyZipCode.com</a></li>
+          <li><a href="https://www.educationdata.urban.org" target="_blank">Urban Institute | Education Data Explorer</a></li>
+          <li><a href="https://www.nacubo.org/" target="_blank">National Association of College and University Business Officers</a></li>
+          <li><a href="https://www.ncaa.com" target="_blank">National Collegiate Athletic Association</a></li>
+          <li>Wikipedia for a listing of honors colleges and programs</li>
+          <li><a href="https://www.Fairtest.org" target="_blank">Fairtest.org</a>, College Board, and <a href="https://www.CompassPrep.com" target="_blank">CompassPrep.com</a> for test policies</li>
+          <li>Common Application and Coalition Application</li>
+        </ul>
       </div>
     </div>
   </div>
