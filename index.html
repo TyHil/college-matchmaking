@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 	<meta charset="utf-8">
@@ -10,13 +10,14 @@
 	<title>College Matchmaking</title>
 	<link rel="icon" href="icons/collegematchmaking.svg">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link href="style.css" rel="stylesheet" type="text/css" />
+  <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css">
+  <link href="style.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
 	<div id="header">
 		<a href="index.html" id="logo">
-			<img src="icons/collegematchmaking.svg" alt="Logo">
+			<img src="icons/collegematchmaking.svg" width="35" alt="Logo">
       <h1>College Matchmaking</h1>
     </a>
     <div id="headerright">
@@ -121,14 +122,14 @@
       <h1>About Us</h1>
       <div id="cylerdiv">
         <div id="tylerdiv">
-          <img class="headshot" src="icons/tyler.jpg" alt="Tyler Hill headshot">
+          <img class="headshot" src="icons/tyler.jpg" width="200" alt="Tyler Hill headshot" loading="lazy">
           <h2>Tyler Hill</h2>
           <p>A senior at the Liberal Arts and Science Academy High School with interests in computer science and design. Check out my other projects on my <a href="https://tylerghill.repl.co/" target="_blank">personal website</a>.</p>
           <div>
           </div>
         </div>
         <div id="cydiv">
-          <img class="headshot" src="icons/cy.jpg" alt="Cy Strain-Seymour headshot">
+          <img class="headshot" src="icons/cy.jpg" width="200" alt="Cy Strain-Seymour headshot" loading="lazy">
           <h2>Cy Strain-Seymour</h2>
           <p>A senior at the Liberal Arts and Science Academy High School with interests in linguistics, languages, and a little bit of computer science.</p>
         </div>
@@ -143,22 +144,22 @@
       <div id="datasourcesdiv">
         <h2>Data Sources</h2>
         <ul>
-          <li><a href="https://www.commondataset.org" target="_blank">Common Data Set</a></li>
+          <li><a href="https://www.commondataset.org" target="_blank" rel="noopener">Common Data Set</a></li>
           <li>U.S. Department of Education:</li>
           <ul>
-            <li><a href="https://www.ope.ed.gov/dapip" target="_blank">Database of Accredited Postsecondary Institutions and Programs</a></li>
-            <li><a href="https://www.nces.ed.gov/ipeds" target="_blank">Integrated Postsecondary Education Data System</a></li>
-            <li><a href="https://www.collegescorecard.ed.gov" target="_blank">College Scorecard</a></li>
-            <li><a href="https://www.collegecost.ed.gov/affordability" target="_blank">College Affordability and Transparency</a></li>
+            <li><a href="https://www.ope.ed.gov/dapip" target="_blank" rel="noopener">Database of Accredited Postsecondary Institutions and Programs</a></li>
+            <li><a href="https://www.nces.ed.gov/ipeds" target="_blank" rel="noopener">Integrated Postsecondary Education Data System</a></li>
+            <li><a href="https://www.collegescorecard.ed.gov" target="_blank" rel="noopener">College Scorecard</a></li>
+            <li><a href="https://www.collegecost.ed.gov/affordability" target="_blank" rel="noopener">College Affordability and Transparency</a></li>
           </ul>
           <li>Forbes, Niche, College, Consensus, and Wall Street Journal Rankings</li>
-          <li>Links to <a href="https://www.collegedata.com" target="_blank">collegedata.com</a></li>
-          <li><a href="https://www.WeatherDatabyZipCode.com" target="_blank">WeatherDatabyZipCode.com</a></li>
-          <li><a href="https://www.educationdata.urban.org" target="_blank">Urban Institute | Education Data Explorer</a></li>
-          <li><a href="https://www.nacubo.org/" target="_blank">National Association of College and University Business Officers</a></li>
-          <li><a href="https://www.ncaa.com" target="_blank">National Collegiate Athletic Association</a></li>
+          <li>Links to <a href="https://www.collegedata.com" target="_blank" rel="noopener">collegedata.com</a></li>
+          <li><a href="https://www.WeatherDatabyZipCode.com" target="_blank" rel="noopener">WeatherDatabyZipCode.com</a></li>
+          <li><a href="https://www.educationdata.urban.org" target="_blank" rel="noopener">Urban Institute | Education Data Explorer</a></li>
+          <li><a href="https://www.nacubo.org/" target="_blank" rel="noopener">National Association of College and University Business Officers</a></li>
+          <li><a href="https://www.ncaa.com" target="_blank" rel="noopener">National Collegiate Athletic Association</a></li>
           <li>Wikipedia for a listing of honors colleges and programs</li>
-          <li><a href="https://www.Fairtest.org" target="_blank">Fairtest.org</a>, College Board, and <a href="https://www.CompassPrep.com" target="_blank">CompassPrep.com</a> for test policies</li>
+          <li><a href="https://www.Fairtest.org" target="_blank" rel="noopener">Fairtest.org</a>, College Board, and <a href="https://www.CompassPrep.com" target="_blank" rel="noopener">CompassPrep.com</a> for test policies</li>
           <li>Common Application and Coalition Application</li>
         </ul>
       </div>
@@ -167,12 +168,12 @@
 
   <div id="toasts"></div>
 
+  
   <script src="https://www.gstatic.com/firebasejs/8.4.2/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.4.2/firebase-database.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.4.2/firebase-analytics.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.4.2/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.js"></script>
-  <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css" />
   <script type="text/javascript" defer src="https://donorbox.org/install-popup-button.js"></script>
   <script src="script.js"></script>
 </body>
