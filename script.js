@@ -1134,6 +1134,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
             img.src = "icons/" + scoreNames[i] + ".svg";
             img.classList.add("scoreicon");
             img.width = 40;
+            img.height = 40;
             img.title = scoreNames[i] + " Score Info"
             img.alt = scoreNames[i] + " Score Info"
             let question = document.createElement("span");
@@ -1613,9 +1614,6 @@ function addRowToTable(college) {
         }
         td.classList.add(category.replace(/\s+/g, ''));
         td.classList.add(keyName);
-        /*if (category != "Acceptance" && category in getFromColleges(college) && "Override" in getFromColleges(college)[category] && scores[0][category].length > 1 && keyName in scores[0][category][1]) {
-          td.style.backgroundColor = "var(--high" + (getFromColleges(college)[category].Override - 1) + ")";
-        }*///
         if (showhide) {
           td.style.display = "none";
         }
@@ -1665,11 +1663,6 @@ function addRowToTable(college) {
             getFromColleges(college)[category].Override = 3;
             writeUserData(1);
             overridetd.style.backgroundColor = "var(--high2)";
-            /*if (category != "Acceptance") {
-              for (const key in scores[0][category][1]) {
-                tr.getElementsByClassName(key + " " + category.replace(/\s+/g, ''))[0].style.backgroundColor = "var(--high2)";
-              }
-            }*///
             updateRowMatchScores(college);
           } else {
             scoreSlider.style.display = "none";
@@ -1694,11 +1687,6 @@ function addRowToTable(college) {
         scoreSlider.addEventListener("input", function () {
           score.innerText = this.value;
           overridetd.style.backgroundColor = "var(--high" + (this.value - 1) + ")";
-          /*if (category != "Acceptance") {
-            for (const key in scores[0][category][1]) {
-              tr.getElementsByClassName(key + " " + category.replace(/\s+/g, ''))[0].style.backgroundColor = "var(--high" + (this.value - 1) + ")";
-            }
-          }*///
         });
         scoreSlider.addEventListener("change", function () {
           if (!(category in getFromColleges(college))) {

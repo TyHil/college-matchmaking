@@ -36,11 +36,11 @@
     --light2: #505050;
     --light3: #707070;
     --dark0: #dfdfdf;
-    --high0: #773631;
-    --high1: #865727;
-    --high2: #8d7325;
-    --high3: #53692b;
-    --high4: #114b33;
+    --high0: #5e2a26;
+    --high1: #6b451f;
+    --high2: #715c1e;
+    --high3: #3f5021;
+    --high4: #0a2e1f;
   }
   ::-webkit-scrollbar-thumb {
     background: rgba(255, 255, 255, 0.24);
@@ -55,7 +55,7 @@
 
 body {
   margin: 0;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Helvetica, Arial;
   color: var(--dark0);
   background-color: var(--light0);
 }
@@ -193,9 +193,6 @@ option {
 #suggestions div:hover {
   background-color: var(--light2);
 }
-/*#suggestions:not(:hover) > #suggestions div {
-  background-color: #418242;
-}*/
 #suggestions div.currentFocus {
   background: var(--light2);
 }
@@ -494,29 +491,9 @@ table th p {
 
 /*Sliders*/
 .slider {
-  /*-webkit-appearance: none;*/
   width: 100px;
   height: 10px;
-  /*border-radius: 4px;
-  background: #d3d3d3;
-  outline: none;*/
 }
-/*.slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: linear-gradient(90deg, #61cae3, #3489c9);
-  cursor: pointer;
-}
-.slider::-moz-range-thumb {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: linear-gradient(90deg, #61cae3, #3489c9);
-  cursor: pointer;
-}*/
 
 /*Override*/
 .overcheckbox {
@@ -588,8 +565,8 @@ table th p {
   text-align: center;
 }
 .vert {
-  writing-mode: bt-lr; /* IE */
-  -webkit-appearance: slider-vertical; /* WebKit */
+  writing-mode: bt-lr; /*IE*/
+  -webkit-appearance: slider-vertical; /*WebKit*/
   width: 10px;
   height: 100px;
   margin-bottom: 10px;
