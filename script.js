@@ -1365,15 +1365,15 @@ function updateRowMatchScores(college) {
               let width = (range[1] - range[0]) / 5;
               range = [range[0] + width, range[0] + 2 * width, range[1] - 2 * width, range[1] - width];
             }
-            if (data <= range[0]) {
+            if (data < range[0]) {
               scoreDat = scoreVals[0];
             }
             for (let j = 0; j < range.length - 1; j++) {
-              if (range[j] < data && data <= range[j + 1]) {
+              if (range[j] <= data && data < range[j + 1]) {
                 scoreDat = scoreVals[j + 1];
               }
             }
-            if (range[range.length - 1] < data) {
+            if (range[range.length - 1] <= data) {
               scoreDat = scoreVals[scoreVals.length - 1];
             }
             if (category == "Ranking" && (data == "unranked" || data == "Unranked")) {
@@ -1417,8 +1417,23 @@ function updateRowMatchScores(college) {
       }
       score = Math.min(scoreTot / weightSumTot + boost * 3 / 100, 1);
       document.getElementById(college).getElementsByClassName(scoreNames[i] + "Subscore")[0].innerText = Math.round(score * 10000) / 100 + "%";
-      document.getElementById(college).getElementsByClassName(scoreNames[i] + "Subscore")[0].style.backgroundColor = "var(--high" + (Math.min(Math.trunc(score * 5), 4)) + ")";//score highlight
+      document.getElementById(college).getElementsByClassName(scoreNames[i] + "Subscore")[0].style.backgroundColor = "var(--high" + (Math.min(Math.trunc(score * 5), 4)) + ")";//subscore highlight
       if (i == 1) {
+        let num = score * 100;//Category
+        if ("AcceptanceRate" in collegesData[college] && collegesData[college].AcceptanceRate < 0.16) {
+          num = num - 25 * (0.2 - collegesData[college].AcceptanceRate);
+        }
+        let result = "Safety";
+        const nums = [80, 82, 86, 88];
+        const names = ["Reach", "Small Reach", "Target", "Target/Safety"];
+        for (let i = 3; i >= 0; i--) {
+          if (num < nums[i]) {
+            result = names[i];
+          }
+        }
+        for (const cell of document.getElementById(college).getElementsByClassName("Category")) {
+          cell.innerText = result;
+        }
         score = floatScore + 1.4 * (score - 0.85);
       } else if (i == 2) {
         score = floatScore + (score - 0.92);

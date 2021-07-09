@@ -15,6 +15,7 @@
     "Public or Private": "Public-private",
     "Admission Deadline": "AdmissionDeadline",
     "Uses the Common or Coalition App?": "SharedApplication",
+    "Category": "Category",
     "Summary Info": ["CollegeDataLink", "link"]
   },
   "Size": {
@@ -101,7 +102,8 @@
     "Rigor of HS Transcript":"HSRigor",
     "Scatterplot Link":["NicheScatterplot","link"],
     "SAIL Subscore": "SAILSubscore",
-    "SWIM Subscore": "SWIMSubscore"
+    "SWIM Subscore": "SWIMSubscore",
+    "Category": "Category"
   },
   "Apply": {
     "Admission Deadline": "AdmissionDeadline",
