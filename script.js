@@ -1416,31 +1416,46 @@ function updateRowMatchScores(college) {
         boost = getFromColleges(college).Acceptance.Override;
       }
       score = Math.min(scoreTot / weightSumTot + boost * 3 / 100, 1);
-      document.getElementById(college).getElementsByClassName(scoreNames[i] + "Subscore")[0].innerText = Math.round(score * 10000) / 100 + "%";
-      document.getElementById(college).getElementsByClassName(scoreNames[i] + "Subscore")[0].style.backgroundColor = "var(--high" + (Math.min(Math.trunc(score * 5), 4)) + ")";//subscore highlight
-      if (i == 1) {
-        let num = score * 100;//Category
-        if ("AcceptanceRate" in collegesData[college] && collegesData[college].AcceptanceRate < 0.16) {
-          num = num - 25 * (0.2 - collegesData[college].AcceptanceRate);
+      let subscoreCell = document.getElementById(college).getElementsByClassName(scoreNames[i] + "Subscore")[0];
+      if (isNaN(score)) {
+        subscoreCell.innerText = "No Data";
+        if (i == 1) {
+          for (const cell of document.getElementById(college).getElementsByClassName("Category")) {
+          cell.innerText = "No Data";
         }
-        let result = "Safety";
-        const nums = [80, 82, 86, 88];
-        const names = ["Reach", "Small Reach", "Target", "Target/Safety"];
-        for (let i = 3; i >= 0; i--) {
-          if (num < nums[i]) {
-            result = names[i];
+        }
+      } else {
+        subscoreCell.innerText = Math.round(score * 10000) / 100 + "%";
+        subscoreCell.style.backgroundColor = "var(--high" + (Math.min(Math.trunc(score * 5), 4)) + ")";//subscore highlight
+        if (i == 1) {
+          let num = score * 100;//Category
+          if ("AcceptanceRate" in collegesData[college] && collegesData[college].AcceptanceRate < 0.16) {
+            num = num - 25 * (0.2 - collegesData[college].AcceptanceRate);
           }
+          let result = "Safety";
+          const nums = [80, 82, 86, 88];
+          const names = ["Reach", "Small Reach", "Target", "Target/Safety"];
+          for (let i = 3; i >= 0; i--) {
+            if (num < nums[i]) {
+              result = names[i];
+            }
+          }
+          for (const cell of document.getElementById(college).getElementsByClassName("Category")) {
+            cell.innerText = result;
+          }
+          score = floatScore + 1.4 * (score - 0.85);
+        } else if (i == 2) {
+          score = floatScore + (score - 0.92);
         }
-        for (const cell of document.getElementById(college).getElementsByClassName("Category")) {
-          cell.innerText = result;
-        }
-        score = floatScore + 1.4 * (score - 0.85);
-      } else if (i == 2) {
-        score = floatScore + (score - 0.92);
       }
     }
-    document.getElementById(college).getElementsByClassName(scoreNames[i])[0].innerText = Math.round(score * 10000) / 100 + "%";
-    document.getElementById(college).getElementsByClassName(scoreNames[i])[0].style.backgroundColor = "var(--high" + (Math.min(Math.trunc(score * 5), 4)) + ")";//score highlight
+    let scoreCell = document.getElementById(college).getElementsByClassName(scoreNames[i])[0];
+    if (isNaN(score)) {
+      scoreCell.innerText = "No Data";
+    } else {
+      scoreCell.innerText = Math.round(score * 10000) / 100 + "%";
+      scoreCell.style.backgroundColor = "var(--high" + (Math.min(Math.trunc(score * 5), 4)) + ")";//score highlight
+    }
   }
 }
 
