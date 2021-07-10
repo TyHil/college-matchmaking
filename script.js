@@ -1039,7 +1039,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
     if (!isNewUser) {
       let collegeDataLoaded = [];
       for (const college of colleges) {
-        collegeDataLoaded.push(addRowToTable(college.ID));
+        collegeDataLoaded.push(addRowToTable(college.ID, 0));
       }
       Promise.all(collegeDataLoaded).then(function () {
         updateApplyTable();
@@ -1125,7 +1125,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
         } else {
           this.classList.remove("clicked");
           this.classList.add("doubleclicked");
-          for (const description of documant.getElementsByClassName("descriptions")) {
+          for (const description of document.getElementsByClassName("descriptions")) {
             description.style.display = "none";
           }
         }
@@ -1385,7 +1385,7 @@ function updateApplyTable() {
     let table = document.getElementById(h3s[i] + "Table");
     for (let j = 0; j < 4; j++) {
       let tr = table.getElementsByTagName("tr")[j + 1];
-      if (categories[i].length - 1 >= i) {
+      if (categories[i].length > j) {///
         let college = categories[i][j][0];
         let name = tr.getElementsByClassName("ApplyName")[0];
         name.innerText = collegesData[college].Name;
@@ -1404,6 +1404,9 @@ function updateApplyTable() {
         let acceptanceRate = tr.getElementsByClassName("ApplyAcceptanceRate")[0];
         acceptanceRate.innerText = Math.round(collegesData[college].AcceptanceRate * 10000) / 100 + "%";
       } else {
+        for (const cell of tr.getElementsByTagName("td")) {
+          cell.innerText = "";
+        }
         let name = tr.getElementsByClassName("ApplyName")[0];
         name.innerText = "Not Found";
       }
@@ -1571,108 +1574,7 @@ function updateRowMatchScores(college, applyTable = 1) {
   }
 }
 
-function updateRowData(college) {
-  return loadFirebaseJSON("/colleges/" + college).then(response => {
-    collegesData[college] = response;
-    if (document.getElementById("welcomecolleges")) {//add college to the welcome list if open
-      let div = document.createElement("div");
-      let x = document.createElement("span");
-      x.classList.add("close");
-      x.innerHTML = "&times;";
-      x.addEventListener("click", function () {
-        div.remove();
-        document.getElementById(college).remove();
-        for (let i = 0; i < colleges.length; i++) {
-          if (colleges[i].ID == college) {
-            colleges.splice(i, 1);
-          }
-        }
-      });
-      div.appendChild(x);
-      let p = document.createElement("p");
-      p.innerText = collegesData[college].Name;
-      div.appendChild(p);
-      document.getElementById("welcomecolleges").appendChild(div);
-    }
-    for (const category in headers) {//update data in table
-      if (category != "Actions") {
-        for (const key in headers[category]) {
-          let fill = "No Data";
-          let link = 0;
-          if (typeof headers[category] == "string") {
-            if (headers[category] in response) {
-              fill = response[headers[category]];
-            }
-          } else if (Array.isArray(headers[category][key])) {
-            if (headers[category][key][0] in response || (headers[category][key][0] == "Averagenetpriceforfamilyincome" && "Averagenetpricefor" + userinfo.income + "familyincome" in response)) {//format numbers
-              if (headers[category][key][0] == "Averagenetpriceforfamilyincome") {
-                fill = response["Averagenetpricefor" + userinfo.income + "familyincome"];
-              } else {
-                fill = response[headers[category][key][0]];
-              }
-              if (headers[category][key][1] == "link") {
-                link = 1;
-              } else if (headers[category][key][1] == "Integer" || headers[category][key][1] == "$") {
-                fill = fill.toLocaleString();
-                if (headers[category][key][1] == "$") {
-                  fill = "$" + fill;
-                }
-              } else if (headers[category][key][1] == "%") {
-                fill = Math.round(fill * 10000) / 100 + "%";
-              } else if (headers[category][key][1] == "Degree") {
-                fill = Math.round(fill * 100) / 100 + "°F";
-              } else if (headers[category][key][1] == "boolean") {
-                if (fill) {
-                  fill = "Yes";
-                } else {
-                  fill = "No";
-                }
-              }
-            }
-          } else {
-            if (headers[category][key] in response) {
-              fill = response[headers[category][key]];
-            }
-          }
-          if (link) {
-            if (typeof fill == "string") {
-              let linker = document.createElement("span");
-              linker.classList.add("icon");
-              linker.classList.add("material-icons");
-              linker.title = "Open In New Tab";
-              linker.innerText = "open_in_new";
-              if (fill.substr(0, 7) != "http://" && fill.substr(0, 8) != "https://") {
-                fill = "http://" + fill;
-              }
-              linker.addEventListener("click", () => {
-                window.open(fill, "_blank");
-              });
-              document.getElementById(college).getElementsByClassName(headers[category][key][0])[0].appendChild(linker);
-            } else {
-              document.getElementById(college).getElementsByClassName(Array.isArray(headers[category][key]) ? headers[category][key][0] : headers[category][key])[0].innerText = "No Data";
-            }
-          } else {
-            let keyName;
-            if (typeof headers[category] == "string") {// Name rowspan
-              keyName = headers[category];
-            } else if (Array.isArray(headers[category][key])) {
-              keyName = headers[category][key][0];
-            } else {
-              keyName = headers[category][key];
-            }
-            document.getElementById(college).getElementsByClassName(keyName + " " + removeSpaces(category))[0].innerText = fill;
-          }
-        }
-      }
-    }
-    updateRowMatchScores(college, 0);
-  }, error => {
-    createToast("Load " + college + " Data Failed!");
-    console.error("Load " + college + " Data Failed!", error);
-  });
-}
-
-function addRowToTable(college) {
+function addRowToTable(college, applyTable = 1) {
   let tr = document.createElement("tr");
   tr.setAttribute("id", college);
   for (const category in headers) {
@@ -1890,7 +1792,104 @@ function addRowToTable(college) {
     }
   }
   document.getElementById("table").appendChild(tr);
-  return updateRowData(college);
+  return loadFirebaseJSON("/colleges/" + college).then(response => {
+    collegesData[college] = response;
+    if (document.getElementById("welcomecolleges")) {//add college to the welcome list if open
+      let div = document.createElement("div");
+      let x = document.createElement("span");
+      x.classList.add("close");
+      x.innerHTML = "&times;";
+      x.addEventListener("click", function () {
+        div.remove();
+        document.getElementById(college).remove();
+        for (let i = 0; i < colleges.length; i++) {
+          if (colleges[i].ID == college) {
+            colleges.splice(i, 1);
+          }
+        }
+      });
+      div.appendChild(x);
+      let p = document.createElement("p");
+      p.innerText = collegesData[college].Name;
+      div.appendChild(p);
+      document.getElementById("welcomecolleges").appendChild(div);
+    }
+    for (const category in headers) {//update data in table
+      if (category != "Actions") {
+        for (const key in headers[category]) {
+          let fill = "No Data";
+          let link = 0;
+          if (typeof headers[category] == "string") {
+            if (headers[category] in response) {
+              fill = response[headers[category]];
+            }
+          } else if (Array.isArray(headers[category][key])) {
+            if (headers[category][key][0] in response || (headers[category][key][0] == "Averagenetpriceforfamilyincome" && "Averagenetpricefor" + userinfo.income + "familyincome" in response)) {//format numbers
+              if (headers[category][key][0] == "Averagenetpriceforfamilyincome") {
+                fill = response["Averagenetpricefor" + userinfo.income + "familyincome"];
+              } else {
+                fill = response[headers[category][key][0]];
+              }
+              if (headers[category][key][1] == "link") {
+                link = 1;
+              } else if (headers[category][key][1] == "Integer" || headers[category][key][1] == "$") {
+                fill = fill.toLocaleString();
+                if (headers[category][key][1] == "$") {
+                  fill = "$" + fill;
+                }
+              } else if (headers[category][key][1] == "%") {
+                fill = Math.round(fill * 10000) / 100 + "%";
+              } else if (headers[category][key][1] == "Degree") {
+                fill = Math.round(fill * 100) / 100 + "°F";
+              } else if (headers[category][key][1] == "boolean") {
+                if (fill) {
+                  fill = "Yes";
+                } else {
+                  fill = "No";
+                }
+              }
+            }
+          } else {
+            if (headers[category][key] in response) {
+              fill = response[headers[category][key]];
+            }
+          }
+          if (link) {
+            if (typeof fill == "string") {
+              let linker = document.createElement("span");
+              linker.classList.add("icon");
+              linker.classList.add("material-icons");
+              linker.title = "Open In New Tab";
+              linker.innerText = "open_in_new";
+              if (fill.substr(0, 7) != "http://" && fill.substr(0, 8) != "https://") {
+                fill = "http://" + fill;
+              }
+              linker.addEventListener("click", () => {
+                window.open(fill, "_blank");
+              });
+              document.getElementById(college).getElementsByClassName(headers[category][key][0])[0].appendChild(linker);
+            } else {
+              document.getElementById(college).getElementsByClassName(Array.isArray(headers[category][key]) ? headers[category][key][0] : headers[category][key])[0].innerText = "No Data";
+            }
+          } else {
+            let keyName;
+            if (typeof headers[category] == "string") {// Name rowspan
+              keyName = headers[category];
+            } else if (Array.isArray(headers[category][key])) {
+              keyName = headers[category][key][0];
+            } else {
+              keyName = headers[category][key];
+            }
+            document.getElementById(college).getElementsByClassName(keyName + " " + removeSpaces(category))[0].innerText = fill;
+          }
+        }
+      }
+    }
+    updateRowMatchScores(college, applyTable);
+  }, error => {
+    createToast("Load " + college + " Data Failed!");
+    console.error("Load " + college + " Data Failed!", error);
+  });
 }
 
 let weightNames = ["Not a factor", "Barely a factor", "Less important", "Average", "Important", "Very important"];
@@ -2027,7 +2026,7 @@ function searchSetup() {
       div.addEventListener("click", function () {
         let itemVal = this.getElementsByTagName("input")[0].value;
         if (getFromColleges(itemVal) == undefined) {
-          colleges.push({ "ID": itemVal });
+          colleges.push({ "ID": itemVal });///
           addRowToTable(itemVal);
           writeUserData(1);
           suggestions.style.display = "none";
