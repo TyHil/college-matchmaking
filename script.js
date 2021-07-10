@@ -101,8 +101,9 @@ function signedIn(loadData) {
         writeUserData(1);
         setSliders();
         for (const college of colleges) {
-          updateRowMatchScores(college.ID);
+          updateRowMatchScores(college.ID, 0);
         }
+        updateApplyTable();
       }, error => {
         createToast("Load " + scoreNames[0] + " Score Failed!");
         console.error("Load " + scoreNames[0] + " Score Failed!", error);
@@ -270,16 +271,16 @@ function signedIn(loadData) {
       }
       document.getElementById("gpa").getElementsByTagName("input")[0].value = userinfo.gpa;
       document.getElementById("income").getElementsByTagName("select")[0].value = userinfo.income;
-      if (response.checkboxes) {// Kinda temporary untill all users have checkboxes in their data
+      if (response.checkboxes) {
         checkboxes = response.checkboxes;
         for (const category in checkboxes) {
           for (const value in checkboxes[category]) {
-            document.getElementsByClassName(removeSpaces(category) + " descriptions")[0].getElementsByClassName(value)[0].checked = checkboxes[category][value];
+            document.getElementById(removeSpaces(value)).checked = checkboxes[category][value];
           }
         }
       }
     }, error => {
-      createToast("Load User Data Failed!", "Refresh", function() {
+      createToast("Load User Data Failed!", "Refresh", function () {
         location.reload();
       });
       console.error("Load User Data Failed!", error);
@@ -392,7 +393,7 @@ function openLogInModal() {
   }
 }
 document.getElementById("signuplogin").addEventListener("click", openLogInModal);
-document.getElementById("aboutus").addEventListener("click", function() {
+document.getElementById("aboutus").addEventListener("click", function () {
   document.getElementById("aboutusmodal").style.display = "block";
 });
 document.querySelectorAll(".close").forEach(item => {
@@ -453,8 +454,9 @@ document.addEventListener('click', function (e) {
         datachange.style.display = "none";
       }
       for (const college of colleges) {
-        updateRowMatchScores(college.ID);
+        updateRowMatchScores(college.ID, 0);
       }
+      updateApplyTable();
     }
   }
   let suggestions = document.getElementById("suggestions");
@@ -524,8 +526,9 @@ document.getElementById("testscore").getElementsByTagName("select")[0].addEventL
     delete userinfo.act;
     userinfo.sat = parseInt(input.value);
     for (const college of colleges) {
-      updateRowMatchScores(college.ID);
+      updateRowMatchScores(college.ID, 0);
     }
+    updateApplyTable();
     writeUserData(1);
   }
 });
@@ -537,16 +540,18 @@ document.getElementById("testscore").getElementsByTagName("input")[0].addEventLi
   }
   userinfo[testType] = parseInt(this.value);
   for (const college of colleges) {
-    updateRowMatchScores(college.ID);
+    updateRowMatchScores(college.ID, 0);
   }
+  updateApplyTable();
   writeUserData(1);
 });
 document.getElementById("gpa").getElementsByTagName("input")[0].addEventListener("change", function () {
   this.value = Math.max(Math.min(this.value, this.max), this.min);
   userinfo.gpa = parseFloat(this.value);
   for (const college of colleges) {
-    updateRowMatchScores(college.ID);
+    updateRowMatchScores(college.ID, 0);
   }
+  updateApplyTable();
   writeUserData(1);
 });
 document.getElementById("income").getElementsByTagName("select")[0].addEventListener("change", function () {
@@ -638,8 +643,9 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
           sliderDiv.getElementsByClassName("slider")[0].addEventListener("change", function () {
             scores[0][category][0] = parseInt(this.value);
             for (const college of colleges) {
-              updateRowMatchScores(college.ID);
+              updateRowMatchScores(college.ID, 0);
             }
+            updateApplyTable();
           });
           th2.appendChild(sliderDiv);
           tr.appendChild(th2);
@@ -729,8 +735,9 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
         catSliderDiv.getElementsByClassName("slider")[0].addEventListener("change", function () {
           scores[0][category][0] = parseInt(this.value);
           for (const college of colleges) {
-            updateRowMatchScores(college.ID);
+            updateRowMatchScores(college.ID, 0);
           }
+          updateApplyTable();
           writeUserData(1);
         });
         for (const key in scores[0][category][1]) {
@@ -740,8 +747,9 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
           range.addEventListener("change", function () {
             scores[0][category][1][key][0] = parseInt(this.value);
             for (const college of colleges) {
-              updateRowMatchScores(college.ID);
+              updateRowMatchScores(college.ID, 0);
             }
+            updateApplyTable();
             writeUserData(1);
           });
           let plus = document.createElement("span");
@@ -1029,9 +1037,13 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
     }
     collegesData = {};
     if (!isNewUser) {
+      let collegeDataLoaded = [];
       for (const college of colleges) {
-        addRowToTable(college.ID);
+        collegeDataLoaded.push(addRowToTable(college.ID));
       }
+      Promise.all(collegeDataLoaded).then(function () {
+        updateApplyTable();
+      });
       setSliders();
     }
   });
@@ -1113,8 +1125,8 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
         } else {
           this.classList.remove("clicked");
           this.classList.add("doubleclicked");
-          if (category in descriptions) {
-            document.getElementsByClassName(removeSpaces(category) + " descriptions")[0].style.display = "none";
+          for (const description of documant.getElementsByClassName("descriptions")) {
+            description.style.display = "none";
           }
         }
       });
@@ -1210,6 +1222,41 @@ let descriptionsLoaded = loadJSON("./descriptions.json").then(response => {//loa
     let p = document.createElement("p");
     p.innerText = descriptions[category].Description;
     div.appendChild(p);
+    if (category == "Apply") {
+      let h3 = document.createElement("h3");
+      h3.innerText = "Top Four Colleges in Each Category";
+      div.appendChild(h3);
+      let p = document.createElement("p");
+      p.innerText = "Any college that accepts less than 10% of applicants should be considered unpredictable.";
+      div.appendChild(p);
+      let headings = ["Name", "Research", "FLOAT", "Category", "Acceptance Rate"];
+      let h4s = ["Top Four Reach Colleges", "Top Four Target Colleges", "Top Four Safety Colleges"];
+      for (let i = 0; i < 3; i++) {
+        let h4 = document.createElement("h4");
+        h4.innerText = h4s[i];
+        div.appendChild(h4);
+        let table = document.createElement("table");
+        table.id = h4s[i].split(" ")[2] + "Table";
+        let tr = document.createElement("tr");
+        for (const heading of headings) {
+          let th = document.createElement("th");
+          th.innerText = heading;
+          tr.appendChild(th);
+        }
+        table.appendChild(tr);
+        for (let j = 0; j < 4; j++) {
+          let tr = document.createElement("tr");
+          for (const heading of headings) {
+            let td = document.createElement("td");
+            td.classList.add("Apply" + removeSpaces(heading));
+            tr.appendChild(td);
+          }
+          table.appendChild(tr);
+        }
+        div.appendChild(table);
+      }
+      div.appendChild(document.createElement("br"));
+    }
     if ("Checkboxes" in descriptions[category]) {
       checkboxes[category] = {};
       let h4 = document.createElement("h4");
@@ -1220,7 +1267,7 @@ let descriptionsLoaded = loadJSON("./descriptions.json").then(response => {//loa
         let checkdiv = document.createElement("div");
         checkdiv.classList.add("descCheckDiv");
         let checkbox = document.createElement("input");
-        checkbox.classList.add(removeSpaces(value));
+        checkbox.id = removeSpaces(value);
         checkbox.type = "checkbox";
         checkbox.addEventListener("click", function () {
           checkboxes[category][removeSpaces(value)] = this.checked ? 1 : 0;
@@ -1262,8 +1309,9 @@ let descriptionsLoaded = loadJSON("./descriptions.json").then(response => {//loa
           scores[0].Size[1].NoofUgrads[1] = [700, 3500, 9000, 18000];
           scores[0].Size[1].NoofUgrads[2] = sizes[size];
           for (const college of colleges) {
-            updateRowMatchScores(college.ID);
+            updateRowMatchScores(college.ID, 0);
           }
+          updateApplyTable();
           writeUserData(1);
         });
         sizeBtnDiv.appendChild(button);
@@ -1307,7 +1355,63 @@ function getFromColleges(college) {
   }
 }
 
-function updateRowMatchScores(college) {
+function updateApplyTable() {
+  let categories = [[], [], []];//reaches, targets, safeties
+  for (const college of colleges) {
+    if ("FLOAT" in collegesData[college.ID]) {
+      let data = [college.ID, collegesData[college.ID].FLOAT];
+      switch (collegesData[college.ID].Category) {
+        case "Reach":
+        case "Small Reach":
+          categories[0].push(data);
+          break;
+        case "Target":
+        case "Target/Safety":
+          categories[1].push(data);
+          break;
+        case "Safety":
+          categories[2].push(data);
+          break;
+      }
+    }
+  }
+  for (let i = 0; i < 3; i++) {
+    categories[i].sort(function (a, b) {
+      return b[1] - a[1];
+    });
+  }
+  let h3s = ["Reach", "Target", "Safety"];
+  for (let i = 0; i < 3; i++) {
+    let table = document.getElementById(h3s[i] + "Table");
+    for (let j = 0; j < 4; j++) {
+      let tr = table.getElementsByTagName("tr")[j + 1];
+      if (categories[i].length - 1 >= i) {
+        let college = categories[i][j][0];
+        let name = tr.getElementsByClassName("ApplyName")[0];
+        name.innerText = collegesData[college].Name;
+        let research = tr.getElementsByClassName("ApplyResearch")[0];
+        let researchTotal = 0;
+        for (const category of ["Location", "Campus Life", "Majors", "Programs"]) {
+          if (category in getFromColleges(college) && "Override" in getFromColleges(college)[category]) {
+            researchTotal += 25;
+          }
+        }
+        research.innerText = researchTotal + "%";
+        let float = tr.getElementsByClassName("ApplyFLOAT")[0];
+        float.innerText = Math.round(categories[i][j][1] * 10000) / 100 + "%";
+        let category = tr.getElementsByClassName("ApplyCategory")[0];
+        category.innerText = collegesData[college].Category;
+        let acceptanceRate = tr.getElementsByClassName("ApplyAcceptanceRate")[0];
+        acceptanceRate.innerText = Math.round(collegesData[college].AcceptanceRate * 10000) / 100 + "%";
+      } else {
+        let name = tr.getElementsByClassName("ApplyName")[0];
+        name.innerText = "Not Found";
+      }
+    }
+  }
+}
+
+function updateRowMatchScores(college, applyTable = 1) {
   let floatScore;
   for (let i = 0; i < 3; i++) {//update match scores
     let scoreTot = 0;
@@ -1315,75 +1419,78 @@ function updateRowMatchScores(college) {
     for (const category in scores[i]) {
       let scoreCat = 0;
       let weightSumCat = 0;
+      let override = 0;
       if (category != "Acceptance" && category in getFromColleges(college) && "Override" in getFromColleges(college)[category]) {
         scoreCat = getFromColleges(college)[category].Override;
         weightSumCat = 5;
-      } else {
-        for (const key in scores[i][category][1]) {
-          if (key in collegesData[college] || (key == "Averagenetpriceforfamilyincome" && "Averagenetpricefor" + userinfo.income + "familyincome" in collegesData[college]) || (key.substr(0, 2) == "<>" && key.substr(6) in collegesData[college])) {
-            let dataKey = key;
-            if (key == "Averagenetpriceforfamilyincome") {
-              dataKey = "Averagenetpricefor" + userinfo.income + "familyincome";
-            } else if (key.substr(0, 2) == "<>") {
-              dataKey = key.substr(6);
-            }
-            let data = collegesData[college][dataKey];
-            let scoreDat = 0;
-            let weight = scores[i][category][1][key][0];
-            if (key.substr(0, 2) == "<>") {
-              if (key.substr(2, 3) == "gpa") {
-                data = userinfo.gpa - data;
-                if (collegesData[college].GPAorTestScoresMoreImportant == "GPA") {
-                  weight = 5;
-                }
-              } else if (key.substr(2, 3) == "sat") {
-                if (userinfo.test == "sat") {
-                  data = userinfo.sat - data;
-                } else {
-                  continue;
-                }
-                if (collegesData[college].GPAorTestScoresMoreImportant == "Test Scores") {
-                  weight = 5;
-                }
-              } else if (key.substr(2, 3) == "act") {
-                if (userinfo.test == "act") {
-                  data = userinfo.act - data;
-                } else {
-                  continue;
-                }
-                if (collegesData[college].GPAorTestScoresMoreImportant == "Test Scores") {
-                  weight = 5;
-                }
+        override = 1;
+      }//run below for highlighting
+      for (const key in scores[i][category][1]) {
+        if (key in collegesData[college] || (key == "Averagenetpriceforfamilyincome" && "Averagenetpricefor" + userinfo.income + "familyincome" in collegesData[college]) || (key.substr(0, 2) == "<>" && key.substr(6) in collegesData[college])) {
+          let dataKey = key;
+          if (key == "Averagenetpriceforfamilyincome") {
+            dataKey = "Averagenetpricefor" + userinfo.income + "familyincome";
+          } else if (key.substr(0, 2) == "<>") {
+            dataKey = key.substr(6);
+          }
+          let data = collegesData[college][dataKey];
+          let scoreDat = 0;
+          let weight = scores[i][category][1][key][0];
+          if (key.substr(0, 2) == "<>") {
+            if (key.substr(2, 3) == "gpa") {
+              data = userinfo.gpa - data;
+              if (collegesData[college].GPAorTestScoresMoreImportant == "GPA") {
+                weight = 5;
+              }
+            } else if (key.substr(2, 3) == "sat") {
+              if (userinfo.test == "sat") {
+                data = userinfo.sat - data;
+              } else {
+                continue;
+              }
+              if (collegesData[college].GPAorTestScoresMoreImportant == "Test Scores") {
+                weight = 5;
+              }
+            } else if (key.substr(2, 3) == "act") {
+              if (userinfo.test == "act") {
+                data = userinfo.act - data;
+              } else {
+                continue;
+              }
+              if (collegesData[college].GPAorTestScoresMoreImportant == "Test Scores") {
+                weight = 5;
               }
             }
-            let range = scores[i][category][1][key][1];
-            let scoreVals = [1, 2, 3, 4, 5];
-            if (scores[i][category][1][key].length == 3) {//custom score ordering defined
-              scoreVals = scores[i][category][1][key][2];
+          }
+          let range = scores[i][category][1][key][1];
+          let scoreVals = [1, 2, 3, 4, 5];
+          if (scores[i][category][1][key].length == 3) {//custom score ordering defined
+            scoreVals = scores[i][category][1][key][2];
+          }
+          if (range.length == 2) {//min and max defined
+            let width = (range[1] - range[0]) / 5;
+            range = [range[0] + width, range[0] + 2 * width, range[1] - 2 * width, range[1] - width];
+          }
+          if (data < range[0]) {
+            scoreDat = scoreVals[0];
+          }
+          for (let j = 0; j < range.length - 1; j++) {
+            if (range[j] <= data && data < range[j + 1]) {
+              scoreDat = scoreVals[j + 1];
             }
-            if (range.length == 2) {//min and max defined
-              let width = (range[1] - range[0]) / 5;
-              range = [range[0] + width, range[0] + 2 * width, range[1] - 2 * width, range[1] - width];
-            }
-            if (data < range[0]) {
-              scoreDat = scoreVals[0];
-            }
-            for (let j = 0; j < range.length - 1; j++) {
-              if (range[j] <= data && data < range[j + 1]) {
-                scoreDat = scoreVals[j + 1];
-              }
-            }
-            if (range[range.length - 1] <= data) {
-              scoreDat = scoreVals[scoreVals.length - 1];
-            }
-            if (category == "Ranking" && (data == "unranked" || data == "Unranked")) {
-              scoreDat = 1;
-            }
+          }
+          if (range[range.length - 1] <= data) {
+            scoreDat = scoreVals[scoreVals.length - 1];
+          }
+          if (category == "Ranking" && (data == "unranked" || data == "Unranked")) {
+            scoreDat = 1;
+          }
+          if (!override) {
             scoreCat += scoreDat * weight;
             weightSumCat += 5 * weight;
-            if (i == 0) {
-              document.getElementById(college).getElementsByClassName(key + " " + removeSpaces(category))[0].style.backgroundColor = "var(--high" + (scoreDat - 1) + ")";//cell highlights
-            }
+          }
+          if (i == 0) {
+            document.getElementById(college).getElementsByClassName(key + " " + removeSpaces(category))[0].style.backgroundColor = "var(--high" + (scoreDat - 1) + ")";//cell highlights
           }
         }
       }
@@ -1410,6 +1517,7 @@ function updateRowMatchScores(college) {
     if (i == 0) {
       score = scoreTot / weightSumTot;
       floatScore = score;
+      collegesData[college].FLOAT = score;
     } else {
       let boost = 0;
       if ("Acceptance" in getFromColleges(college) && "Override" in getFromColleges(college).Acceptance) {
@@ -1421,8 +1529,8 @@ function updateRowMatchScores(college) {
         subscoreCell.innerText = "No Data";
         if (i == 1) {
           for (const cell of document.getElementById(college).getElementsByClassName("Category")) {
-          cell.innerText = "No Data";
-        }
+            cell.innerText = "No Data";
+          }
         }
       } else {
         subscoreCell.innerText = Math.round(score * 10000) / 100 + "%";
@@ -1440,6 +1548,7 @@ function updateRowMatchScores(college) {
               result = names[i];
             }
           }
+          collegesData[college].Category = result;
           for (const cell of document.getElementById(college).getElementsByClassName("Category")) {
             cell.innerText = result;
           }
@@ -1457,10 +1566,13 @@ function updateRowMatchScores(college) {
       scoreCell.style.backgroundColor = "var(--high" + (Math.min(Math.trunc(score * 5), 4)) + ")";//score highlight
     }
   }
+  if (applyTable) {
+    updateApplyTable();
+  }
 }
 
 function updateRowData(college) {
-  loadFirebaseJSON("/colleges/" + college).then(response => {
+  return loadFirebaseJSON("/colleges/" + college).then(response => {
     collegesData[college] = response;
     if (document.getElementById("welcomecolleges")) {//add college to the welcome list if open
       let div = document.createElement("div");
@@ -1553,7 +1665,7 @@ function updateRowData(college) {
         }
       }
     }
-    updateRowMatchScores(college);
+    updateRowMatchScores(college, 0);
   }, error => {
     createToast("Load " + college + " Data Failed!");
     console.error("Load " + college + " Data Failed!", error);
@@ -1627,6 +1739,7 @@ function addRowToTable(college) {
               colleges.splice(i, 1);
             }
           }
+          updateApplyTable();
           writeUserData(0);
         });
       });
@@ -1777,7 +1890,7 @@ function addRowToTable(college) {
     }
   }
   document.getElementById("table").appendChild(tr);
-  updateRowData(college);
+  return updateRowData(college);
 }
 
 let weightNames = ["Not a factor", "Barely a factor", "Less important", "Average", "Important", "Very important"];
