@@ -213,6 +213,29 @@ option {
 .descsDropdown {
   margin-bottom: 20px;
 }
+.descriptions p {
+  max-width: 75ch;
+}
+
+/*Apply Tables*/
+#appLeftDiv {
+  margin-right: 20px;
+}
+#appDiv {
+  display: flex;
+  flex-wrap: wrap;
+}
+#appWarnP {
+  background-color: var(--high0);
+  padding: 2px 4px;
+}
+.splitDiv {
+  display: flex;
+  align-items: center;
+}
+.splitDiv p {
+  margin-left: auto;
+}
 
 /*Table*/
 #tableholder {

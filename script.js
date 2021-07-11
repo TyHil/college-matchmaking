@@ -1221,26 +1221,41 @@ let descriptionsLoaded = loadJSON("./descriptions.json").then(response => {//loa
     div.appendChild(h2);
     let p = document.createElement("p");
     p.innerText = descriptions[category].Description;
-    div.appendChild(p);
     if (category == "Apply") {
+      let appDiv = document.createElement("div");
+      appDiv.id = "appDiv";
+      div.appendChild(appDiv);
+      let leftDiv = document.createElement("div");
+      leftDiv.id = "appLeftDiv";
+      let rightDiv = document.createElement("div");
+      appDiv.appendChild(leftDiv);
+      appDiv.appendChild(rightDiv);
+      leftDiv.appendChild(p);
+      let splitDiv = document.createElement("div");
+      splitDiv.classList.add("splitDiv");
       let h3 = document.createElement("h3");
       h3.innerText = "Top Four Colleges in Each Category";
-      div.appendChild(h3);
-      let p = document.createElement("p");
-      p.innerText = "Any college that accepts less than 10% of applicants should be considered unpredictable.";
-      div.appendChild(p);
+      splitDiv.appendChild(h3);
       let totalColleges = document.createElement("p");
       totalColleges.id = "totalColleges";
-      div.appendChild(totalColleges);
+      splitDiv.appendChild(totalColleges);
+      rightDiv.appendChild(splitDiv);
+      let warnP = document.createElement("p");
+      warnP.innerText = "Any college that accepts less than 10% of applicants should be considered unpredictable.";
+      warnP.id = "appWarnP";
+      rightDiv.appendChild(warnP);
       let headings = ["Name", "Research", "FLOAT", "Category", "Acceptance Rate"];
       let h4s = ["Reach", "Target", "Safety"];
       for (let i = 0; i < 3; i++) {
+        let splitDiv = document.createElement("div");
+        splitDiv.classList.add("splitDiv");
         let h4 = document.createElement("h4");
         h4.innerText = "Top Four " + h4s[i] + " Colleges";
-        div.appendChild(h4);
+        splitDiv.appendChild(h4);
         let total = document.createElement("p");
         total.id = "total" + h4s[i];
-        div.appendChild(total);
+        splitDiv.appendChild(total);
+        rightDiv.appendChild(splitDiv);
         let table = document.createElement("table");
         table.id = h4s[i] + "Table";
         let tr = document.createElement("tr");
@@ -1259,9 +1274,11 @@ let descriptionsLoaded = loadJSON("./descriptions.json").then(response => {//loa
           }
           table.appendChild(tr);
         }
-        div.appendChild(table);
+        rightDiv.appendChild(table);
       }
-      div.appendChild(document.createElement("br"));
+      rightDiv.appendChild(document.createElement("br"));
+    } else {
+      div.appendChild(p);
     }
     if ("Checkboxes" in descriptions[category]) {
       checkboxes[category] = {};
