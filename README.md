@@ -51,9 +51,8 @@ The College Matchmaking website.
 ### Stuff Cy can do
 - [x] Include all data points in headers.json.
   - [x] Switch to Ellen's data.
-- [ ] Refine match scores (stop using dummy ones).
+- [x] Refine match scores (stop using dummy ones).
   - [x] FLOAT
-    - [ ] Double check
   - [x] SAIL
   - [x] SWIM
 - [x] Add info to intro popup.

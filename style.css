@@ -371,15 +371,12 @@ table th p {
   padding: 20px;
   margin: 0 auto;
   width: fit-content;
-  max-width: 75ch;
+  max-width: 75%;
   max-height: 70%;
   border-radius: 8px;
   top: 15%;
   animation: slidedown 0.4s cubic-bezier(0.175, 0.885, 0.320, 1.275);
   overflow: auto;
-}
-#loginmodal .content, #aboutusmodal .content {
-  max-width: 75%;
 }
 @keyframes slideup {
   from {top:15%; opacity:1}
@@ -629,6 +626,7 @@ table th p {
 }
 #cylerdiv {
   display: flex;
+  flex-wrap: wrap;
   margin-top: 20px;
 }
 #cylerdiv h2, #cylerdiv p {
@@ -659,5 +657,3 @@ table th p {
 #acknowledgementsdiv h3 {
   margin-top: 2px;
 }
-
-/*Apply Tables*/
