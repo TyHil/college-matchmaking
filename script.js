@@ -1229,14 +1229,20 @@ let descriptionsLoaded = loadJSON("./descriptions.json").then(response => {//loa
       let p = document.createElement("p");
       p.innerText = "Any college that accepts less than 10% of applicants should be considered unpredictable.";
       div.appendChild(p);
+      let totalColleges = document.createElement("p");
+      totalColleges.id = "totalColleges";
+      div.appendChild(totalColleges);
       let headings = ["Name", "Research", "FLOAT", "Category", "Acceptance Rate"];
-      let h4s = ["Top Four Reach Colleges", "Top Four Target Colleges", "Top Four Safety Colleges"];
+      let h4s = ["Reach", "Target", "Safety"];
       for (let i = 0; i < 3; i++) {
         let h4 = document.createElement("h4");
-        h4.innerText = h4s[i];
+        h4.innerText = "Top Four " + h4s[i] + " Colleges";
         div.appendChild(h4);
+        let total = document.createElement("p");
+        total.id = "total" + h4s[i];
+        div.appendChild(total);
         let table = document.createElement("table");
-        table.id = h4s[i].split(" ")[2] + "Table";
+        table.id = h4s[i] + "Table";
         let tr = document.createElement("tr");
         for (const heading of headings) {
           let th = document.createElement("th");
@@ -1356,6 +1362,7 @@ function getFromColleges(college) {
 }
 
 function updateApplyTable() {
+  document.getElementById("totalColleges").innerText = "Total Colleges: " + colleges.length;
   let categories = [[], [], []];//reaches, targets, safeties
   for (const college of colleges) {
     if ("FLOAT" in collegesData[college.ID]) {
@@ -1375,17 +1382,16 @@ function updateApplyTable() {
       }
     }
   }
+  let h3s = ["Reach", "Target", "Safety"];
   for (let i = 0; i < 3; i++) {
     categories[i].sort(function (a, b) {
       return b[1] - a[1];
     });
-  }
-  let h3s = ["Reach", "Target", "Safety"];
-  for (let i = 0; i < 3; i++) {
+    document.getElementById("total" + h3s[i]).innerText = "Total " + h3s[i] + " Colleges: " + categories[i].length;
     let table = document.getElementById(h3s[i] + "Table");
     for (let j = 0; j < 4; j++) {
       let tr = table.getElementsByTagName("tr")[j + 1];
-      if (categories[i].length > j) {///
+      if (categories[i].length > j) {
         let college = categories[i][j][0];
         let name = tr.getElementsByClassName("ApplyName")[0];
         name.innerText = collegesData[college].Name;
@@ -1604,6 +1610,39 @@ function addRowToTable(college, applyTable = 1) {
         }
       });
       arrowdiv.appendChild(up);
+      let drag = document.createElement("span");
+      drag.classList.add("icon");
+      drag.classList.add("drag");
+      drag.classList.add("material-icons");
+      drag.title = "Set College Position";
+      drag.innerText = "drag_handle";
+      drag.addEventListener("click", () => {
+        let pos = prompt("Enter college position from 1 to " + colleges.length);
+        if (Number.isInteger(parseInt(pos)) && pos > 0 && pos <= colleges.length) {
+          pos = parseInt(pos);
+          for (let i = 0; i < colleges.length; i++) {
+            if (colleges[i].ID == college) {///
+              console.log("found");
+              if (pos == colleges.length) {
+                console.log("last");
+                document.getElementById("table").appendChild(document.getElementById(colleges[i].ID));
+                colleges.push(colleges.splice(i, 1)[0]);
+                writeUserData(1);
+                break;
+              } else if (pos - 1 != i) {
+                console.log("norm");
+                document.getElementById("table").insertBefore(document.getElementById(colleges[i].ID), document.getElementById(colleges[pos - (pos - 1 < i ? 1 : 0)].ID));
+                colleges.splice(pos - 1, 0, colleges.splice(i, 1)[0]);
+                writeUserData(1);
+                break;
+              }
+            }
+          }
+        } else if (pos !== null) {
+          createToast("Invalid Position!");
+        }
+      });
+      arrowdiv.appendChild(drag);
       let down = document.createElement("span");
       down.classList.add("icon");
       down.classList.add("arrow");
@@ -2026,7 +2065,7 @@ function searchSetup() {
       div.addEventListener("click", function () {
         let itemVal = this.getElementsByTagName("input")[0].value;
         if (getFromColleges(itemVal) == undefined) {
-          colleges.push({ "ID": itemVal });///
+          colleges.push({ "ID": itemVal });
           addRowToTable(itemVal);
           writeUserData(1);
           suggestions.style.display = "none";

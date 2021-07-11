@@ -238,7 +238,11 @@ th, td {
 }
 .arrow {
   font-size: 36px;
-  line-height: 24px;
+  line-height: 14px;
+}
+.drag {
+  text-align: center;
+  line-height: 14px;
 }
 .removeicon {
   font-size: 36px;

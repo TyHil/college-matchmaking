@@ -46,8 +46,8 @@ The College Matchmaking website.
 - [x] Programs checkboxes
 - [ ] Frozen headers
 - [x] About us
-- [ ] Reach/Target/Safety
-- [ ] Apply Table
+- [x] Reach/Target/Safety
+- [x] Apply Table
 ### Stuff Cy can do
 - [x] Include all data points in headers.json.
   - [x] Switch to Ellen's data.
