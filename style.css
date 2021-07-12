@@ -102,7 +102,7 @@ option {
 
 /*User info*/
 #userinfo {
-  margin: 0 10px;
+  margin: 4px 10px 0 10px;
 }
 .userinfo p {
   display: inline;
@@ -203,6 +203,7 @@ option {
 /*Descriptions*/
 #descriptions {
   margin: 0 10px;
+  overflow: auto;
 }
 .descriptions {
   display: none;
@@ -241,7 +242,7 @@ option {
 #tableholder {
   margin: 0 10px;
   overflow: auto;
-  padding: 1px 0;
+  padding: 8px 0;
 }
 table, th, td {
   border: 1px solid var(--dark0);
@@ -509,7 +510,7 @@ table th p {
   padding: 7px 0;
   margin: 0;
 }
-#logout:hover, #changepass:hover {
+#actsetupwizard:hover, #logout:hover, #changepass:hover {
   background-color: var(--light1);
 }
 
@@ -598,10 +599,11 @@ table th p {
 
 /*Toasts*/
 #toasts {
+  margin-left: auto;
+  z-index: 1;
   position: fixed;
   bottom: 0;
   right: 0;
-  z-index: 1;
 }
 .toast {
   margin: 0 10px 10px auto;
@@ -642,6 +644,14 @@ table th p {
 .toast button:hover {
   background-color: var(--light3);
 }
+
+/*Ad*/
+/*#ad {
+  margin: 4px 10px 4px 10px;
+  max-height: 60px;
+  width: calc(100vw - 30px);
+  max-width: 468px;
+}*/
 
 /*About Us*/
 .headshot {
