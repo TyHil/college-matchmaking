@@ -4,6 +4,7 @@ The College Matchmaking website.
 - [Firebase](https://firebase.google.com/)
   - [Realtime Database](https://firebase.google.com/docs/database)
   - [Authentication](https://firebase.google.com/docs/auth)
+  - [Hosting](https://firebase.google.com/docs/hosting)
 - [Google Icons](https://fonts.google.com/icons)
 - [DonorBox](https://donorbox.org/)
 ## Todo
@@ -48,7 +49,6 @@ The College Matchmaking website.
 - [x] About us
 - [x] Reach/Target/Safety
 - [x] Apply Table
-### Stuff Cy can do
 - [x] Include all data points in headers.json.
   - [x] Switch to Ellen's data.
 - [x] Refine match scores (stop using dummy ones).
