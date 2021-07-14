@@ -13,15 +13,15 @@
 }
 /*Scrollbar Webkit*/
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 0.625rem;
+  height: 0.625rem;
 }
 ::-webkit-scrollbar-track {
   background: var(--light0);  
 }
 ::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.24);
-  border-radius: 10px;
+  border-radius: 0.625rem;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.28);
@@ -66,11 +66,11 @@ button {
   background-color: var(--light1);
   text-align: center;
   text-decoration: none;
-  border-radius: 4px;
+  border-radius: 0.25rem;
   cursor: pointer;
   border: none;
-  margin: 4px 2px;
-  padding: 6px 8px;
+  margin: 0.25rem 0.125rem;
+  padding: 0.375rem 0.5rem;
 }
 button:hover {
   background-color: var(--light2);
@@ -87,13 +87,13 @@ button:hover {
 
 /*Inputs*/
 input[type=text], input[type=number], select, textarea {
-  border-radius: 4px;
+  border-radius: 0.25rem;
   border: none;
   background-color: var(--light2);
   color: var(--dark0);
 }
 select {
-  padding: 2px 2px;
+  padding: 0.125rem 0.125rem;
 }
 option {
   background-color: var(--light0);
@@ -102,81 +102,81 @@ option {
 
 /*User info*/
 #userinfo {
-  margin: 4px 10px 0 10px;
+  margin: 0.25rem 0.625rem 0 0.625rem;
 }
 .userinfo p {
   display: inline;
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 #testscore p, #gpa p, #income p {
-  margin: 0 0 0 6px;
+  margin: 0 0 0 0.375rem;
 }
 #needaid p {
-  margin: 0 6px 0 0;
+  margin: 0 0.375rem 0 0;
 }
 .userinfo {
   display: inline-block;
-  margin: 4px 2px;
-  border-radius: 4px;
-  padding: 2px 2px;
+  margin: 0.25rem 0.125rem;
+  border-radius: 0.25rem;
+  padding: 0.125rem 0.125rem;
   background-color: var(--light1);
 }
 .userinfo input {
-  padding: 2px 4px;
+  padding: 0.125rem 0.25rem;
 }
 #testscore input {
-  width: 50px;
+  width: 3.125rem;
 }
 #gpa input {
-  width: 40px;
+  width: 2.5rem;
 }
 #testscore select, #income select {
-  height: 19px;
+  height: 1.1875rem;
 }
 
 /*Bug report*/
 #bug {
   float: right;
-  margin: 4px 12px 4px 2px;
+  margin: 0.25rem 0.75rem 0.25rem 0.125rem;
 }
 
 /*Table Buttons*/
 #buttonholder {
-  margin: 0 10px;
+  margin: 0 0.625rem;
 }
 .hidebutton {
   color: var(--dark0);
-  font-size: 14px;
-  margin: 4px 2px;
+  font-size: 0.875rem;
+  margin: 0.25rem 0.125rem;
   display: inline-block;
-  padding: 6px 8px;
+  padding: 0.375rem 0.5rem;
 }
 .hidebutton.clicked {
   background-color: var(--light2);
 }
 .hidebutton.doubleclicked {
   background-color: var(--light2);
-  border: 3px solid var(--light3);
-  padding: 3px 5px;
+  border: 0.1875rem solid var(--light3);
+  padding: 0.1875rem 0.3125rem;
 }
 
 /*Add a college*/
 #addcollege {
-  margin-right: 10px;
+  margin-right: 0.625rem;
   position: relative;
   display: inline-block;
 }
 #textinput {
-  width: 200px;
-  height: 20px;
-  margin: 4px 2px;
-  padding: 4px 8px;
+  width: 12.5rem;
+  height: 1.25rem;
+  margin: 0.25rem 0.125rem;
+  padding: 0.25rem 0.5rem;
 }
 #suggestions {
   display: none;
   position: absolute;
-  border: 1px solid var(--light2);
-  border-radius: 0 0 4px 4px;
+  border: 0.0625rem solid var(--light2);
+  border-radius: 0 0 0.25rem 0.25rem;
   border-bottom: none;
   border-top: none;
   top: 100%;
@@ -184,11 +184,11 @@ option {
   right: 0;
 }
 #suggestions div {
-  width: 200px;
-  padding: 10px;
+  width: 12.5rem;
+  padding: 0.625rem;
   cursor: pointer;
   background-color: var(--light0);
-  border-bottom: 1px solid var(--light2);
+  border-bottom: 0.0625rem solid var(--light2);
 }
 #suggestions div:hover {
   background-color: var(--light2);
@@ -202,7 +202,7 @@ option {
 
 /*Descriptions*/
 #descriptions {
-  margin: 0 10px;
+  margin: 0 0.625rem;
   overflow: auto;
 }
 .descriptions {
@@ -212,7 +212,7 @@ option {
   display: inline;
 }
 .descsDropdown {
-  margin-bottom: 20px;
+  margin-bottom: 1.25rem;
 }
 .descriptions p {
   max-width: 75ch;
@@ -220,7 +220,7 @@ option {
 
 /*Apply Tables*/
 #appLeftDiv {
-  margin-right: 20px;
+  margin-right: 1.25rem;
 }
 #appDiv {
   display: flex;
@@ -228,7 +228,7 @@ option {
 }
 #appWarnP {
   background-color: var(--high0);
-  padding: 2px 4px;
+  padding: 0.125rem 0.25rem;
 }
 .splitDiv {
   display: flex;
@@ -240,16 +240,16 @@ option {
 
 /*Table*/
 #tableholder {
-  margin: 0 10px;
+  margin: 0 0.625rem;
   overflow: auto;
-  padding: 8px 0;
+  padding: 0.5rem 0;
 }
 table, th, td {
-  border: 1px solid var(--dark0);
+  border: 0.0625rem solid var(--dark0);
   border-collapse: collapse;
 }
 th, td {
-  padding: 4px;
+  padding: 0.25rem;
 }
 .actionsdiv {
   display: flex;
@@ -261,37 +261,37 @@ th, td {
   flex-direction: column;
 }
 .arrow {
-  font-size: 36px;
-  line-height: 14px;
+  font-size: 2.25rem;
+  line-height: 0.875rem;
 }
 .drag {
   text-align: center;
-  line-height: 14px;
+  line-height: 0.875rem;
 }
 .removeicon {
-  font-size: 36px;
+  font-size: 2.25rem;
   display: block;
 }
 .scoreicon {
   cursor: pointer;
 }
 .question {
-  font-size: 16px;
+  font-size: 1.0rem;
   vertical-align: top;
 }
 table th h2 {
-  font-size: 20px;
-  line-height: 20px;
+  font-size: 1.25rem;
+  line-height: 1.25rem;
   margin: 0;
 }
 table th h3 {
-  font-size: 14px;
-  line-height: 14px;
+  font-size: 0.875rem;
+  line-height: 0.875rem;
   margin: 0;
 }
 table th p {
-  font-size: 10px;
-  line-height: 16px;
+  font-size: 0.625rem;
+  line-height: 1.0rem;
   margin: 0;
 }
 
@@ -299,46 +299,46 @@ table th p {
 #header {
   overflow: hidden;
   background-color: var(--light1);
-  padding: 2px;
+  padding: 0.125rem;
   display: flex;
   align-items: center;
 }
 #header #logo img {
-  margin: 5px;
+  margin: 0.3125rem;
 }
 #header a {
   color: var(--dark0);
   text-align: center;
-  padding: 10px;
+  padding: 0.625rem;
   text-decoration: none;
-  font-size: 18px;
-  line-height: 25px;
-  border-radius: 4px;
-  margin-right: 2px;
-  margin-left: 2px;
+  font-size: 1.125rem;
+  line-height: 1.5625rem;
+  border-radius: 0.25rem;
+  margin-right: 0.125rem;
+  margin-left: 0.125rem;
   cursor: pointer;
 }
 #header #logo {
   display: flex;
   align-items: center;
   margin-right: auto;
-  margin-left: 10px;
+  margin-left: 0.625rem;
   text-align: left;
-  padding: 0px;
+  padding: 0.0rem;
 }
 #header #logo h1 {
-  margin: 0 10px 0 5px;
-  font-size: 25px;
+  margin: 0 0.625rem 0 0.3125rem;
+  font-size: 1.5625rem;
   line-height: 0;
 }
 #header a:hover {
   background-color: var(--light2);
 }
 #header #signuplogin {
-  margin-right: 10px;
+  margin-right: 0.625rem;
   background: linear-gradient(90deg, #61cae3, #3489c9);
 }
-@media screen and (max-width: 680px) {
+@media screen and (max-width: 42.5rem) {
   #header #logo h1 {
     display: none;
   }
@@ -348,18 +348,18 @@ table th p {
   align-items: center;
 }
 #userimg {
-  margin-right: 10px;
-  margin-left: 5px;
+  margin-right: 0.625rem;
+  margin-left: 0.3125rem;
   border-radius: 100%;
-  width: 35px;
-  height: 35px;
+  width: 2.1875rem;
+  height: 2.1875rem;
   cursor: pointer;
 }
 #usersvg {
-  margin-right: 5px;
-  margin-left: 5px;
+  margin-right: 0.3125rem;
+  margin-left: 0.3125rem;
   border-radius: 100%;
-  font-size: 35px;
+  font-size: 2.1875rem;
   cursor: pointer;
 }
 
@@ -376,7 +376,7 @@ table th p {
   width: 100%;
   height: 100%;
   animation: fadein 0.4s;
-  backdrop-filter: blur(1px);
+  backdrop-filter: blur(0.063rem);
 }
 @keyframes fadeout {
   from {opacity:1}
@@ -392,12 +392,12 @@ table th p {
 .modal .content {
   position: relative;
   background-color: var(--light0);
-  padding: 20px;
+  padding: 1.25rem;
   margin: 0 auto;
   width: fit-content;
   max-width: 75%;
   max-height: 70%;
-  border-radius: 8px;
+  border-radius: 0.5rem;
   top: 15%;
   animation: slidedown 0.4s cubic-bezier(0.175, 0.885, 0.320, 1.275);
   overflow: auto;
@@ -412,7 +412,7 @@ table th p {
 .modal .content .close {
   float: right; 
   color: grey; 
-  font-size: 24px;  
+  font-size: 1.5rem;  
   font-weight: bold;
   cursor: pointer;
 }
@@ -423,7 +423,7 @@ table th p {
   margin: 0;
 }
 .modal .buttonbox {
-  margin-top: 10px;
+  margin-top: 0.625rem;
   float: right;
 }
 
@@ -433,18 +433,18 @@ table th p {
 }
 #welcomecolleges div {
   background-color: var(--light1);
-  border-radius: 4px;
-  padding: 2px 8px;
+  border-radius: 0.25rem;
+  padding: 0.125rem 0.5rem;
   display: flex;
   align-items: center;
   width: fit-content;
-  margin-bottom: 10px;
+  margin-bottom: 0.625rem;
 }
 #welcomecolleges p {
   margin: 0;
 }
 #welcomecolleges span {
-  margin-right: 8px;
+  margin-right: 0.5rem;
 }
 
 /*Pop Up*/
@@ -452,31 +452,31 @@ table th p {
   position: absolute;
   background-color: var(--light0);
   width: fit-content;
-  border-radius: 4px;
+  border-radius: 0.25rem;
   display: none;
-  box-shadow: 0 0 20px grey;
+  box-shadow: 0 0 1.25rem grey;
 }
 .popup h2 {
-  font-size: 24px;
-  line-height: 20px;
-  margin: 10px 10px 5px 10px;
+  font-size: 1.5rem;
+  line-height: 1.25rem;
+  margin: 0.625rem 0.625rem 0.3125rem 0.625rem;
   text-align: center;
   display: inline-block;
 }
 .popup h3 {
-  font-size: 18px;
-  line-height: 18px;
-  margin: 5px 10px;
+  font-size: 1.125rem;
+  line-height: 1.125rem;
+  margin: 0.3125rem 0.625rem;
   font-weight: normal;
   display: inline-block;
 }
 
 /*Modal and Popup Buttons*/
 .modal .buttons, .popup button {
-  font-size: 16px;
-  line-height: 20px;
-  padding: 5px;
-  margin: 2px 0;
+  font-size: 1.0rem;
+  line-height: 1.25rem;
+  padding: 0.3125rem;
+  margin: 0.125rem 0;
 }
 .modal .buttons {
   background-color: var(--light1);
@@ -494,20 +494,20 @@ table th p {
 
 /*User actions*/
 #useractions {
-  top: 60px;
-  right: 10px;
+  top: 3.75rem;
+  right: 0.625rem;
   flex-direction: column;
   align-items: center;
 }
 .editicon {
-  font-size: 12px;
-  margin-right: 10px;
+  font-size: 0.75rem;
+  margin-right: 0.625rem;
   vertical-align: text-top;
 }
 #useractions button {
   background-color: var(--light0);
   width: 100%;
-  padding: 7px 0;
+  padding: 0.4375rem 0;
   margin: 0;
 }
 #actsetupwizard:hover, #logout:hover, #changepass:hover {
@@ -516,8 +516,8 @@ table th p {
 
 /*Sliders*/
 .slider {
-  width: 100px;
-  height: 10px;
+  width: 6.25rem;
+  height: 0.625rem;
 }
 
 /*Override*/
@@ -526,12 +526,12 @@ table th p {
 }
 .overlabel {
   display: block;
-  margin: 0 5px;
+  margin: 0 0.3125rem;
   float: right;
 }
 .overslider {
   display: block; 
-  width: 60px;
+  width: 3.75rem;
 }
 
 /*Weight Change*/
@@ -540,11 +540,11 @@ table th p {
 }
 .plus {
   float: right;
-  font-size: 24px;
-  line-height: 16px;
+  font-size: 1.5rem;
+  line-height: 1.0rem;
 }
 .scorecontrol {
-  width: 100px;
+  width: 6.25rem;
   margin: auto;
 }
 
@@ -554,30 +554,30 @@ table th p {
   display: none;
   flex-wrap: wrap;
   justify-content: space-around;
-  max-width: 200px;
+  max-width: 12.5rem;
 }
 .break {
   flex-basis: 100%;
   height: 0;
 }
 .dropdown {
-  margin: 5px 0;
+  margin: 0.3125rem 0;
 }
 .barbox {
   width: fit-content;
   height: fit-content;
-  margin-bottom: 5px;
+  margin-bottom: 0.3125rem;
 }
 .bar {
-  width: 20px;
-  height: 20px;
+  width: 1.25rem;
+  height: 1.25rem;
   display: inline-block;
 }
 .rangeval {
-  width: 50px;
-  margin: 5px;
-  padding: 4px 8px;
-  height: 20px;
+  width: 3.125rem;
+  margin: 0.3125rem;
+  padding: 0.25rem 0.5rem;
+  height: 1.25rem;
   -moz-appearance: textfield;
 }
 .rangeval::-webkit-outer-spin-button,
@@ -592,9 +592,9 @@ table th p {
 .vert {
   writing-mode: bt-lr; /*IE*/
   -webkit-appearance: slider-vertical; /*WebKit*/
-  width: 10px;
-  height: 100px;
-  margin-bottom: 10px;
+  width: 0.625rem;
+  height: 6.25rem;
+  margin-bottom: 0.625rem;
 }
 
 /*Toasts*/
@@ -606,12 +606,12 @@ table th p {
   right: 0;
 }
 .toast {
-  margin: 0 10px 10px auto;
-  height: 34px;
+  margin: 0 0.625rem 0.625rem auto;
+  height: 2.125rem;
   width: fit-content;
   background-color: var(--light2);
-  border-radius: 8px;
-  padding: 5px;
+  border-radius: 0.5rem;
+  padding: 0.3125rem;
 }
 @keyframes slidein {
   from { transform: translateX(120%); }
@@ -628,18 +628,18 @@ table th p {
   animation: slideout 0.5s forwards;
 }
 .toast p {
-  margin: 0 5px;
+  margin: 0 0.3125rem;
   display: inline;
-  font-size: 16px;
-  line-height: 34px;
+  font-size: 1.0rem;
+  line-height: 2.125rem;
 }
 .toast button {
   display: inline-block;
   background-color: var(--light2);
-  padding: 5px;
-  font-size: 16px;
-  line-height: 20px;
-  margin: 2px 0;
+  padding: 0.3125rem;
+  font-size: 1.0rem;
+  line-height: 1.25rem;
+  margin: 0.125rem 0;
 }
 .toast button:hover {
   background-color: var(--light3);
@@ -647,11 +647,11 @@ table th p {
 
 /*Ad*/
 #ad {
-  margin: 8px 20px 0 10px;
-  max-height: 90px;
-  width: calc(100vw - 30px);
-  max-width: 728px;
-  border-radius: 4px;
+  margin: 0.5rem 0.625rem 0 0.625rem;
+  max-height: 5.625rem;
+  width: calc(100vw - 1.875rem);
+  max-width: 45.5rem;
+  border-radius: 0.25rem;
 }
 
 /*About Us*/
@@ -661,7 +661,7 @@ table th p {
 #cylerdiv {
   display: flex;
   flex-wrap: wrap;
-  margin-top: 20px;
+  margin-top: 1.25rem;
 }
 #cylerdiv h2, #cylerdiv p {
   text-align: center;
@@ -676,18 +676,18 @@ table th p {
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex: 1 1 0px;
+  flex: 1 1 0.0rem;
 }
 #tylerdiv {
-  margin-right: 10px;
+  margin-right: 0.625rem;
 }
 #cydiv {
-  margin-left: 10px;
+  margin-left: 0.625rem;
 }
 #acknowledgementsdiv p {
   color: gray;
-  margin-bottom: 2px;
+  margin-bottom: 0.125rem;
 }
 #acknowledgementsdiv h3 {
-  margin-top: 2px;
+  margin-top: 0.125rem;
 }
