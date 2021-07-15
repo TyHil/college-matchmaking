@@ -119,9 +119,6 @@ function signedIn(loadData) {
     };
   });
   document.getElementById("logout").addEventListener("click", function () {
-    ///
-  });
-  document.getElementById("logout").addEventListener("click", function () {
     firebase.auth().signOut().then(() => {
       location.reload();
     }).catch((error) => {
@@ -312,7 +309,7 @@ let uiConfig = {
       signedIn(!isNewUser);
     },
     uiShown: function () {//The widget is rendered
-      document.getElementById("loginmodal").getElementsByTagName("h1")[0].innerText = "Sign In or Sign Up";
+      document.getElementById("loginmodal").getElementsByTagName("h1")[0].innerText = "Sign Up or Login In";
     }
   },
   signInFlow: 'popup',
@@ -327,6 +324,16 @@ let uiConfig = {
 function createToast(text, button = "", buttonClick = 0, closed = 0) {
   let div = document.createElement("div");
   div.classList.add("toast");
+  let x = document.createElement("span");
+  x.classList.add("close");
+  x.innerHTML = "&times;";
+  x.addEventListener("click", function () {
+    div.classList.add("animateout");
+    div.addEventListener("animationend", function () {
+      div.remove();
+    });
+  });
+  div.appendChild(x);
   let p = document.createElement("p");
   p.innerText = text;
   div.appendChild(p);
@@ -593,7 +600,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
     allLoaded.push(collegesLoaded);
     let welcomemodal = document.getElementById("welcomemodal");
     welcomemodal.style.display = "block";
-    const observer = new MutationObserver(function (list) {///
+    const observer = new MutationObserver(function (list) {
       if (welcomemodal.style.display == "none") {
         document.body.insertBefore(document.getElementById("userinfo"), document.getElementById("buttonholder"));
         document.getElementsByClassName("Size descriptions")[0].appendChild(document.getElementById("sizeBtnDiv"));
@@ -609,7 +616,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
         observer.disconnect();
       }
     });
-    observer.observe(welcomemodal, { attributes: true, attributeFilter: ['style'] });///
+    observer.observe(welcomemodal, { attributes: true, attributeFilter: ['style'] });
     let content = welcomemodal.getElementsByClassName("content")[0];
     let buttonbox = welcomemodal.getElementsByClassName("buttonbox")[0];
     document.getElementById("modallogin").addEventListener("click", () => {
@@ -622,7 +629,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
         openLogInModal();
       }, { once: true });
     });
-    document.getElementById("setupwizard").onclick = function () {///
+    document.getElementById("setupwizard").onclick = function () {
       document.getElementById("modallogin").style.display = "none";
       this.innerText = "Next";
       welcomemodal.getElementsByTagName("h1")[0].innerText = "Category Weights";

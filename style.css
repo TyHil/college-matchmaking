@@ -51,6 +51,9 @@
   .modal {
     background-color: rgba(255, 255, 255, 0.2);
   }
+  a {
+    color: #8475f9;
+  }
 }
 
 body {
@@ -463,13 +466,6 @@ table th p {
 }
 .modal .content .close {
   float: right; 
-  color: grey; 
-  font-size: 1.5rem;  
-  font-weight: bold;
-  cursor: pointer;
-}
-.modal .content .close:hover {
-  color: var(--dark0);
 }
 .modal h1 {
   margin: 0;
@@ -542,6 +538,17 @@ table th p {
 }
 .modal .mainbtn:hover, .popup .mainbtn:hover {
   background-color: #d81a1a;
+}
+
+/*Modal and toast close*/
+.modal .content .close, .toast .close {
+  color: grey; 
+  font-size: 1.5rem;  
+  font-weight: bold;
+  cursor: pointer;
+}
+.modal .content .close:hover, .toast .close:hover {
+  color: var(--dark0);
 }
 
 /*User actions*/
@@ -664,6 +671,8 @@ table th p {
   background-color: var(--light2);
   border-radius: 0.5rem;
   padding: 0.3125rem;
+  display: flex;
+  align-items: center;
 }
 @-webkit-keyframes slidein {
   from {
@@ -737,6 +746,9 @@ table th p {
 }
 .toast button:hover {
   background-color: var(--light3);
+}
+.toast .close {
+  margin: 0 0.3125rem;
 }
 
 /*Ad*/
