@@ -102,7 +102,7 @@ option {
 
 /*User info*/
 #userinfo {
-  margin: 0.25rem 0.625rem 0 0.625rem;
+  margin: 0.25rem 0.5rem 0 0.5rem;
 }
 .userinfo p {
   display: inline;
@@ -142,7 +142,7 @@ option {
 
 /*Table Buttons*/
 #buttonholder {
-  margin: 0 0.625rem;
+  margin: 0 0.5rem;
 }
 .hidebutton {
   color: var(--dark0);
@@ -162,7 +162,6 @@ option {
 
 /*Add a college*/
 #addcollege {
-  margin-right: 0.625rem;
   position: relative;
   display: inline-block;
 }
@@ -303,30 +302,32 @@ table th p {
   display: flex;
   align-items: center;
 }
-#header #logo img {
+#logo img {
   margin: 0.3125rem;
 }
 #header a {
   color: var(--dark0);
-  text-align: center;
-  padding: 0.625rem;
   text-decoration: none;
   font-size: 1.125rem;
   line-height: 1.5625rem;
   border-radius: 0.25rem;
-  margin-right: 0.125rem;
-  margin-left: 0.125rem;
   cursor: pointer;
 }
-#header #logo {
+#headerright a {
+  text-align: center;
+  padding: 0.625rem;
+  margin-right: 0.125rem;
+  margin-left: 0.125rem;
+}
+#logo {
   display: flex;
   align-items: center;
   margin-right: auto;
   margin-left: 0.625rem;
   text-align: left;
-  padding: 0.0rem;
+  padding: 0;
 }
-#header #logo h1 {
+#logo h1 {
   margin: 0 0.625rem 0 0.3125rem;
   font-size: 1.5625rem;
   line-height: 0;
@@ -334,8 +335,7 @@ table th p {
 #header a:hover {
   background-color: var(--light2);
 }
-#header #signuplogin {
-  margin-right: 0.625rem;
+#signuplogin {
   background: linear-gradient(90deg, #61cae3, #3489c9);
 }
 @media screen and (max-width: 42.5rem) {
@@ -346,9 +346,9 @@ table th p {
 #headerright {
   display: flex;
   align-items: center;
+  margin-right: 0.625rem;
 }
 #userimg {
-  margin-right: 0.625rem;
   margin-left: 0.3125rem;
   border-radius: 100%;
   width: 2.1875rem;
