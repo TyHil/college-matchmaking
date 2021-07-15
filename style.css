@@ -364,6 +364,10 @@ table th p {
 }
 
 /*Modals*/
+@-webkit-keyframes fadein {
+  from {opacity:0}
+  to {opacity:1}
+}
 @keyframes fadein {
   from {opacity:0}
   to {opacity:1}
@@ -375,19 +379,45 @@ table th p {
   top: 0;
   width: 100%;
   height: 100%;
+  -webkit-animation: fadein 0.4s;
   animation: fadein 0.4s;
   backdrop-filter: blur(0.063rem);
+}
+@-webkit-keyframes fadeout {
+  from {opacity:1}
+  to {opacity:0}
 }
 @keyframes fadeout {
   from {opacity:1}
   to {opacity:0}
 }
 .modal.out {
+  -webkit-animation: fadeout 0.4s;
   animation: fadeout 0.4s;
 }
+@-webkit-keyframes slidedown {
+  from {
+    -webkit-transform: translateY(-120%);
+    -ms-transform: translateY(-120%);
+    transform: translateY(-120%);
+    opacity:0
+  }
+  to {
+    top:15%;
+    opacity:1
+  }
+}
 @keyframes slidedown {
-  from {transform: translateY(-120%); opacity:0}
-  to {top:15%; opacity:1}
+  from {
+    -webkit-transform: translateY(-120%);
+    -ms-transform: translateY(-120%);
+    transform: translateY(-120%);
+    opacity:0
+  }
+  to {
+    top:15%;
+    opacity:1
+  }
 }
 .modal .content {
   position: relative;
@@ -399,14 +429,36 @@ table th p {
   max-height: 70%;
   border-radius: 0.5rem;
   top: 15%;
+  -webkit-animation: slidedown 0.4s cubic-bezier(0.175, 0.885, 0.320, 1.275);
   animation: slidedown 0.4s cubic-bezier(0.175, 0.885, 0.320, 1.275);
   overflow: auto;
 }
+@-webkit-keyframes slideup {
+  from {
+    top:15%;
+    opacity:1
+  }
+  to {
+    -webkit-transform: translateY(-120%);
+    -ms-transform: translateY(-120%);
+    transform: translateY(-120%);
+    opacity:0
+  }
+}
 @keyframes slideup {
-  from {top:15%; opacity:1}
-  to {transform: translateY(-120%); opacity:0}
+  from {
+    top:15%;
+    opacity:1
+  }
+  to {
+    -webkit-transform: translateY(-120%);
+    -ms-transform: translateY(-120%);
+    transform: translateY(-120%);
+    opacity:0
+  }
 }
 .modal .content.out {
+  -webkit-animation: slideup 0.4s;
   animation: slideup 0.4s;
 }
 .modal .content .close {
@@ -613,18 +665,60 @@ table th p {
   border-radius: 0.5rem;
   padding: 0.3125rem;
 }
+@-webkit-keyframes slidein {
+  from {
+    -webkit-transform: translateX(120%);
+    -ms-transform: translateX(120%);
+    transform: translateX(120%);
+  }
+  to {
+    -webkit-transform: translateX(0%);
+    -ms-transform: translateX(0%);
+    transform: translateX(0%);
+  }
+}
 @keyframes slidein {
-  from { transform: translateX(120%); }
-  to { transform: translateX(0%); }
+  from {
+    -webkit-transform: translateX(120%);
+    -ms-transform: translateX(120%);
+    transform: translateX(120%);
+  }
+  to {
+    -webkit-transform: translateX(0%);
+    -ms-transform: translateX(0%);
+    transform: translateX(0%);
+  }
 }
 .toast.animatein {
+  -webkit-animation: slidein 0.5s cubic-bezier(0.175, 0.885, 0.320, 1.275);
   animation: slidein 0.5s cubic-bezier(0.175, 0.885, 0.320, 1.275);
 }
+@-webkit-keyframes slideout {
+  from {
+    -webkit-transform: translateX(0%);
+    -ms-transform: translateX(0%);
+    transform: translateX(0%);
+  }
+  to {
+    -webkit-transform: translateX(200%);
+    -ms-transform: translateX(200%);
+    transform: translateX(200%);
+  }
+}
 @keyframes slideout {
-  from { transform: translateX(0%); }
-  to { transform: translateX(200%); }
+  from {
+    -webkit-transform: translateX(0%);
+    -ms-transform: translateX(0%);
+    transform: translateX(0%);
+  }
+  to {
+    -webkit-transform: translateX(200%);
+    -ms-transform: translateX(200%);
+    transform: translateX(200%);
+  }
 }
 .toast.animateout {
+  -webkit-animation: slideout 0.5s forwards;
   animation: slideout 0.5s forwards;
 }
 .toast p {
