@@ -137,7 +137,7 @@ option {
 /*Bug report*/
 #bug {
   float: right;
-  margin: 0.25rem 0.75rem 0.25rem 0.125rem;
+  margin: 0.25rem 0.625rem 0.25rem 0.125rem;
 }
 
 /*Table Buttons*/
