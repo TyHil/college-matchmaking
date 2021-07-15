@@ -71,9 +71,9 @@ function signedIn(loadData) {
       switch (firebase.auth().currentUser.providerData[0].providerId) {
         case "password":
           let password = prompt("Please enter your password.");
-          if (password != null) {
+          if (password !== "") {
             finish(firebase.auth.EmailAuthProvider.credential(firebase.auth().currentUser.providerData[0].email, password));
-          } else {
+          } else if (password !== null) {
             reject("No Password");
           }
           break;
@@ -158,7 +158,7 @@ function signedIn(loadData) {
   if (firebase.auth().currentUser.providerData[0].providerId == "password") {
     document.getElementById("changename").addEventListener("click", function () {
       let name = prompt("Please enter your new name.");
-      if (name != null && name != "") {
+      if (name !== null && name !== "") {
         firebase.auth().currentUser.updateProfile({
           displayName: name
         }).then(function () {
@@ -168,11 +168,13 @@ function signedIn(loadData) {
           createToast("Name Change Failed!");
           console.error("Name Change Failed!", error);
         });
+      } else if (name !== null) {
+        createToast("Invalid Name!");
       }
     });
     document.getElementById("changeemail").addEventListener("click", function () {
       let email = prompt("Please enter your new email.");
-      if (email != null && email != "") {
+      if (email !== null && email !== "") {
         firebase.auth().currentUser.updateEmail(email).then(function () {
           useractions.getElementsByTagName("h3")[0].innerText = email;
           createToast("Email Changed!");
@@ -203,13 +205,13 @@ function signedIn(loadData) {
             console.error("Email Change Failed!", error);
           }
         });
-      } else {
+      } else if (email !== null) {
         createToast("Invalid Email!");
       }
     });
     document.getElementById("changepass").addEventListener("click", function () {
       let pass = prompt("Please enter your new password.");
-      if (pass != null && pass != "") {
+      if (pass !== null && pass !== "") {
         firebase.auth().currentUser.updatePassword(pass).then(function () {
           createToast("Password Changed!");
         }).catch(function (error) {
@@ -238,7 +240,7 @@ function signedIn(loadData) {
             console.error("Password Change Failed!", error);
           }
         });
-      } else {
+      } else if (pass !== null) {
         createToast("Invalid Password!");
       }
     });
@@ -692,7 +694,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
             document.getElementById("welcomecolleges").remove();
           }
           welcomemodal.getElementsByTagName("h1")[0].innerText = "Personal Info";
-          welcomemodal.getElementsByTagName("p")[0].innerText = "We'll use this for acceptance calulations.";
+          welcomemodal.getElementsByTagName("p")[0].innerText = "We'll use this for acceptance and cost calulations.";
           content.insertBefore(document.getElementById("testscore"), buttonbox);//userinfo
           content.insertBefore(document.getElementById("gpa"), buttonbox);
           content.insertBefore(document.getElementById("income"), buttonbox);
