@@ -104,9 +104,6 @@ option {
 }
 
 /*User info*/
-#userinfo {
-  margin: 0.25rem 0.5rem 0 0.5rem;
-}
 .userinfo p {
   display: inline;
   font-size: 0.875rem;
@@ -119,7 +116,7 @@ option {
 }
 .userinfo {
   display: inline-block;
-  margin: 0.25rem 0.125rem;
+  margin: 0.25rem 0.125rem 0.5rem 0.125rem;
   border-radius: 0.25rem;
   padding: 0.125rem 0.125rem;
   background-color: var(--light1);
@@ -435,6 +432,9 @@ table th p {
   -webkit-animation: slidedown 0.4s cubic-bezier(0.175, 0.885, 0.320, 1.275);
   animation: slidedown 0.4s cubic-bezier(0.175, 0.885, 0.320, 1.275);
   overflow: auto;
+}
+#welcomemodal .content, #genericmodal .content, #confirmmodal .content {
+  max-width: 75ch;
 }
 @-webkit-keyframes slideup {
   from {

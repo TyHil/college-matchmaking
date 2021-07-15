@@ -330,6 +330,9 @@ function createToast(text, button = "", buttonClick = 0, closed = 0) {
   x.addEventListener("click", function () {
     div.classList.add("animateout");
     div.addEventListener("animationend", function () {
+      if (closed) {
+        closed();
+      }
       div.remove();
     });
   });
@@ -598,11 +601,20 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
       console.error("Load College List Failed!", error);
     });
     allLoaded.push(collegesLoaded);
+    let checkboxesLoaded = loadJSON("./checkboxes.json").then(response => {
+      checkboxes = JSON.parse(response);
+    }, error => {
+      createToast("Load Checkboxes Failed!");
+      console.error("Load Checkboxes Failed!", error);
+    });
+    allLoaded.push(checkboxesLoaded);
     let welcomemodal = document.getElementById("welcomemodal");
     welcomemodal.style.display = "block";
     const observer = new MutationObserver(function (list) {
       if (welcomemodal.style.display == "none") {
-        document.body.insertBefore(document.getElementById("userinfo"), document.getElementById("buttonholder"));
+        document.getElementsByClassName("Acceptance descriptions")[0].appendChild(document.getElementById("testscore"));//userinfo
+        document.getElementsByClassName("Acceptance descriptions")[0].appendChild(document.getElementById("gpa"));
+        document.getElementsByClassName("Cost descriptions")[0].appendChild(document.getElementById("income"));
         document.getElementsByClassName("Size descriptions")[0].appendChild(document.getElementById("sizeBtnDiv"));
         if (document.getElementById("welcomeweights")) {
           document.getElementById("welcomeweights").remove();
@@ -681,7 +693,9 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
           }
           welcomemodal.getElementsByTagName("h1")[0].innerText = "Personal Info";
           welcomemodal.getElementsByTagName("p")[0].innerText = "We'll use this for acceptance calulations.";
-          content.insertBefore(document.getElementById("userinfo"), buttonbox);//userinfo
+          content.insertBefore(document.getElementById("testscore"), buttonbox);//userinfo
+          content.insertBefore(document.getElementById("gpa"), buttonbox);
+          content.insertBefore(document.getElementById("income"), buttonbox);
           this.innerText = "Done";
           let modallogin = document.getElementById("modallogin");
           modallogin.innerText = "Create Account";
@@ -1057,6 +1071,14 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
         updateApplyTable();
       });
       setSliders();
+      for (const category in checkboxes) {
+        for (const value in checkboxes[category]) {
+          document.getElementById(value).addEventListener("click", function () {
+            checkboxes[category][value] = this.checked ? 1 : 0;
+            writeUserData(1);
+          });
+        }
+      }
     }
   });
 });
@@ -1220,152 +1242,23 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
 });
 allLoaded.push(headersLoaded);
 
-let descriptions;
+let sizes = { "Tiny (less than 700)": [5, 3, 2, 1, 1], "Small (700-3,500)": [3, 5, 3, 2, 1], "Medium (3,500-9,000)": [1, 3, 5, 3, 1], "Large (9,000 to 19,000)": [1, 2, 3, 5, 3], "Huge (more than 19,000)": [1, 1, 2, 3, 5] };
+for (let button of document.getElementById("sizeBtnDiv").getElementsByTagName("button")) {
+  button.addEventListener("click", function () {
+    if (!loggedIn) {
+      createToast("Updated!");
+    }
+    scores[0].Size[1].NoofUgrads[1] = [700, 3500, 9000, 18000];
+    scores[0].Size[1].NoofUgrads[2] = sizes[this.innerText];
+    for (const college of colleges) {
+      updateRowMatchScores(college.ID, 0);
+    }
+    updateApplyTable();
+    writeUserData(1);
+  });
+}
+
 let checkboxes = {};
-let descriptionsLoaded = loadJSON("./descriptions.json").then(response => {//load descriptions from descriptions.json
-  descriptions = JSON.parse(response);
-  for (const category in descriptions) {
-    let div = document.createElement("div");
-    div.classList.add(removeSpaces(category));
-    div.classList.add("descriptions");
-    let h2 = document.createElement("h2");
-    h2.innerText = category;
-    div.appendChild(h2);
-    let p = document.createElement("p");
-    p.innerText = descriptions[category].Description;
-    if (category == "Apply") {
-      let appDiv = document.createElement("div");
-      appDiv.id = "appDiv";
-      div.appendChild(appDiv);
-      let leftDiv = document.createElement("div");
-      leftDiv.id = "appLeftDiv";
-      let rightDiv = document.createElement("div");
-      appDiv.appendChild(leftDiv);
-      appDiv.appendChild(rightDiv);
-      leftDiv.appendChild(p);
-      let splitDiv = document.createElement("div");
-      splitDiv.classList.add("splitDiv");
-      let h3 = document.createElement("h3");
-      h3.innerText = "Top Four Colleges in Each Category";
-      splitDiv.appendChild(h3);
-      let totalColleges = document.createElement("p");
-      totalColleges.id = "totalColleges";
-      splitDiv.appendChild(totalColleges);
-      rightDiv.appendChild(splitDiv);
-      let warnP = document.createElement("p");
-      warnP.innerText = "Any college that accepts less than 10% of applicants should be considered unpredictable.";
-      warnP.id = "appWarnP";
-      rightDiv.appendChild(warnP);
-      let headings = ["Name", "Research", "FLOAT", "Category", "Acceptance Rate"];
-      let h4s = ["Reach", "Target", "Safety"];
-      for (let i = 0; i < 3; i++) {
-        let splitDiv = document.createElement("div");
-        splitDiv.classList.add("splitDiv");
-        let h4 = document.createElement("h4");
-        h4.innerText = "Top Four " + h4s[i] + " Colleges";
-        splitDiv.appendChild(h4);
-        let total = document.createElement("p");
-        total.id = "total" + h4s[i];
-        splitDiv.appendChild(total);
-        rightDiv.appendChild(splitDiv);
-        let table = document.createElement("table");
-        table.id = h4s[i] + "Table";
-        let tr = document.createElement("tr");
-        for (const heading of headings) {
-          let th = document.createElement("th");
-          th.innerText = heading;
-          tr.appendChild(th);
-        }
-        table.appendChild(tr);
-        for (let j = 0; j < 4; j++) {
-          let tr = document.createElement("tr");
-          for (const heading of headings) {
-            let td = document.createElement("td");
-            td.classList.add("Apply" + removeSpaces(heading));
-            tr.appendChild(td);
-          }
-          table.appendChild(tr);
-        }
-        rightDiv.appendChild(table);
-      }
-      rightDiv.appendChild(document.createElement("br"));
-    } else {
-      div.appendChild(p);
-    }
-    if ("Checkboxes" in descriptions[category]) {
-      checkboxes[category] = {};
-      let h4 = document.createElement("h4");
-      h4.innerText = "Some things you might care about:";
-      div.appendChild(h4);
-      for (const value of descriptions[category].Checkboxes) {
-        checkboxes[category][removeSpaces(value)] = 0;
-        let checkdiv = document.createElement("div");
-        checkdiv.classList.add("descCheckDiv");
-        let checkbox = document.createElement("input");
-        checkbox.id = removeSpaces(value);
-        checkbox.type = "checkbox";
-        checkbox.addEventListener("click", function () {
-          checkboxes[category][removeSpaces(value)] = this.checked ? 1 : 0;
-          writeUserData(1);
-        });
-        checkdiv.appendChild(checkbox);
-        let p = document.createElement("p");
-        p.innerText = value;
-        checkdiv.appendChild(p);
-        div.appendChild(checkdiv);
-      }
-    }
-    if ("Links" in descriptions[category]) {
-      let h4 = document.createElement("h4");
-      h4.innerText = "Links for further reading:";
-      div.appendChild(h4);
-      for (const link in descriptions[category].Links) {
-        let a = document.createElement("a");
-        a.innerText = link;
-        a.href = descriptions[category].Links[link];
-        a.target = "_blank";
-        a.rel = "noopener";
-        div.appendChild(a);
-        div.appendChild(document.createElement("br"));
-      }
-    }
-    if (category == "Size") {
-      let sizes = { "Tiny (less than 700)": [5, 3, 2, 1, 1], "Small (700-3,500)": [3, 5, 3, 2, 1], "Medium (3,500-9,000)": [1, 3, 5, 3, 1], "Large (9,000 to 19,000)": [1, 2, 3, 5, 3], "Huge (more than 19,000)": [1, 1, 2, 3, 5] };
-      let sizeBtnDiv = document.createElement("div");
-      sizeBtnDiv.id = "sizeBtnDiv";
-      let h4 = document.createElement("h4");
-      h4.innerText = "Choose a quick undergraduate enrollment calculation:";
-      sizeBtnDiv.appendChild(h4);
-      for (const size in sizes) {
-        let button = document.createElement("button");
-        button.innerText = size;
-        button.addEventListener("click", function () {
-          createToast("Updated!");
-          scores[0].Size[1].NoofUgrads[1] = [700, 3500, 9000, 18000];
-          scores[0].Size[1].NoofUgrads[2] = sizes[size];
-          for (const college of colleges) {
-            updateRowMatchScores(college.ID, 0);
-          }
-          updateApplyTable();
-          writeUserData(1);
-        });
-        sizeBtnDiv.appendChild(button);
-      }
-      div.appendChild(sizeBtnDiv);
-    }
-    if ("Links" in descriptions[category] || category == "Size") {
-      div.appendChild(document.createElement("br"));
-    }
-    if (category != "Match Scores") {
-      div.style.display = "none";
-    }
-    document.getElementById("descriptions").appendChild(div);
-  }
-}, error => {
-  createToast("Load Descriptions Failed!");
-  console.error("Load Descriptions Failed!", error);
-});
-allLoaded.push(descriptionsLoaded);
 
 let scores = [];//scores float, sail, and swim scores.
 let scoreNames = ["FLOAT", "SAIL", "SWIM"];

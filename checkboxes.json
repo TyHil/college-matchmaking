@@ -1,0 +1,38 @@
+{
+  "Location": {
+    "Inaparticularpartofthecountry": 0,
+    "Closetohome": 0,
+    "Farfromhome": 0,
+    "Goodweather(sunny,nothumid,fourseasons,etc)": 0,
+    "Inaparticularsetting(suburban,rural,urban)": 0,
+    "Inacollegetown": 0,
+    "Nearbyculture(museums,theaters,concerts,etc)": 0,
+    "Possibilityforinterestingoutingsnearby(beach,hiking,mountains": 0,
+    "Nearanairportwithdirectconnectionstomyhometownortotraveleasilytootherlocations": 0,
+    "Proximitytonature(ocean,lakes,naturepreserves,desert,forest)": 0,
+    "Afeelingofsafetyandself-enclosureawayfromcityhustleandbustle": 0,
+    "Affordableoff-campushousing": 0,
+    "Professionalsportsteamsnearby": 0,
+    "Easeingettingoff-campus(schoolshuttle,publictransporation,bikepath)": 0,
+    "Inornearacityknownforcertainactivities,politics,art,orother": 0,
+    "Likelytofindinternshipsinmyfieldinthisarea": 0
+  },
+  "Programs": {
+    "Studyabroad": 0,
+    "Careercounseling": 0,
+    "Honorscollegesorprograms": 0,
+    "Careercounselingandplacement": 0,
+    "Internships": 0,
+    "Co-ops": 0,
+    "Extracurriculars:band,radiostation,choralgroups,etc": 0,
+    "Programstohelpfreshmanpicktheirmajor": 0,
+    "Servicelearning": 0,
+    "Undergraduateresearchopportunities": 0,
+    "Seniorcapstoneprojects": 0,
+    "Tutoring,ELL,anddisabilitysupport": 0,
+    "First-yearexperiences": 0,
+    "Learningcommunities": 0,
+    "Sports-club,intramural,division1-2-3": 0,
+    "Studentorganizations": 0
+  }
+}
