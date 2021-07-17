@@ -28,6 +28,7 @@
 }
 .modal {
   background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;/**/
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -308,7 +309,7 @@ table th p {
 #logo img {
   margin: 0.3125rem;
 }
-#header a {
+#header a, #header button {
   color: var(--dark0);
   text-decoration: none;
   font-size: 1.125rem;
@@ -316,11 +317,10 @@ table th p {
   border-radius: 0.25rem;
   cursor: pointer;
 }
-#headerright a {
+#headerright a, #headerright button {
   text-align: center;
   padding: 0.625rem;
-  margin-right: 0.125rem;
-  margin-left: 0.125rem;
+  margin: 0 0.125rem;
 }
 #logo {
   display: flex;
@@ -351,14 +351,14 @@ table th p {
   align-items: center;
   margin-right: 0.625rem;
 }
-#userimg {
+#usericon.imgprofileicon {
   margin-left: 0.3125rem;
   border-radius: 100%;
   width: 2.1875rem;
   height: 2.1875rem;
   cursor: pointer;
 }
-#usersvg {
+#usericon.svgprofileicon {
   margin-right: 0.3125rem;
   margin-left: 0.3125rem;
   border-radius: 100%;
@@ -506,6 +506,7 @@ table th p {
   border-radius: 0.25rem;
   display: none;
   box-shadow: 0 0 1.25rem grey;
+  z-index: 1;
 }
 .popup h2 {
   font-size: 1.5rem;
@@ -523,7 +524,7 @@ table th p {
 }
 
 /*Modal and Popup Buttons*/
-.modal .buttons, .popup button {
+.modal .buttons, .popup button, .popup a {
   font-size: 1.0rem;
   line-height: 1.25rem;
   padding: 0.3125rem;
@@ -566,13 +567,19 @@ table th p {
   margin-right: 0.625rem;
   vertical-align: text-top;
 }
-#useractions button {
+#useractions button, #useractions a {
   background-color: var(--light0);
   width: 100%;
   padding: 0.4375rem 0;
   margin: 0;
 }
-#actsetupwizard:hover, #logout:hover, #changepass:hover {
+#useractions a {
+  color: var(--dark0);
+  text-align: center;
+  text-decoration: none;
+  border-radius: 0.25rem;
+}
+#actsetupwizard:hover, #logout:hover, #changepass:hover, #useractions a:hover {
   background-color: var(--light1);
 }
 
@@ -662,7 +669,7 @@ table th p {
 /*Toasts*/
 #toasts {
   margin-left: auto;
-  z-index: 1;
+  z-index: 2;
   position: fixed;
   bottom: 0;
   right: 0;

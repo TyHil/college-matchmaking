@@ -20,15 +20,126 @@
 </head>
 
 <body>
-	<div id="header">
+  <div class="modal" id="welcomemodal">
+    <div class="content">
+      <span class="close">&times;</span>
+      <h1>Welcome to College Matchmaking!</h1>
+      <p>We’re a high school student developed tool to help you narrow down your college list!<br><br>We'll help you decide what you want in your college experience and then generate match scores for each college on your list using aggregated public data and your personal preferences.<br><br>You can run our Setup Wizard to get started.</p>
+      <div class="buttonbox">
+        <button id="modallogin" class="buttons">Log In</button>
+        <button id="setupwizard" class="buttons">Setup Wizard</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="genericmodal">
+    <div class="content">
+      <span class="close">&times;</span>
+      <h1></h1>
+      <p></p>
+    </div>
+  </div>
+  
+  <div class="modal" id="loginmodal">
+    <div class="content">
+      <span class="close">&times;</span>
+      <h1>Loading...</h1>
+      <div id="firebaseui-auth-container"></div>
+    </div>
+  </div>
+
+  <div class="popup" id="useractions">
+    <div>
+      <h2></h2>
+      <span id="changename" class="material-icons editicon icon" title="Change Name">edit</span>
+    </div>
+    <div>
+      <h3></h3>
+      <span id="changeemail" class="material-icons editicon icon" title ="Change Email">edit</span>
+    </div>
+    <button id="reset">Reset Match Scores</button>
+    <button id="changepass">Change Password</button>
+    <button id="logout">Log Out</button>
+    <button id="deleteaccnt">Delete Account</button>
+  </div>
+
+  <div class="modal" id="confirmmodal">
+    <div class="content">
+      <span class="close">&times;</span>
+      <h1>Confirm</h1>
+      <p>This will</p>
+      <div class="buttonbox">
+        <button id="cancel" class="buttons">Cancel</button>
+        <button id="confirm" class="buttons mainbtn">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="aboutusmodal">
+    <div class="content">
+      <span class="close">&times;</span>
+      <h1>About Us</h1>
+      <div id="cylerdiv">
+        <div id="tylerdiv">
+          <img class="headshot" src="icons/tyler.jpg" width="200" height="200" alt="Tyler Hill headshot" loading="lazy">
+          <h2>Tyler Hill</h2>
+          <p>A senior at the Liberal Arts and Science Academy High School with interests in computer science and design. Check out my other projects on my <a href="https://tylerghill.repl.co/" target="_blank" rel="noopener">personal website</a>.</p>
+          <div>
+          </div>
+        </div>
+        <div id="cydiv">
+          <img class="headshot" src="icons/cy.jpg" width="200" height="200" alt="Cy Strain-Seymour headshot" loading="lazy">
+          <h2>Cy Strain-Seymour</h2>
+          <p>A senior at the Liberal Arts and Science Academy High School with interests in linguistics, languages, and a little bit of computer science.</p>
+        </div>
+      </div>
+      <div id="acknowledgementsdiv">
+        <h2>Acknowledgements</h2>
+        <p>Subject Matter Consultant</p>
+        <h3>Ellen Strain-Seymour</h3>
+        <p>Technical Consultant</p>
+        <h3>Eamonn O'Brien-Strain</h3>
+        <p>Website Programmer</p>
+        <h3>Sylvie Daines</h3>
+      </div>
+      <h2>Contact</h2>
+      <a href="mailto:collegematchmaking@gmail.com" target="_blank" rel="noopener">
+        <p>collegematchmaking@gmail.com</p>
+      </a>
+      <div id="datasourcesdiv">
+        <h2>Data Sources</h2>
+        <ul>
+          <li><a href="https://www.commondataset.org" target="_blank" rel="noopener">Common Data Set</a></li>
+          <li>U.S. Department of Education:</li>
+          <ul>
+            <li><a href="https://www.ope.ed.gov/dapip" target="_blank" rel="noopener">Database of Accredited Postsecondary Institutions and Programs</a></li>
+            <li><a href="https://www.nces.ed.gov/ipeds" target="_blank" rel="noopener">Integrated Postsecondary Education Data System</a></li>
+            <li><a href="https://www.collegescorecard.ed.gov" target="_blank" rel="noopener">College Scorecard</a></li>
+            <li><a href="https://www.collegecost.ed.gov/affordability" target="_blank" rel="noopener">College Affordability and Transparency</a></li>
+          </ul>
+          <li>Forbes, Niche, College, Consensus, and Wall Street Journal Rankings</li>
+          <li>Links to <a href="https://www.collegedata.com" target="_blank" rel="noopener">collegedata.com</a></li>
+          <li><a href="https://www.WeatherDatabyZipCode.com" target="_blank" rel="noopener">WeatherDatabyZipCode.com</a></li>
+          <li><a href="https://www.educationdata.urban.org" target="_blank" rel="noopener">Urban Institute | Education Data Explorer</a></li>
+          <li><a href="https://www.nacubo.org/" target="_blank" rel="noopener">National Association of College and University Business Officers</a></li>
+          <li><a href="https://www.ncaa.com" target="_blank" rel="noopener">National Collegiate Athletic Association</a></li>
+          <li>Wikipedia for a listing of honors colleges and programs</li>
+          <li><a href="https://www.Fairtest.org" target="_blank" rel="noopener">Fairtest.org</a>, College Board, and <a href="https://www.CompassPrep.com" target="_blank" rel="noopener">CompassPrep.com</a> for test policies</li>
+          <li>Common Application and Coalition Application</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div id="header">
 		<a href="index.html" id="logo">
 			<img src="icons/collegematchmaking.svg" width="35" height="35" alt="Logo">
       <h1>College Matchmaking</h1>
     </a>
     <div id="headerright">
-      <a id="aboutus">About Us</a>
+      <button id="aboutus">About Us</button>
       <a class="custom-dbox-popup" href="https://donorbox.org/college-matchmaking-donation" rel="noopener">Donate</a>
-      <a id="signuplogin">Sign Up/Log In</a>
+      <button id="signuplogin">Sign Up/Log In</button>
     </div>
   </div>
   
@@ -491,117 +602,6 @@
 
   <div id="tableholder">
     <table id="table"></table>
-  </div>
-
-  <div class="modal" id="welcomemodal">
-    <div class="content">
-      <span class="close">&times;</span>
-      <h1>Welcome to College Matchmaking!</h1>
-      <p>We’re a high school student developed tool to help you narrow down your college list!<br><br>We'll help you decide what you want in your college experience and then generate match scores for each college on your list using aggregated public data and your personal preferences.<br><br>You can run our Setup Wizard to get started.</p>
-      <div class="buttonbox">
-        <button id="modallogin" class="buttons">Log In</button>
-        <button id="setupwizard" class="buttons">Setup Wizard</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal" id="genericmodal">
-    <div class="content">
-      <span class="close">&times;</span>
-      <h1></h1>
-      <p></p>
-    </div>
-  </div>
-  
-  <div class="modal" id="loginmodal">
-    <div class="content">
-      <span class="close">&times;</span>
-      <h1>Loading...</h1>
-      <div id="firebaseui-auth-container"></div>
-    </div>
-  </div>
-
-  <div class="popup" id="useractions">
-    <div>
-      <h2></h2>
-      <span id="changename" class="material-icons editicon icon" title="Change Name">edit</span>
-    </div>
-    <div>
-      <h3></h3>
-      <span id="changeemail" class="material-icons editicon icon" title ="Change Email">edit</span>
-    </div>
-    <button id="reset">Reset Match Scores</button>
-    <button id="changepass">Change Password</button>
-    <button id="logout">Log Out</button>
-    <button id="deleteaccnt">Delete Account</button>
-  </div>
-
-  <div class="modal" id="confirmmodal">
-    <div class="content">
-      <span class="close">&times;</span>
-      <h1>Confirm</h1>
-      <p>This will</p>
-      <div class="buttonbox">
-        <button id="cancel" class="buttons">Cancel</button>
-        <button id="confirm" class="buttons mainbtn">Confirm</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal" id="aboutusmodal">
-    <div class="content">
-      <span class="close">&times;</span>
-      <h1>About Us</h1>
-      <div id="cylerdiv">
-        <div id="tylerdiv">
-          <img class="headshot" src="icons/tyler.jpg" width="200" height="200" alt="Tyler Hill headshot" loading="lazy">
-          <h2>Tyler Hill</h2>
-          <p>A senior at the Liberal Arts and Science Academy High School with interests in computer science and design. Check out my other projects on my <a href="https://tylerghill.repl.co/" target="_blank" rel="noopener">personal website</a>.</p>
-          <div>
-          </div>
-        </div>
-        <div id="cydiv">
-          <img class="headshot" src="icons/cy.jpg" width="200" height="200" alt="Cy Strain-Seymour headshot" loading="lazy">
-          <h2>Cy Strain-Seymour</h2>
-          <p>A senior at the Liberal Arts and Science Academy High School with interests in linguistics, languages, and a little bit of computer science.</p>
-        </div>
-      </div>
-      <div id="acknowledgementsdiv">
-        <h2>Acknowledgements</h2>
-        <p>Subject Matter Consultant</p>
-        <h3>Ellen Strain-Seymour</h3>
-        <p>Technical Consultant</p>
-        <h3>Eamonn O'Brien-Strain</h3>
-        <p>Website Programmer</p>
-        <h3>Sylvie Daines</h3>
-      </div>
-      <h2>Contact</h2>
-      <a href="mailto:collegematchmaking@gmail.com" target="_blank" rel="noopener">
-        <p>collegematchmaking@gmail.com</p>
-      </a>
-      <div id="datasourcesdiv">
-        <h2>Data Sources</h2>
-        <ul>
-          <li><a href="https://www.commondataset.org" target="_blank" rel="noopener">Common Data Set</a></li>
-          <li>U.S. Department of Education:</li>
-          <ul>
-            <li><a href="https://www.ope.ed.gov/dapip" target="_blank" rel="noopener">Database of Accredited Postsecondary Institutions and Programs</a></li>
-            <li><a href="https://www.nces.ed.gov/ipeds" target="_blank" rel="noopener">Integrated Postsecondary Education Data System</a></li>
-            <li><a href="https://www.collegescorecard.ed.gov" target="_blank" rel="noopener">College Scorecard</a></li>
-            <li><a href="https://www.collegecost.ed.gov/affordability" target="_blank" rel="noopener">College Affordability and Transparency</a></li>
-          </ul>
-          <li>Forbes, Niche, College, Consensus, and Wall Street Journal Rankings</li>
-          <li>Links to <a href="https://www.collegedata.com" target="_blank" rel="noopener">collegedata.com</a></li>
-          <li><a href="https://www.WeatherDatabyZipCode.com" target="_blank" rel="noopener">WeatherDatabyZipCode.com</a></li>
-          <li><a href="https://www.educationdata.urban.org" target="_blank" rel="noopener">Urban Institute | Education Data Explorer</a></li>
-          <li><a href="https://www.nacubo.org/" target="_blank" rel="noopener">National Association of College and University Business Officers</a></li>
-          <li><a href="https://www.ncaa.com" target="_blank" rel="noopener">National Collegiate Athletic Association</a></li>
-          <li>Wikipedia for a listing of honors colleges and programs</li>
-          <li><a href="https://www.Fairtest.org" target="_blank" rel="noopener">Fairtest.org</a>, College Board, and <a href="https://www.CompassPrep.com" target="_blank" rel="noopener">CompassPrep.com</a> for test policies</li>
-          <li>Common Application and Coalition Application</li>
-        </ul>
-      </div>
-    </div>
   </div>
 
   <div id="toasts"></div>
