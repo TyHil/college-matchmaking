@@ -33,11 +33,39 @@
     </div>
   </div>
 
-  <div class="modal" id="genericmodal">
+  <div class="modal" id="matchscoremodal">
     <div class="content">
       <span class="close">&times;</span>
-      <h1></h1>
-      <p></p>
+      <h1>Match Scores</h1>
+      <div id="modalSplitDiv">
+        <div>
+          <img src="icons/FLOAT.svg" width="200" height="200" alt="FLOAT score icon" loading="lazy">
+          <h2>FLOAT</h2>
+          <p>Acceptance not considered!<br><br>Does this college have what you are looking for? The FLOAT score is great when you do not yet know your test scores, you are just getting started, or you do not feel like facing reality yet.<br><br>Think about your FLOAT score as an low-stress way to start browsing for colleges. It calculates match without considering anything on the Acceptance tab. No need to enter your test scores or GPA.</p>
+          <div>
+          </div>
+        </div>
+        <div>
+          <div class="imageStacker">
+            <img src="icons/SAIL.svg" width="200" height="200" alt="SAIL score icon" loading="lazy">
+            <img src="icons/FLOAT.svg" width="60" height="60" alt="FLOAT score icon" loading="lazy" class="stacked">
+          </div>
+          <h2>SAIL</h2>
+          <p>Smooth sailing!<br><br>Imagine that a college matches your needs and is easy to get into. The SAIL score considers overall match, just like the FLOAT score, in addition to your likelihood of acceptance.<br><br>For schools with similar FLOAT scores, you will see higher SAIL scores the easier it will be for you to get accepted. The SAIL score also assumes that you will not mind sailing past your peers as an above average student at your new college.  This score might also reflect a better chance at merit-based aid and/or admission into honors programs.</p>
+          <div>
+          </div>
+        </div>
+        <div>
+          <div class="imageStacker">
+            <img src="icons/SWIM.svg" width="200" height="200" alt="SWIM score icon" loading="lazy">
+            <img src="icons/FLOAT.svg" width="60" height="60" alt="FLOAT score icon" loading="lazy" class="stacked">
+          </div>
+          <h2>SWIM</h2>
+          <p>Sink or swim!<br><br>The SWIM score considers overall match, just like the FLOAT score, in addition to your likelihood of acceptance, but assumes that you may not want to be the smartest kid in class.<br><br>For schools with similar FLOAT scores, you will see higher SWIM scores where you match the average profile and lower SWIM scores where you would be significantly above or below average.</p>
+          <div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
   
@@ -80,15 +108,15 @@
     <div class="content">
       <span class="close">&times;</span>
       <h1>About Us</h1>
-      <div id="cylerdiv">
-        <div id="tylerdiv">
+      <div id="modalSplitDiv">
+        <div>
           <img class="headshot" src="icons/tyler.jpg" width="200" height="200" alt="Tyler Hill headshot" loading="lazy">
           <h2>Tyler Hill</h2>
           <p>A senior at the Liberal Arts and Science Academy High School with interests in computer science and design. Check out my other projects on my <a href="https://tylerghill.repl.co/" target="_blank" rel="noopener">personal website</a>.</p>
           <div>
           </div>
         </div>
-        <div id="cydiv">
+        <div>
           <img class="headshot" src="icons/cy.jpg" width="200" height="200" alt="Cy Strain-Seymour headshot" loading="lazy">
           <h2>Cy Strain-Seymour</h2>
           <p>A senior at the Liberal Arts and Science Academy High School with interests in linguistics, languages, and a little bit of computer science.</p>
@@ -131,6 +159,8 @@
       </div>
     </div>
   </div>
+
+  <div id="headerspacer"></div>
 
   <div id="header">
 		<a href="index.html" id="logo">

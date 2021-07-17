@@ -1163,7 +1163,6 @@ for (let button of document.getElementsByClassName("hidebutton")) {
 
 let allLoaded = [];//when headers and scores loaded
 
-let scoreModalInfo = ["Acceptance not considered!<br><br>Does this college have what you are looking for? The FLOAT score is great when you do not yet know your test scores, you are just getting started, or you do not feel like facing reality yet.<br><br>Think about your FLOAT score as an low-stress way to start browsing for colleges. It calculates match without considering anything on the Acceptance tab. No need to enter your test scores or GPA.", "Smooth sailing!<br><br>Imagine that a college matches your needs and is easy to get into. The SAIL score considers overall match, just like the FLOAT score, in additition to your likelihood of acceptance.<br><br>For schools with similar FLOAT scores, you will see higher SAIL scores the easier it will be for you to get accepted. The SAIL score also assumes that you will not mind sailing past your peers as an above average student at your new college.  This score might also reflect a better chance at merit-based aid and/or admission into honors programs.", "Sink or swim!<br><br>The SWIM score considers overall match, just like the FLOAT score, in additition to your likelihood of acceptance, but assumes that may not want to be the smartest kid in class.<br><br>For schools with similar FLOAT scores, you will see higher SWIM scores where you match the average profile and lower SWIM scores where you would be significantly above or below average."];
 let headers;
 let headersLoaded = loadJSON("./headers.json").then(response => {//load headers for table from headers.json
   headers = JSON.parse(response);
@@ -1175,6 +1174,19 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
     let h2 = document.createElement("h2");
     h2.innerText = category;
     categoryth.appendChild(h2);
+    if (category === "Match Scores") {
+      h2.style.display = "inline";
+      let question = document.createElement("span");
+      question.classList.add("icon");
+      question.classList.add("material-icons");
+      question.classList.add("question");
+      question.title = "Match scores info";
+      question.innerText = "help";
+      question.addEventListener("click", function() {
+        document.getElementById("matchscoremodal").style.display = "block";
+      });
+      categoryth.appendChild(question);
+    }
     if (typeof headers[category] === "string") {
       categoryth.rowSpan = 2;
     } else {
@@ -1186,27 +1198,10 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
           if (key === scoreNames[i]) {
             let img = document.createElement("img");
             img.src = "icons/" + scoreNames[i] + ".svg";
-            img.classList.add("scoreicon");
             img.width = 40;
             img.height = 40;
-            img.title = scoreNames[i] + " Score Info";
-            img.alt = scoreNames[i] + " Score Info";
-            let question = document.createElement("span");
-            question.classList.add("icon");
-            question.classList.add("material-icons");
-            question.classList.add("question");
-            question.title = scoreNames[i] + " Score Info";
-            question.innerText = "help";
-            function infoPopup() {
-              let genericmodal = document.getElementById("genericmodal");
-              genericmodal.getElementsByTagName("h1")[0].innerText = scoreNames[i] + " Score";
-              genericmodal.getElementsByTagName("p")[0].innerHTML = scoreModalInfo[i];
-              genericmodal.style.display = "block";
-            }
-            img.addEventListener("click", infoPopup);
-            question.addEventListener("click", infoPopup);
+            img.alt = scoreNames[i] + " score icon";
             datath.appendChild(img);
-            datath.appendChild(question);
           }
         }
         let h3 = document.createElement("h3");

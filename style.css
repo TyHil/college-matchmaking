@@ -275,9 +275,6 @@ th, td {
   font-size: 2.25rem;
   display: block;
 }
-.scoreicon {
-  cursor: pointer;
-}
 .question {
   font-size: 1.0rem;
   vertical-align: top;
@@ -436,7 +433,7 @@ table th p {
   animation: slidedown 0.4s cubic-bezier(0.175, 0.885, 0.320, 1.275);
   overflow: auto;
 }
-#welcomemodal .content, #genericmodal .content, #confirmmodal .content {
+#welcomemodal .content, #confirmmodal .content {
   max-width: clamp(45ch, 50%, 75ch);
 }
 @-webkit-keyframes slideup {
@@ -770,35 +767,32 @@ table th p {
   border-radius: 0.25rem;
 }
 
-/*About Us*/
+/*About Us and Match Score Modals*/
 .headshot {
   border-radius: 50%;
 }
-#cylerdiv {
+#modalSplitDiv {
   display: flex;
   flex-wrap: wrap;
   margin-top: 1.25rem;
 }
-#cylerdiv h2, #cylerdiv p {
+#modalSplitDiv h2, #modalSplitDiv p {
   text-align: center;
 }
-#cylerdiv h2 {
+#modalSplitDiv h2 {
   margin-bottom: 0;
 }
-#cylerdiv p {
+#modalSplitDiv p {
   color: gray;
+  width: clamp(45ch, 50%, 75ch);
+  max-width: 100%;
 }
-#cydiv, #tylerdiv {
+#modalSplitDiv > div {
   display: flex;
   flex-direction: column;
   align-items: center;
   flex: 1 1 0.0rem;
-}
-#tylerdiv {
-  margin-right: 0.625rem;
-}
-#cydiv {
-  margin-left: 0.625rem;
+  margin: 0 0.625rem;
 }
 #acknowledgementsdiv p {
   color: gray;
@@ -806,4 +800,12 @@ table th p {
 }
 #acknowledgementsdiv h3 {
   margin-top: 0.125rem;
+}
+.imageStacker {
+  position: relative;
+}
+.imageStacker .stacked {
+  position:absolute;
+  right: 0;
+  bottom: 0;
 }
