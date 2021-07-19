@@ -27,8 +27,20 @@
       <h1>Welcome to College Matchmaking!</h1>
       <p>We’re a high school student developed tool to help you narrow down your college list!<br><br>We'll help you decide what you want in your college experience and then generate match scores for each college on your list using aggregated public data and your personal preferences.<br><br>You can run our Setup Wizard to get started.</p>
       <div class="buttonbox">
-        <button id="modallogin" class="buttons">Log In</button>
+        <button id="welcomemodallogin" class="buttons">Log In</button>
         <button id="setupwizard" class="buttons">Setup Wizard</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="setupmodal">
+    <div class="content">
+      <span class="close">&times;</span>
+      <h1></h1>
+      <p></p>
+      <div class="buttonbox">
+        <button id="setupmodallogin" class="buttons"></button>
+        <button id="nextsetup" class="buttons"></button>
       </div>
     </div>
   </div>
@@ -87,6 +99,7 @@
       <span id="changeemail" class="material-icons editicon icon" title ="Change Email">edit</span>
     </div>
     <button id="reset">Reset Match Scores</button>
+    <button id="rerunsetup">Rerun Setup Wizard</button>
     <button id="changepass">Change Password</button>
     <button id="logout">Log Out</button>
     <button id="deleteaccnt">Delete Account</button>
@@ -217,7 +230,7 @@
       <br><a href="https://bigfuture.collegeboard.org/find-colleges/how-to-find-your-college-fit/sizing-up-colleges-big-vs-small" target="_blank" rel="noopener">Big Future: Sizing Up Colleges: Big vs. Small</a>
       <br>
       <div id="sizeBtnDiv">
-        <h4>Choose a quick undergraduate enrollment calculation:</h4>
+        <h4>Choose an undergraduate enrollment calculation:</h4>
         <button>Tiny (less than 700)</button>
         <button>Small (700-3,500)</button>
         <button>Medium (3,500-9,000)</button>

@@ -433,7 +433,7 @@ table th p {
   animation: slidedown 0.4s cubic-bezier(0.175, 0.885, 0.320, 1.275);
   overflow: auto;
 }
-#welcomemodal .content, #confirmmodal .content {
+#welcomemodal .content, #confirmmodal .content, #setupmodal .content {
   max-width: clamp(45ch, 50%, 75ch);
 }
 @-webkit-keyframes slideup {
@@ -576,7 +576,7 @@ table th p {
   text-decoration: none;
   border-radius: 0.25rem;
 }
-#actsetupwizard:hover, #logout:hover, #changepass:hover, #useractions a:hover {
+#actsetupwizard:hover, #logout:hover, #changepass:hover, #useractions a:hover, #rerunsetup:hover {
   background-color: var(--light1);
 }
 
