@@ -1,7 +1,7 @@
 /* External Configuration */
 
 //Donation button configuration
-window.DonorBox = { widgetLinkClassName: 'custom-dbox-popup' };
+window.DonorBox = { widgetLinkClassName: "custom-dbox-popup" };
 
 //Firebase configuration
 let firebaseConfig = {
@@ -25,7 +25,7 @@ let ui = new firebaseui.auth.AuthUI(firebase.auth());
 /* Helper Functions */
 
 function removeSpaces(text) {
-  return text.replace(/\s+/g, '');
+  return text.replace(/\s+/g, "");
 }
 
 function loadJSON(link) {//load local or external json
@@ -127,22 +127,68 @@ function JaroWrinker(s1, s2) {
 
 /* Open Modal Functions */
 
-function openConfirmModal(h1, p, confirm = 0) {
+function openConfirmModal(h1, p, red, confirm = 0) {
   let confirmmodal = document.getElementById("confirmmodal");
   confirmmodal.getElementsByTagName("h1")[0].innerText = h1;
   confirmmodal.getElementsByTagName("p")[0].innerText = p;
+  let confirmConfirm = document.getElementById("confirmConfirm");
+  if (red) {
+    confirmConfirm.classList.remove("bluebutton");
+    confirmConfirm.classList.add("redbutton");
+  } else {
+    confirmConfirm.classList.remove("redbutton");
+    confirmConfirm.classList.add("bluebutton");
+  }
   confirmmodal.style.display = "block";
-  if (confirm) {
-    document.getElementById("confirm").onclick = function () {
-      confirm();
+  document.getElementsByClassName("cancel")[0].focus();
+  confirmConfirm.onclick = function () {
+    confirm();
+    let content = confirmmodal.getElementsByClassName("content")[0];
+    content.classList.add("out");
+    confirmmodal.classList.add("out");
+    content.addEventListener("animationend", function () {
+      confirmmodal.style.display = "none";
+      content.classList.remove("out");
+      confirmmodal.classList.remove("out");
+    }, { once: true });
+  }
+}
+
+function openQuestionModal(h1, p, placeholder, confirm = 0) {
+  let questionmodal = document.getElementById("questionmodal");
+  questionmodal.getElementsByTagName("h1")[0].innerText = h1;
+  questionmodal.getElementsByTagName("p")[0].innerText = p;
+  questioninput = document.getElementById("questioninput");
+  questioninput.placeholder = placeholder;
+  questioninput.value = "";
+  questioninput.focus();
+  questioninput.select();
+  questionmodal.style.display = "block";
+  function questionModalOut() {
+    confirm(questioninput.value);
+    questioninput.removeEventListener("keydown", enterCheck);
+    let content = questionmodal.getElementsByClassName("content")[0];
+    content.classList.add("out");
+    questionmodal.classList.add("out");
+    content.addEventListener("animationend", function () {
+      questionmodal.style.display = "none";
+      content.classList.remove("out");
+      questionmodal.classList.remove("out");
+    }, { once: true });
+  }
+  function enterCheck(e) {
+    if (e.keyCode === 13) {
+      questionModalOut();
     }
   }
+  questioninput.addEventListener("keydown", enterCheck);
+  document.getElementById("confirmQuestion").onclick = questionModalOut;
 }
 
 function openLogInModal() {
   if (!ui.isPendingRedirect()) {
     document.getElementById("loginmodal").style.display = "block";
-    ui.start('#firebaseui-auth-container', uiConfig);
+    ui.start("#firebaseui-auth-container", uiConfig);
   }
 }
 
@@ -180,6 +226,7 @@ function openSetupWizardModal() {
   content.insertBefore(document.getElementById("sizeBtnDiv"), buttonbox);//size choice
   document.getElementById("nextsetup").onclick = function () {
     document.getElementById("textinput").focus();
+    document.getElementById("textinput").select();
     welcometable.remove();
     document.getElementsByClassName("Size descriptions")[0].appendChild(document.getElementById("sizeBtnDiv"));
     let welcomecolleges = document.createElement("div");
@@ -243,6 +290,7 @@ function createToast(text, permanent = 0, button = "", buttonClick = 0, closed =
   let div = document.createElement("div");
   div.classList.add("toast");
   let x = document.createElement("span");
+  x.setAttribute("tabindex", 0);
   x.classList.add("close");
   x.innerHTML = "&times;";
   x.addEventListener("click", function () {
@@ -547,6 +595,7 @@ function updateRowData(college, applyTable = 1) {
     if (document.getElementById("welcomecolleges")) {//add college to the welcome list if open
       let div = document.createElement("div");
       let x = document.createElement("span");
+      x.setAttribute("tabindex", 0);
       x.classList.add("close");
       x.innerHTML = "&times;";
       x.addEventListener("click", function () {
@@ -607,6 +656,7 @@ function updateRowData(college, applyTable = 1) {
           if (link) {
             if (typeof fill === "string") {
               let linker = document.createElement("span");
+              linker.setAttribute("tabindex", 0);
               linker.classList.add("icon");
               linker.classList.add("material-icons");
               linker.title = "Open In New Tab";
@@ -656,6 +706,7 @@ function addRowToTable(college, applyTable = 1) {
       let arrowdiv = document.createElement("div");
       arrowdiv.classList.add("arrowdiv");
       let up = document.createElement("span");
+      up.setAttribute("tabindex", 0);
       up.classList.add("icon");
       up.classList.add("arrow");
       up.classList.add("material-icons");
@@ -675,36 +726,39 @@ function addRowToTable(college, applyTable = 1) {
       });
       arrowdiv.appendChild(up);
       let drag = document.createElement("span");
+      drag.setAttribute("tabindex", 0);
       drag.classList.add("icon");
       drag.classList.add("drag");
       drag.classList.add("material-icons");
       drag.title = "Set College Position";
       drag.innerText = "drag_handle";
       drag.addEventListener("click", () => {
-        let pos = prompt("Enter college position from 1 to " + colleges.length);
-        if (Number.isInteger(parseInt(pos)) && pos > 0 && pos <= colleges.length) {
-          pos = parseInt(pos);
-          for (let i = 0; i < colleges.length; i++) {
-            if (colleges[i].ID === college) {
-              if (pos === colleges.length) {
-                document.getElementById("table").appendChild(document.getElementById(colleges[i].ID));
-                colleges.push(colleges.splice(i, 1)[0]);
-                writeUserData(1);
-                break;
-              } else if (pos - 1 !== i) {
-                document.getElementById("table").insertBefore(document.getElementById(colleges[i].ID), document.getElementById(colleges[pos - (pos - 1 < i ? 1 : 0)].ID));
-                colleges.splice(pos - 1, 0, colleges.splice(i, 1)[0]);
-                writeUserData(1);
-                break;
+        openQuestionModal("College Position Change", "Enter college position from 1 to " + colleges.length, "College position", function(pos) {
+          if (Number.isInteger(parseInt(pos)) && pos > 0 && pos <= colleges.length) {
+            pos = parseInt(pos);
+            for (let i = 0; i < colleges.length; i++) {
+              if (colleges[i].ID === college) {
+                if (pos === colleges.length) {
+                  document.getElementById("table").appendChild(document.getElementById(colleges[i].ID));
+                  colleges.push(colleges.splice(i, 1)[0]);
+                  writeUserData(1);
+                  break;
+                } else if (pos - 1 !== i) {
+                  document.getElementById("table").insertBefore(document.getElementById(colleges[i].ID), document.getElementById(colleges[pos - (pos - 1 < i ? 1 : 0)].ID));
+                  colleges.splice(pos - 1, 0, colleges.splice(i, 1)[0]);
+                  writeUserData(1);
+                  break;
+                }
               }
             }
+          } else {
+            createToast("Invalid Position!");
           }
-        } else if (pos !== null) {
-          createToast("Invalid Position!");
-        }
+        });
       });
       arrowdiv.appendChild(drag);
       let down = document.createElement("span");
+      down.setAttribute("tabindex", 0);
       down.classList.add("icon");
       down.classList.add("arrow");
       down.classList.add("material-icons");
@@ -725,6 +779,7 @@ function addRowToTable(college, applyTable = 1) {
       arrowdiv.appendChild(down);
       actionsdiv.appendChild(arrowdiv);
       let remove = document.createElement("span");
+      remove.setAttribute("tabindex", 0);
       remove.classList.add("icon");
       remove.classList.add("material-icons");
       remove.classList.add("removeicon");
@@ -933,6 +988,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
     if (category === "Match Scores") {
       h2.style.display = "inline";
       let question = document.createElement("span");
+      question.setAttribute("tabindex", 0);
       question.classList.add("icon");
       question.classList.add("material-icons");
       question.classList.add("question");
@@ -1025,7 +1081,7 @@ let collegesData = {};//locally and temporarily stored college data
 
 function writeUserData(toast) {
   if (loggedIn) {
-    firebase.database().ref('/users/' + firebase.auth().currentUser.uid).set({
+    firebase.database().ref("/users/" + firebase.auth().currentUser.uid).set({
       colleges: colleges,
       FLOAT: scores[0],
       userinfo: userinfo,
@@ -1036,14 +1092,14 @@ function writeUserData(toast) {
       }
       window.onbeforeunload = undefined;
     }).catch((error) => {
-      window.onbeforeunload = () => '';
+      window.onbeforeunload = () => "";
       createToast("Save Data Failed!", 0, "Try Again", function () {
         writeUserData();
       });
       console.error("Save Data Failed!", error);
     });
   } else {
-    window.onbeforeunload = () => '';
+    window.onbeforeunload = () => "";
   }
 }
 
@@ -1062,6 +1118,7 @@ function signedInSetUp(loadData) {
     usericon.classList.add("imgprofileicon");
     usericon.src = firebase.auth().currentUser.photoURL;
   }
+  usericon.setAttribute("tabindex", 0);
   usericon.id = "usericon";
   usericon.title = "More actions";
   usericon.alt = "Profile Image";
@@ -1093,17 +1150,18 @@ function signedInSetUp(loadData) {
       }
       switch (firebase.auth().currentUser.providerData[0].providerId) {
         case "password":
-          let password = prompt("Please enter your password.");
-          if (password !== "") {
-            finish(firebase.auth.EmailAuthProvider.credential(firebase.auth().currentUser.providerData[0].email, password));
-          } else if (password !== null) {
-            reject("No Password");
-          }
+          openQuestionModal("Enter Password", "Please enter your password.", "Password", function(password) {
+            if (password !== "") {
+              finish(firebase.auth.EmailAuthProvider.credential(firebase.auth().currentUser.providerData[0].email, password));
+            } else {
+              reject("No Password");
+            }
+          });
           break;
         case "google.com":
           let provider = new firebase.auth.GoogleAuthProvider();
-          provider.addScope('profile');
-          provider.addScope('email');
+          provider.addScope("profile");
+          provider.addScope("email");
           firebase.auth().signInWithPopup(provider).then(function (result) {
             finish(result.credential.accessToken);
           }).catch(function (error) {
@@ -1113,8 +1171,11 @@ function signedInSetUp(loadData) {
       }
     });
   }
+  function reset() {
+    
+  }
   document.getElementById("reset").addEventListener("click", function () {
-    openConfirmModal("Confirm Match Score Reset", "This will remove all customization from your match scores and return them to their default state. This cannot be undone.", function () {
+    function action() {
       loadJSON("./UserData/" + scoreNames[0] + ".json").then(response => {
         scores[0] = JSON.parse(response);
         writeUserData(1);
@@ -1124,39 +1185,25 @@ function signedInSetUp(loadData) {
         }
         updateApplyTable();
       }, error => {
-        createToast("Load " + scoreNames[0] + " Score Failed!");
+        createToast("Load " + scoreNames[0] + " Score Failed!", 0, "Try Again", action);
         console.error("Load " + scoreNames[0] + " Score Failed!", error);
       });
-      let content = confirmmodal.getElementsByClassName("content")[0];
-      content.classList.add("out");
-      confirmmodal.classList.add("out");
-      content.addEventListener("animationend", function () {
-        confirmmodal.style.display = "none";
-        content.classList.remove("out");
-        confirmmodal.classList.remove("out");
-      }, { once: true });
-    });
+    }
+    openConfirmModal("Confirm Match Score Reset", "This will remove all customization from your match scores and return them to their default state. This cannot be undone.", 1, action);
   });
   document.getElementById("rerunsetup").addEventListener("click", function () {
-    openConfirmModal("Confirm Rerun Setup Wizard", "This will remove all customization from your match scores and college list. This cannot be undone.", function () {
+    function action() {
       loadJSON("./UserData/" + scoreNames[0] + ".json").then(response => {
         scores[0] = JSON.parse(response);
         writeUserData(0);
         updateSliders();
-        let content = confirmmodal.getElementsByClassName("content")[0];
-        content.classList.add("out");
-        confirmmodal.classList.add("out");
-        content.addEventListener("animationend", function () {
-          confirmmodal.style.display = "none";
-          content.classList.remove("out");
-          confirmmodal.classList.remove("out");
-          openSetupWizardModal();
-        }, { once: true });
+        openSetupWizardModal();
       }, error => {
-        createToast("Load " + scoreNames[0] + " Score Failed!");
+        createToast("Load " + scoreNames[0] + " Score Failed!", 0, "Try Again", action);
         console.error("Load " + scoreNames[0] + " Score Failed!", error);
       });
-    });
+    }
+    openConfirmModal("Confirm Rerun Setup Wizard", "This will remove all customization from your match scores and college list. This cannot be undone.", 0, action);
   });
   document.getElementById("logout").addEventListener("click", function () {
     firebase.auth().signOut().then(() => {
@@ -1167,8 +1214,8 @@ function signedInSetUp(loadData) {
     });
   });
   document.getElementById("deleteaccnt").addEventListener("click", function () {
-    openConfirmModal("Confirm Delete Account", "This will delete your account with College Matchmaking and all of it's associated data. This cannot be undone.", function () {
-      firebase.database().ref('/users/' + firebase.auth().currentUser.uid).remove();
+    function action() {
+      firebase.database().ref("/users/" + firebase.auth().currentUser.uid).remove();
       firebase.auth().currentUser.delete().then(function () {
         location.reload();
       }).catch(function (error) {
@@ -1177,108 +1224,115 @@ function signedInSetUp(loadData) {
             firebase.auth().currentUser.delete().then(function () {
               location.reload();
             }).catch(function (error) {
-              createToast("Delete User Failed!");
+              createToast("Delete User Failed!", 0, "Try Again", action);
               console.error("Delete User Failed!", error);
             });
           }, error => {
-            createToast("Delete User Failed!");
+            createToast("Delete User Failed!", 0, "Try Again", action);
             console.error("Delete User Failed!", error);
           });
         } else {
-          createToast("Delete User Failed!");
+          createToast("Delete User Failed!", 0, "Try Again", action);
           console.error("Delete User Failed!", error);
         }
       });
-    });
+    }
+    openConfirmModal("Confirm Delete Account", "This will delete your account with College Matchmaking and all of it's associated data. This cannot be undone.", 1, action);
   });
   if (firebase.auth().currentUser.providerData[0].providerId === "password") {
     document.getElementById("changename").addEventListener("click", function () {
-      let name = prompt("Please enter your new name.");
-      if (name !== null && name !== "") {
-        firebase.auth().currentUser.updateProfile({
-          displayName: name
-        }).then(function () {
-          useractions.getElementsByTagName("h2")[0].innerText = firebase.auth().currentUser.displayName;
-          createToast("Name Changed!");
-        }).catch(function (error) {
-          createToast("Name Change Failed!");
-          console.error("Name Change Failed!", error);
-        });
-      } else if (name !== null) {
-        createToast("Invalid Name!");
+      function action(name) {
+        if (name !== "") {
+          firebase.auth().currentUser.updateProfile({
+            displayName: name
+          }).then(function () {
+            useractions.getElementsByTagName("h2")[0].innerText = firebase.auth().currentUser.displayName;
+            createToast("Name Changed!");
+          }).catch(function (error) {
+            createToast("Name Change Failed!", 0, "Try Again", action);
+            console.error("Name Change Failed!", error);
+          });
+        } else {
+          createToast("Invalid Name!");
+        }
       }
+      openQuestionModal("Name Change", "Please enter your new name.", "New name", action);
     });
     document.getElementById("changeemail").addEventListener("click", function () {
-      let email = prompt("Please enter your new email.");
-      if (email !== null && email !== "") {
-        firebase.auth().currentUser.updateEmail(email).then(function () {
-          useractions.getElementsByTagName("h3")[0].innerText = email;
-          createToast("Email Changed!");
-        }).catch(function (error) {
-          if (error.code === "auth/requires-recent-login") {
-            reAuth().then(() => {
-              firebase.auth().currentUser.updateEmail(email).then(function () {
-                useractions.getElementsByTagName("h3")[0].innerText = email;
-                createToast("Email Changed!");
-              }).catch(function (error) {
-                if (error.code === "auth/invalid-email") {
-                  createToast("Invalid Email!");
-                  console.error("Invalid Email!", error);
-                } else {
-                  createToast("Email Change Failed!");
-                  console.error("Email Change Failed!", error);
-                }
+      function action(email) {
+        if (email !== "") {
+          firebase.auth().currentUser.updateEmail(email).then(function () {
+            useractions.getElementsByTagName("h3")[0].innerText = email;
+            createToast("Email Changed!");
+          }).catch(function (error) {
+            if (error.code === "auth/requires-recent-login") {
+              reAuth().then(() => {
+                firebase.auth().currentUser.updateEmail(email).then(function () {
+                  useractions.getElementsByTagName("h3")[0].innerText = email;
+                  createToast("Email Changed!");
+                }).catch(function (error) {
+                  if (error.code === "auth/invalid-email") {
+                    createToast("Invalid Email!");
+                    console.error("Invalid Email!", error);
+                  } else {
+                    createToast("Email Change Failed!", 0, "Try Again", action);
+                    console.error("Email Change Failed!", error);
+                  }
+                });
+              }, error => {
+                createToast("Email Change Failed!", 0, "Try Again", action);
+                console.error("Email Change Failed!", error);
               });
-            }, error => {
-              createToast("Email Change Failed!");
+            } else if (error.code === "auth/invalid-email") {
+              createToast("Invalid Email!");
+              console.error("Invalid Email!", error);
+            } else {
+              createToast("Email Change Failed!", 0, "Try Again", action);
               console.error("Email Change Failed!", error);
-            });
-          } else if (error.code === "auth/invalid-email") {
-            createToast("Invalid Email!");
-            console.error("Invalid Email!", error);
-          } else {
-            createToast("Email Change Failed!");
-            console.error("Email Change Failed!", error);
-          }
-        });
-      } else if (email !== null) {
-        createToast("Invalid Email!");
+            }
+          });
+        } else {
+          createToast("Invalid Email!");
+        }
       }
+      openQuestionModal("New Email", "Please enter your new email.", "New email", action);
     });
     document.getElementById("changepass").addEventListener("click", function () {
-      let pass = prompt("Please enter your new password.");
-      if (pass !== null && pass !== "") {
-        firebase.auth().currentUser.updatePassword(pass).then(function () {
-          createToast("Password Changed!");
-        }).catch(function (error) {
-          if (error.code === "auth/requires-recent-login") {
-            reAuth().then(() => {
-              firebase.auth().currentUser.updatePassword(pass).then(function () {
-                createToast("Password Changed!");
-              }).catch(function (error) {
-                if (error.code === "auth/weak-password") {
-                  createToast("Weak Password!");
-                  console.error("Weak Password!", error);
-                } else {
-                  createToast("Password Change Failed!");
-                  console.error("Password Change Failed!", error);
-                }
+      function action(pass) {
+        if (pass !== "") {
+          firebase.auth().currentUser.updatePassword(pass).then(function () {
+            createToast("Password Changed!");
+          }).catch(function (error) {
+            if (error.code === "auth/requires-recent-login") {
+              reAuth().then(() => {
+                firebase.auth().currentUser.updatePassword(pass).then(function () {
+                  createToast("Password Changed!");
+                }).catch(function (error) {
+                  if (error.code === "auth/weak-password") {
+                    createToast("Weak Password!");
+                    console.error("Weak Password!", error);
+                  } else {
+                    createToast("Password Change Failed!", 0, "Try Again", action);
+                    console.error("Password Change Failed!", error);
+                  }
+                });
+              }, error => {
+                createToast("Password Change Failed!", 0, "Try Again", action);
+                console.error("Password Change Failed!", error);
               });
-            }, error => {
-              createToast("Password Change Failed!");
+            } else if (error.code === "auth/weak-password") {
+              createToast("Weak Password!");
+              console.error("Weak Password!", error);
+            } else {
+              createToast("Password Change Failed!", 0, "Try Again", action);
               console.error("Password Change Failed!", error);
-            });
-          } else if (error.code === "auth/weak-password") {
-            createToast("Weak Password!");
-            console.error("Weak Password!", error);
-          } else {
-            createToast("Password Change Failed!");
-            console.error("Password Change Failed!", error);
-          }
-        });
-      } else if (pass !== null) {
-        createToast("Invalid Password!");
+            }
+          });
+        } else {
+          createToast("Invalid Password!");
+        }
       }
+      openQuestionModal("New Password", "Please enter your new password.", "New password", action);
     });
   } else {
     document.getElementById("changename").style.display = "none";
@@ -1353,13 +1407,13 @@ let uiConfig = {
       document.getElementById("loginmodal").getElementsByTagName("h1")[0].innerText = "Sign Up or Log In";
     }
   },
-  signInFlow: 'popup',
+  signInFlow: "popup",
   signInOptions: [
     firebase.auth.EmailAuthProvider.PROVIDER_ID,
     firebase.auth.GoogleAuthProvider.PROVIDER_ID
   ],
-  tosUrl: './legal/termsofservice.html',//Terms of service url
-  privacyPolicyUrl: './legal/privacypolicy.html'//Privacy policy url
+  tosUrl: "./legal/termsofservice.html",//Terms of service url
+  privacyPolicyUrl: "./legal/privacypolicy.html"//Privacy policy url
 };
 
 let loggedIn = 0;
@@ -1495,6 +1549,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
           let datachange = document.createElement("div");
           datachange.style.display = "none";
           datachangePlusPairs.push([datachange, plus]);
+          plus.setAttribute("tabindex", 0);
           plus.classList.add("plus");
           plus.classList.add("icon");
           plus.classList.add("material-icons");
@@ -1533,7 +1588,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
           breakline1.classList.add("break");
           datachange.appendChild(breakline1);
           let reset = document.createElement("button");
-          reset.classList.add("mainbtn");
+          reset.classList.add("redbutton");
           reset.innerText = "Reset";
           function resetScore() {
             loadJSON("UserData/" + scoreNames[0] + ".json").then(response => {
@@ -1802,7 +1857,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
 /* Listeners */
 
 //Document
-document.addEventListener('click', function (e) {
+document.addEventListener("click", function (e) {
   for (const modal of document.getElementsByClassName("modal")) {
     if (modal.contains(e.target) && !modal.childNodes[1].contains(e.target)) {
       let content = modal.getElementsByClassName("content")[0];
@@ -1830,7 +1885,7 @@ document.addEventListener('click', function (e) {
       }
     }
     let sliderBool = 0;
-    for (const slider of document.querySelectorAll('.slider:not(.vert)')) {
+    for (const slider of document.querySelectorAll(".slider:not(.vert)")) {
       if (slider.contains(e.target)) {
         sliderBool = 1;
       }
@@ -1866,7 +1921,7 @@ document.getElementById("aboutus").addEventListener("click", function () {
 
 //Modal close methods
 document.querySelectorAll(".close").forEach(item => {
-  item.addEventListener('click', event => {
+  item.addEventListener("click", event => {
     let content = item.parentElement;
     let modal = content.parentElement;
     content.classList.add("out");
@@ -1878,16 +1933,18 @@ document.querySelectorAll(".close").forEach(item => {
     }, { once: true });
   });
 });
-document.getElementById("cancel").addEventListener("click", function () {
-  let content = this.parentElement.parentElement;
-  let modal = content.parentElement;
-  content.classList.add("out");
-  modal.classList.add("out");
-  content.addEventListener("animationend", function () {
-    modal.style.display = "none";
-    content.classList.remove("out");
-    modal.classList.remove("out");
-  }, { once: true });
+document.querySelectorAll(".cancel").forEach(function (item) {
+  item.addEventListener("click", function () {
+    let content = this.parentElement.parentElement;
+    let modal = content.parentElement;
+    content.classList.add("out");
+    modal.classList.add("out");
+    content.addEventListener("animationend", function () {
+      modal.style.display = "none";
+      content.classList.remove("out");
+      modal.classList.remove("out");
+    }, { once: true });
+  });
 });
 document.addEventListener("keydown", (e) => {
   if (e.keyCode === 27) {//ESC
@@ -1926,7 +1983,7 @@ const observer = new MutationObserver(function (list) {
     //observer.disconnect();
   }
 });
-observer.observe(document.getElementById("setupmodal"), { attributes: true, attributeFilter: ['style'] });
+observer.observe(document.getElementById("setupmodal"), { attributes: true, attributeFilter: ["style"] });
 
 //User info change
 let userinfo = { "test": "sat", "sat": 1200, "gpa": 3.0, "income": "none" };

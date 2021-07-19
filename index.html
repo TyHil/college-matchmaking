@@ -23,7 +23,7 @@
 <body>
   <div class="modal" id="welcomemodal">
     <div class="content">
-      <span class="close">&times;</span>
+      <span tabindex="0" class="close">&times;</span>
       <h1>Welcome to College Matchmaking!</h1>
       <p>We’re a high school student developed tool to help you narrow down your college list!<br><br>We'll help you decide what you want in your college experience and then generate match scores for each college on your list using aggregated public data and your personal preferences.<br><br>You can run our Setup Wizard to get started.</p>
       <div class="buttonbox">
@@ -35,7 +35,7 @@
 
   <div class="modal" id="setupmodal">
     <div class="content">
-      <span class="close">&times;</span>
+      <span tabindex="0" class="close">&times;</span>
       <h1></h1>
       <p></p>
       <div class="buttonbox">
@@ -47,7 +47,7 @@
 
   <div class="modal" id="matchscoremodal">
     <div class="content">
-      <span class="close">&times;</span>
+      <span tabindex="0" class="close">&times;</span>
       <h1>Match Scores</h1>
       <div id="modalSplitDiv">
         <div>
@@ -83,7 +83,7 @@
   
   <div class="modal" id="loginmodal">
     <div class="content">
-      <span class="close">&times;</span>
+      <span tabindex="0" class="close">&times;</span>
       <h1>Loading...</h1>
       <div id="firebaseui-auth-container"></div>
     </div>
@@ -92,11 +92,11 @@
   <div class="popup" id="useractions">
     <div>
       <h2></h2>
-      <span id="changename" class="material-icons editicon icon" title="Change Name">edit</span>
+      <span tabindex="0" id="changename" class="material-icons editicon icon" title="Change Name">edit</span>
     </div>
     <div>
       <h3></h3>
-      <span id="changeemail" class="material-icons editicon icon" title ="Change Email">edit</span>
+      <span tabindex="0" id="changeemail" class="material-icons editicon icon" title ="Change Email">edit</span>
     </div>
     <button id="reset">Reset Match Scores</button>
     <button id="rerunsetup">Rerun Setup Wizard</button>
@@ -107,19 +107,32 @@
 
   <div class="modal" id="confirmmodal">
     <div class="content">
-      <span class="close">&times;</span>
-      <h1>Confirm</h1>
-      <p>This will</p>
+      <span tabindex="0" class="close">&times;</span>
+      <h1></h1>
+      <p></p>
       <div class="buttonbox">
-        <button id="cancel" class="buttons">Cancel</button>
-        <button id="confirm" class="buttons mainbtn">Confirm</button>
+        <button class="cancel buttons">Cancel</button>
+        <button id="confirmConfirm" class="buttons mainbtn">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="questionmodal">
+    <div class="content">
+      <span tabindex="0" class="close">&times;</span>
+      <h1></h1>
+      <p></p>
+      <input type="text" id="questioninput" autocomplete="off">
+      <div class="buttonbox">
+        <button class="cancel buttons">Cancel</button>
+        <button id="confirmQuestion" class="buttons bluebutton">Confirm</button>
       </div>
     </div>
   </div>
 
   <div class="modal" id="aboutusmodal">
     <div class="content">
-      <span class="close">&times;</span>
+      <span tabindex="0" class="close">&times;</span>
       <h1>About Us</h1>
       <div id="modalSplitDiv">
         <div>
@@ -194,7 +207,7 @@
   </a>
 
   <a href="https://docs.google.com/forms/d/e/1FAIpQLScEzG3d7yneyI6youXBKUULJeV5sv_6Znjw6CJvkHUF5tPy9A/viewform?usp=sf_link" target="_blank" rel="noopener">
-    <span id="bug" class="material-icons icon" title="Bug Report">bug_report</span>
+    <span tabindex="0" id="bug" class="material-icons icon" title="Bug Report">bug_report</span>
   </a>
 
   <div id="buttonholder">

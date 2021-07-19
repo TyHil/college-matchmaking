@@ -79,7 +79,7 @@ button {
   margin: 0.25rem 0.125rem;
   padding: 0.375rem 0.5rem;
 }
-button:hover {
+button:hover, button:focus {
   background-color: var(--light2);
 }
 
@@ -88,7 +88,7 @@ button:hover {
   cursor: pointer;
   color: grey;
 }
-.icon:hover {
+.icon:hover, .icon:focus {
   color: var(--dark0);
 }
 
@@ -169,7 +169,7 @@ option {
   position: relative;
   display: inline-block;
 }
-#textinput {
+#textinput, #questioninput {
   width: 12.5rem;
   height: 1.25rem;
   margin: 0.25rem 0;
@@ -193,7 +193,7 @@ option {
   background-color: var(--light0);
   border-bottom: 0.0625rem solid var(--light2);
 }
-#suggestions div:hover {
+#suggestions div:hover, #suggestions div:focus {
   background-color: var(--light2);
 }
 #suggestions div.currentFocus {
@@ -332,7 +332,7 @@ table th p {
   font-size: 1.5625rem;
   line-height: 0;
 }
-#header a:hover {
+#header a:hover, #header a:focus {
   background-color: var(--light2);
 }
 #signuplogin {
@@ -474,6 +474,9 @@ table th p {
   margin-top: 0.625rem;
   float: right;
 }
+#questioninput {
+  margin-right: 0.625rem;
+}
 
 /*Welcome Modal*/
 #welcomeweights {
@@ -530,15 +533,22 @@ table th p {
 .modal .buttons {
   background-color: var(--light1);
 }
-.modal .buttons:hover, .popup a:hover {
+.modal .buttons:hover, .modal .buttons:focus, .popup a:hover, .popup a:focus {
   background-color: var(--light2);
 }
-.modal .mainbtn, .popup .mainbtn, #reset:hover, #deleteaccnt:hover {
+.modal .redbutton, .popup .redbutton, #reset:hover, #reset:focus, #deleteaccnt:hover, #deleteaccnt:focus {
   color: white;
   background-color: #bb000c;
 }
-.modal .mainbtn:hover, .popup .mainbtn:hover {
+.modal .redbutton:hover, .modal .redbutton:focus, .popup .redbutton:hover, .popup .redbutton:focus {
   background-color: #d81a1a;
+}
+.modal .bluebutton {
+  color: white;
+  background-color: #3489c9;
+}
+.modal .bluebutton:hover, .modal .bluebutton:focus {
+  background-color: #61cae3;
 }
 
 /*Modal and toast close*/
@@ -548,7 +558,7 @@ table th p {
   font-weight: bold;
   cursor: pointer;
 }
-.modal .content .close:hover, .toast .close:hover {
+.modal .content .close:hover, .modal .content .close:focus, .toast .close:hover, .toast .close:focus {
   color: var(--dark0);
 }
 
@@ -576,7 +586,7 @@ table th p {
   text-decoration: none;
   border-radius: 0.25rem;
 }
-#actsetupwizard:hover, #logout:hover, #changepass:hover, #useractions a:hover, #rerunsetup:hover {
+#actsetupwizard:hover, #logout:hover, #changepass:hover, #useractions a:hover, #rerunsetup:hover, #actsetupwizard:focus, #logout:focus, #changepass:focus, #useractions a:focus, #rerunsetup:focus {
   background-color: var(--light1);
 }
 
@@ -751,7 +761,7 @@ table th p {
   line-height: 1.25rem;
   margin: 0.125rem 0;
 }
-.toast button:hover {
+.toast button:focus {
   background-color: var(--light3);
 }
 .toast .close {
