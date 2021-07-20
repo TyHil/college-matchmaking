@@ -1591,7 +1591,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
             let reset = document.createElement("button");
             reset.classList.add("redbutton");
             reset.innerText = "Reset";
-            const resetScore = function() {//declare with const to avoid hoisting function becasue it's inside an if
+            const resetScore = function () {//declare with const to avoid hoisting function becasue it's inside an if
               loadJSON("UserData/" + scoreNames[0] + ".json").then(function (response) {
                 scores[0][category][1][key] = JSON.parse(response)[category][1][key];
                 writeUserData(1);
@@ -1929,7 +1929,7 @@ document.getElementById("aboutus").addEventListener("click", function () {
 
 //Modal close methods
 document.querySelectorAll(".close").forEach(function (item) {
-  item.addEventListener("click", function (event) {
+  item.addEventListener("click", function () {
     let content = item.parentElement;
     let modal = content.parentElement;
     content.classList.add("out");
