@@ -258,13 +258,13 @@ function openSetupWizardModal() {
         let setupmodallogin = document.getElementById("setupmodallogin");
         setupmodallogin.innerText = "Create Account";
         setupmodallogin.addEventListener("click", () => {
+          openLogInModal();
           content.classList.add("out");
           setupmodal.classList.add("out");
           content.addEventListener("animationend", function () {
             setupmodal.style.display = "none";
             content.classList.remove("out");
             setupmodal.classList.remove("out");
-            openLogInModal();
           }, { once: true });
         });
         setupmodallogin.style.display = "inline";
@@ -1460,23 +1460,23 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
     welcomemodal.style.display = "block";
     let content = welcomemodal.getElementsByClassName("content")[0];
     document.getElementById("welcomemodallogin").addEventListener("click", () => {
+      openLogInModal();
       content.classList.add("out");
       welcomemodal.classList.add("out");
       content.addEventListener("animationend", function () {
         welcomemodal.style.display = "none";
         content.classList.remove("out");
         welcomemodal.classList.remove("out");
-        openLogInModal();
       }, { once: true });
     });
     document.getElementById("setupwizard").addEventListener("click", () => {
+      openSetupWizardModal();
       content.classList.add("out");
       welcomemodal.classList.add("out");
       content.addEventListener("animationend", function () {
         welcomemodal.style.display = "none";
         content.classList.remove("out");
         welcomemodal.classList.remove("out");
-        openSetupWizardModal();
       }, { once: true });
     });
   }
