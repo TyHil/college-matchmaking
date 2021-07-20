@@ -49,13 +49,13 @@ function loadJSON(link) {//load local or external json
 
 function loadFirebaseJSON(link) {
   return new Promise(function (resolve, reject) {
-    databaseRef.child(link).get().then((snapshot) => {
+    databaseRef.child(link).get().then(function (snapshot) {
       if (snapshot.exists()) {
         resolve(snapshot.val());
       } else {
         reject("No data available");
       }
-    }).catch((error) => {
+    }).catch(function (error) {
       reject(error);
     });
   });
@@ -96,7 +96,7 @@ function JaroWrinker(s1, s2) {
     return 0;
   }
   let k = 0;//Count the transpositions.
-  let n_trans = 0;
+  let nTrans = 0;
   for (let i = 0; i < s1.length; i++) {
     if (s1Matches[i] === true) {
       let j;
@@ -107,11 +107,11 @@ function JaroWrinker(s1, s2) {
         }
       }
       if (s1[i] !== s2[j]) {
-        ++n_trans;
+        ++nTrans;
       }
     }
   }
-  let weight = (m / s1.length + m / s2.length + (m - (n_trans / 2)) / m) / 3,
+  let weight = (m / s1.length + m / s2.length + (m - (nTrans / 2)) / m) / 3,
     l = 0,
     p = 0.1;
   if (weight > 0.7) {
@@ -151,14 +151,14 @@ function openConfirmModal(h1, p, red, confirm = 0) {
       content.classList.remove("out");
       confirmmodal.classList.remove("out");
     }, { once: true });
-  }
+  };
 }
 
 function openQuestionModal(h1, p, placeholder, confirm = 0) {
   let questionmodal = document.getElementById("questionmodal");
   questionmodal.getElementsByTagName("h1")[0].innerText = h1;
   questionmodal.getElementsByTagName("p")[0].innerText = p;
-  questioninput = document.getElementById("questioninput");
+  let questioninput = document.getElementById("questioninput");
   questioninput.placeholder = placeholder;
   questioninput.value = "";
   questioninput.focus();
@@ -177,7 +177,7 @@ function openQuestionModal(h1, p, placeholder, confirm = 0) {
     }, { once: true });
   }
   function enterCheck(e) {
-    if (e.keyCode === 13) {
+    if (e.key === "Enter") {
       questionModalOut();
     }
   }
@@ -203,7 +203,7 @@ function openSetupWizardModal() {
   setupmodal.getElementsByTagName("p")[0].innerText = "Use the sliders to choose how important each category is to you. We'll use this to calculate your personalized match scores.";
   let welcometable = document.createElement("table");//weights
   welcometable.id = "welcomeweights";
-  for (const category in scores[0]) {
+  for (const category of Object.keys(scores[0])) {
     let tr = document.createElement("tr");
     let th1 = document.createElement("th");
     th1.innerText = category;
@@ -257,7 +257,7 @@ function openSetupWizardModal() {
       if (!loggedIn) {
         let setupmodallogin = document.getElementById("setupmodallogin");
         setupmodallogin.innerText = "Create Account";
-        setupmodallogin.addEventListener("click", () => {
+        setupmodallogin.addEventListener("click", function () {
           openLogInModal();
           content.classList.add("out");
           setupmodal.classList.add("out");
@@ -434,7 +434,7 @@ function updateRowMatchScores(college, applyTable = 1) {
   for (let i = 0; i < 3; i++) {//update match scores
     let scoreTot = 0;
     let weightSumTot = 0;
-    for (const category in scores[i]) {
+    for (const category of Object.keys(scores[i])) {
       let scoreCat = 0;
       let weightSumCat = 0;
       let override = 0;
@@ -443,72 +443,74 @@ function updateRowMatchScores(college, applyTable = 1) {
         weightSumCat = 5;
         override = 1;
       }//run below for highlighting
-      for (const key in scores[i][category][1]) {
-        if (key in collegesData[college] || (key === "Averagenetpriceforfamilyincome" && "Averagenetpricefor" + userinfo.income + "familyincome" in collegesData[college]) || (key.substr(0, 2) === "<>" && key.substr(6) in collegesData[college])) {
-          let dataKey = key;
-          if (key === "Averagenetpriceforfamilyincome") {
-            dataKey = "Averagenetpricefor" + userinfo.income + "familyincome";
-          } else if (key.substr(0, 2) === "<>") {
-            dataKey = key.substr(6);
-          }
-          let data = collegesData[college][dataKey];
-          let scoreDat = 0;
-          let weight = scores[i][category][1][key][0];
-          if (key.substr(0, 2) === "<>") {
-            if (key.substr(2, 3) === "gpa") {
-              data = userinfo.gpa - data;
-              if (collegesData[college].GPAorTestScoresMoreImportant === "GPA") {
-                weight = 5;
-              }
-            } else if (key.substr(2, 3) === "sat") {
-              if (userinfo.test === "sat") {
-                data = userinfo.sat - data;
-              } else {
-                continue;
-              }
-              if (collegesData[college].GPAorTestScoresMoreImportant === "Test Scores") {
-                weight = 5;
-              }
-            } else if (key.substr(2, 3) === "act") {
-              if (userinfo.test === "act") {
-                data = userinfo.act - data;
-              } else {
-                continue;
-              }
-              if (collegesData[college].GPAorTestScoresMoreImportant === "Test Scores") {
-                weight = 5;
+      if (scores[i][category].length > 1) {
+        for (const key of Object.keys(scores[i][category][1])) {
+          if (key in collegesData[college] || (key === "Averagenetpriceforfamilyincome" && "Averagenetpricefor" + userinfo.income + "familyincome" in collegesData[college]) || (key.substr(0, 2) === "<>" && key.substr(6) in collegesData[college])) {
+            let dataKey = key;
+            if (key === "Averagenetpriceforfamilyincome") {
+              dataKey = "Averagenetpricefor" + userinfo.income + "familyincome";
+            } else if (key.substr(0, 2) === "<>") {
+              dataKey = key.substr(6);
+            }
+            let data = collegesData[college][dataKey];
+            let scoreDat = 0;
+            let weight = scores[i][category][1][key][0];
+            if (key.substr(0, 2) === "<>") {
+              if (key.substr(2, 3) === "gpa") {
+                data = userinfo.gpa - data;
+                if (collegesData[college].GPAorTestScoresMoreImportant === "GPA") {
+                  weight = 5;
+                }
+              } else if (key.substr(2, 3) === "sat") {
+                if (userinfo.test === "sat") {
+                  data = userinfo.sat - data;
+                } else {
+                  continue;
+                }
+                if (collegesData[college].GPAorTestScoresMoreImportant === "Test Scores") {
+                  weight = 5;
+                }
+              } else if (key.substr(2, 3) === "act") {
+                if (userinfo.test === "act") {
+                  data = userinfo.act - data;
+                } else {
+                  continue;
+                }
+                if (collegesData[college].GPAorTestScoresMoreImportant === "Test Scores") {
+                  weight = 5;
+                }
               }
             }
-          }
-          let range = scores[i][category][1][key][1];
-          let scoreVals = [1, 2, 3, 4, 5];
-          if (scores[i][category][1][key].length === 3) {//custom score ordering defined
-            scoreVals = scores[i][category][1][key][2];
-          }
-          if (range.length === 2) {//min and max defined
-            let width = (range[1] - range[0]) / 5;
-            range = [range[0] + width, range[0] + 2 * width, range[1] - 2 * width, range[1] - width];
-          }
-          if (data < range[0]) {
-            scoreDat = scoreVals[0];
-          }
-          for (let j = 0; j < range.length - 1; j++) {
-            if (range[j] <= data && data < range[j + 1]) {
-              scoreDat = scoreVals[j + 1];
+            let range = scores[i][category][1][key][1];
+            let scoreVals = [1, 2, 3, 4, 5];
+            if (scores[i][category][1][key].length === 3) {//custom score ordering defined
+              scoreVals = scores[i][category][1][key][2];
             }
-          }
-          if (range[range.length - 1] <= data) {
-            scoreDat = scoreVals[scoreVals.length - 1];
-          }
-          if (category === "Ranking" && (data === "unranked" || data === "Unranked")) {
-            scoreDat = 1;
-          }
-          if (!override) {
-            scoreCat += scoreDat * weight;
-            weightSumCat += 5 * weight;
-          }
-          if (i === 0) {
-            document.getElementById(college).getElementsByClassName(key + " " + removeSpaces(category))[0].style.backgroundColor = "var(--high" + (scoreDat - 1) + ")";//cell highlights
+            if (range.length === 2) {//min and max defined
+              let width = (range[1] - range[0]) / 5;
+              range = [range[0] + width, range[0] + 2 * width, range[1] - 2 * width, range[1] - width];
+            }
+            if (data < range[0]) {
+              scoreDat = scoreVals[0];
+            }
+            for (let j = 0; j < range.length - 1; j++) {
+              if (range[j] <= data && data < range[j + 1]) {
+                scoreDat = scoreVals[j + 1];
+              }
+            }
+            if (range[range.length - 1] <= data) {
+              scoreDat = scoreVals[scoreVals.length - 1];
+            }
+            if (category === "Ranking" && (data === "unranked" || data === "Unranked")) {
+              scoreDat = 1;
+            }
+            if (!override) {
+              scoreCat += scoreDat * weight;
+              weightSumCat += 5 * weight;
+            }
+            if (i === 0) {
+              document.getElementById(college).getElementsByClassName(key + " " + removeSpaces(category))[0].style.backgroundColor = "var(--high" + (scoreDat - 1) + ")";//cell highlights
+            }
           }
         }
       }
@@ -590,7 +592,7 @@ function updateRowMatchScores(college, applyTable = 1) {
 }
 
 function updateRowData(college, applyTable = 1) {
-  return loadFirebaseJSON("/colleges/" + college).then(response => {
+  return loadFirebaseJSON("/colleges/" + college).then(function (response) {
     collegesData[college] = response;
     if (document.getElementById("welcomecolleges")) {//add college to the welcome list if open
       let div = document.createElement("div");
@@ -613,9 +615,9 @@ function updateRowData(college, applyTable = 1) {
       div.appendChild(p);
       document.getElementById("welcomecolleges").appendChild(div);
     }
-    for (const category in headers) {//update data in table
+    for (const category of Object.keys(headers)) {//update data in table
       if (category !== "Actions") {
-        for (const key in headers[category]) {
+        for (const key of Object.keys(headers[category])) {
           let fill = "No Data";
           let link = 0;
           if (typeof headers[category] === "string") {
@@ -664,7 +666,7 @@ function updateRowData(college, applyTable = 1) {
               if (fill.substr(0, 7) !== "http://" && fill.substr(0, 8) !== "https://") {
                 fill = "http://" + fill;
               }
-              linker.addEventListener("click", () => {
+              linker.addEventListener("click", function () {
                 window.open(fill, "_blank");
               });
               document.getElementById(college).getElementsByClassName(headers[category][key][0])[0].appendChild(linker);
@@ -686,7 +688,7 @@ function updateRowData(college, applyTable = 1) {
       }
     }
     updateRowMatchScores(college, applyTable);
-  }, error => {
+  }, function (error) {
     createToast("Load " + college + " Data Failed!", 1, "Try Again", function () {
       return updateRowData(college);
     });
@@ -697,7 +699,7 @@ function updateRowData(college, applyTable = 1) {
 function addRowToTable(college, applyTable = 1) {
   let tr = document.createElement("tr");
   tr.setAttribute("id", college);
-  for (const category in headers) {
+  for (const category of Object.keys(headers)) {
     if (category === "Actions") {
       let td = document.createElement("td");
       td.classList.add(removeSpaces(category));
@@ -712,7 +714,7 @@ function addRowToTable(college, applyTable = 1) {
       up.classList.add("material-icons");
       up.title = "Move College Up";
       up.innerText = "expand_less";
-      up.addEventListener("click", () => {
+      up.addEventListener("click", function () {
         for (let i = 1; i < colleges.length; i++) {
           if (colleges[i].ID === college) {
             document.getElementById("table").insertBefore(document.getElementById(colleges[i].ID), document.getElementById(colleges[i - 1].ID));
@@ -732,8 +734,8 @@ function addRowToTable(college, applyTable = 1) {
       drag.classList.add("material-icons");
       drag.title = "Set College Position";
       drag.innerText = "drag_handle";
-      drag.addEventListener("click", () => {
-        openQuestionModal("College Position Change", "Enter college position from 1 to " + colleges.length, "College position", function(pos) {
+      drag.addEventListener("click", function () {
+        openQuestionModal("College Position Change", "Enter college position from 1 to " + colleges.length, "College position", function (pos) {
           if (Number.isInteger(parseInt(pos)) && pos > 0 && pos <= colleges.length) {
             pos = parseInt(pos);
             for (let i = 0; i < colleges.length; i++) {
@@ -764,7 +766,7 @@ function addRowToTable(college, applyTable = 1) {
       down.classList.add("material-icons");
       down.title = "Move College Down";
       down.innerText = "expand_more";
-      down.addEventListener("click", () => {
+      down.addEventListener("click", function () {
         for (let i = 0; i < colleges.length - 1; i++) {
           if (colleges[i].ID === college) {
             document.getElementById("table").insertBefore(document.getElementById(colleges[i + 1].ID), document.getElementById(colleges[i].ID));
@@ -785,7 +787,7 @@ function addRowToTable(college, applyTable = 1) {
       remove.classList.add("removeicon");
       remove.title = "Remove College";
       remove.innerText = "delete";
-      remove.addEventListener("click", () => {
+      remove.addEventListener("click", function () {
         document.getElementById(college).style.display = "none";
         createToast(collegesData[getFromColleges(college).ID].Name + " Removed", 0, "Undo", function () {//buttonClick: restore
           document.getElementById(college).style.display = "table-row";
@@ -806,7 +808,7 @@ function addRowToTable(college, applyTable = 1) {
     } else {
       let button = document.getElementById(removeSpaces(category));
       let showhide = button !== null && !button.classList.contains("clicked") && !button.classList.contains("doubleclicked");
-      for (const key in headers[category]) {
+      for (const key of Object.keys(headers[category])) {
         let td = document.createElement("td");
         let keyName;
         if (typeof headers[category] === "string") {// Name rowspan
@@ -952,14 +954,16 @@ function addRowToTable(college, applyTable = 1) {
 
 let weightNames = ["Not a factor", "Barely a factor", "Less important", "Average", "Important", "Very important"];
 function updateSliders() {
-  for (const category in scores[0]) {
+  for (const category of Object.keys(scores[0])) {
     let cell = document.getElementById("table").getElementsByTagName("tr")[0].getElementsByClassName(removeSpaces(category))[0];
     cell.getElementsByClassName("slider")[0].value = scores[0][category][0];
     cell.getElementsByClassName("weight")[0].innerText = weightNames[scores[0][category][0]];
-    for (const key in scores[0][category][1]) {
-      let cell = document.getElementsByClassName(key + " " + removeSpaces(category))[0];
-      cell.getElementsByClassName("slider")[0].value = scores[0][category][1][key][0];
-      cell.getElementsByClassName("weight")[0].innerText = weightNames[scores[0][category][1][key][0]];
+    if (scores[0][category].length > 1) {
+      for (const key of Object.keys(scores[0][category][1])) {
+        let cell = document.getElementsByClassName(key + " " + removeSpaces(category))[0];
+        cell.getElementsByClassName("slider")[0].value = scores[0][category][1][key][0];
+        cell.getElementsByClassName("weight")[0].innerText = weightNames[scores[0][category][1][key][0]];
+      }
     }
   }
 }
@@ -975,12 +979,12 @@ function updateDatachangePosition(datachange, plus) {
 let allLoaded = [];//when headers and scores loaded
 
 let headers;
-let headersLoaded = loadJSON("./headers.json").then(response => {//load headers for table from headers.json
+let headersLoaded = loadJSON("./headers.json").then(function (response) {//load headers for table from headers.json
   headers = JSON.parse(response);
   let table = document.getElementById("table");
   let categorytr = document.createElement("tr");
   let datatr = document.createElement("tr");
-  for (const category in headers) {
+  for (const category of Object.keys(headers)) {
     let categoryth = document.createElement("th");
     let h2 = document.createElement("h2");
     h2.innerText = category;
@@ -994,7 +998,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
       question.classList.add("question");
       question.title = "Match scores info";
       question.innerText = "help";
-      question.addEventListener("click", function() {
+      question.addEventListener("click", function () {
         document.getElementById("matchscoremodal").style.display = "block";
       });
       categoryth.appendChild(question);
@@ -1003,7 +1007,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
       categoryth.rowSpan = 2;
     } else {
       let length = 0;
-      for (const key in headers[category]) {
+      for (const key of Object.keys(headers[category])) {
         let datath = document.createElement("th");
         let keyName = Array.isArray(headers[category][key]) ? headers[category][key][0] : headers[category][key];
         for (let i = 0; i < 3; i++) {
@@ -1048,7 +1052,7 @@ let headersLoaded = loadJSON("./headers.json").then(response => {//load headers 
   }
   table.appendChild(categorytr);
   table.appendChild(datatr);
-}, error => {
+}, function (error) {
   createToast("Load Headers Failed!", 1, "Refresh", function () {
     location.reload();
   });
@@ -1059,9 +1063,9 @@ allLoaded.push(headersLoaded);
 let scores = [];//scores float, sail, and swim scores.
 let scoreNames = ["FLOAT", "SAIL", "SWIM"];
 for (let i = 1; i < 3; i++) {//load all scores
-  let scoreLoaded = loadJSON(((i === 0) ? "UserData/" : "") + scoreNames[i] + ".json").then(response => {
+  let scoreLoaded = loadJSON(((i === 0) ? "UserData/" : "") + scoreNames[i] + ".json").then(function (response) {
     scores[i] = JSON.parse(response);
-  }, error => {
+  }, function (error) {
     createToast("Load " + scoreNames[i] + " Score Failed!", 1, "Refresh", function () {
       location.reload();
     });
@@ -1086,12 +1090,12 @@ function writeUserData(toast) {
       FLOAT: scores[0],
       userinfo: userinfo,
       checkboxes: checkboxes
-    }).then(() => {
+    }).then(function () {
       if (toast) {
         createToast("Saved!");
       }
       window.onbeforeunload = undefined;
-    }).catch((error) => {
+    }).catch(function (error) {
       window.onbeforeunload = () => "";
       createToast("Save Data Failed!", 0, "Try Again", function () {
         writeUserData();
@@ -1123,16 +1127,15 @@ function signedInSetUp(loadData) {
   usericon.title = "More actions";
   usericon.alt = "Profile Image";
   document.getElementById("headerright").appendChild(usericon);
-  usericon.addEventListener("click", function() {
-    let useractions = document.getElementById("useractions");
+  let useractions = document.getElementById("useractions");
+  usericon.addEventListener("click", function () {
     if (useractions.style.display === "flex") {
       useractions.style.display = "none";
     } else {
       useractions.style.display = "flex";
     }
   });
-  document.addEventListener("click", function(e) {
-    let useractions = document.getElementById("useractions");
+  document.addEventListener("click", function (e) {
     if (!useractions.contains(e.target) && !document.getElementById("usericon").contains(e.target)) {
       useractions.style.display = "none";
     }
@@ -1150,7 +1153,7 @@ function signedInSetUp(loadData) {
       }
       switch (firebase.auth().currentUser.providerData[0].providerId) {
         case "password":
-          openQuestionModal("Enter Password", "Please enter your password.", "Password", function(password) {
+          openQuestionModal("Enter Password", "Please enter your password.", "Password", function (password) {
             if (password !== "") {
               finish(firebase.auth.EmailAuthProvider.credential(firebase.auth().currentUser.providerData[0].email, password));
             } else {
@@ -1171,12 +1174,9 @@ function signedInSetUp(loadData) {
       }
     });
   }
-  function reset() {
-    
-  }
   document.getElementById("reset").addEventListener("click", function () {
     function action() {
-      loadJSON("./UserData/" + scoreNames[0] + ".json").then(response => {
+      loadJSON("./UserData/" + scoreNames[0] + ".json").then(function (response) {
         scores[0] = JSON.parse(response);
         writeUserData(1);
         updateSliders();
@@ -1184,7 +1184,7 @@ function signedInSetUp(loadData) {
           updateRowMatchScores(college.ID, 0);
         }
         updateApplyTable();
-      }, error => {
+      }, function (error) {
         createToast("Load " + scoreNames[0] + " Score Failed!", 0, "Try Again", action);
         console.error("Load " + scoreNames[0] + " Score Failed!", error);
       });
@@ -1193,12 +1193,12 @@ function signedInSetUp(loadData) {
   });
   document.getElementById("rerunsetup").addEventListener("click", function () {
     function action() {
-      loadJSON("./UserData/" + scoreNames[0] + ".json").then(response => {
+      loadJSON("./UserData/" + scoreNames[0] + ".json").then(function (response) {
         scores[0] = JSON.parse(response);
         writeUserData(0);
         updateSliders();
         openSetupWizardModal();
-      }, error => {
+      }, function (error) {
         createToast("Load " + scoreNames[0] + " Score Failed!", 0, "Try Again", action);
         console.error("Load " + scoreNames[0] + " Score Failed!", error);
       });
@@ -1206,12 +1206,15 @@ function signedInSetUp(loadData) {
     openConfirmModal("Confirm Rerun Setup Wizard", "This will remove all customization from your match scores and college list. This cannot be undone.", 0, action);
   });
   document.getElementById("logout").addEventListener("click", function () {
-    firebase.auth().signOut().then(() => {
-      location.reload();
-    }).catch((error) => {
-      createToast("Sign Out Failed!");
-      console.error("Sign Out Failed!", error);
-    });
+    function action() {
+      firebase.auth().signOut().then(function () {
+        location.reload();
+      }).catch(function (error) {
+        createToast("Sign Out Failed!", 0, "Try Again", action);
+        console.error("Sign Out Failed!", error);
+      });
+    }
+    action();
   });
   document.getElementById("deleteaccnt").addEventListener("click", function () {
     function action() {
@@ -1220,14 +1223,14 @@ function signedInSetUp(loadData) {
         location.reload();
       }).catch(function (error) {
         if (error.code === "auth/requires-recent-login") {
-          reAuth().then(() => {
+          reAuth().then(function () {
             firebase.auth().currentUser.delete().then(function () {
               location.reload();
             }).catch(function (error) {
               createToast("Delete User Failed!", 0, "Try Again", action);
               console.error("Delete User Failed!", error);
             });
-          }, error => {
+          }, function (error) {
             createToast("Delete User Failed!", 0, "Try Again", action);
             console.error("Delete User Failed!", error);
           });
@@ -1266,26 +1269,24 @@ function signedInSetUp(loadData) {
             createToast("Email Changed!");
           }).catch(function (error) {
             if (error.code === "auth/requires-recent-login") {
-              reAuth().then(() => {
+              reAuth().then(function () {
                 firebase.auth().currentUser.updateEmail(email).then(function () {
                   useractions.getElementsByTagName("h3")[0].innerText = email;
                   createToast("Email Changed!");
                 }).catch(function (error) {
                   if (error.code === "auth/invalid-email") {
                     createToast("Invalid Email!");
-                    console.error("Invalid Email!", error);
                   } else {
                     createToast("Email Change Failed!", 0, "Try Again", action);
                     console.error("Email Change Failed!", error);
                   }
                 });
-              }, error => {
+              }, function (error) {
                 createToast("Email Change Failed!", 0, "Try Again", action);
                 console.error("Email Change Failed!", error);
               });
             } else if (error.code === "auth/invalid-email") {
               createToast("Invalid Email!");
-              console.error("Invalid Email!", error);
             } else {
               createToast("Email Change Failed!", 0, "Try Again", action);
               console.error("Email Change Failed!", error);
@@ -1304,25 +1305,23 @@ function signedInSetUp(loadData) {
             createToast("Password Changed!");
           }).catch(function (error) {
             if (error.code === "auth/requires-recent-login") {
-              reAuth().then(() => {
+              reAuth().then(function () {
                 firebase.auth().currentUser.updatePassword(pass).then(function () {
                   createToast("Password Changed!");
                 }).catch(function (error) {
                   if (error.code === "auth/weak-password") {
                     createToast("Weak Password!");
-                    console.error("Weak Password!", error);
                   } else {
                     createToast("Password Change Failed!", 0, "Try Again", action);
                     console.error("Password Change Failed!", error);
                   }
                 });
-              }, error => {
+              }, function (error) {
                 createToast("Password Change Failed!", 0, "Try Again", action);
                 console.error("Password Change Failed!", error);
               });
             } else if (error.code === "auth/weak-password") {
               createToast("Weak Password!");
-              console.error("Weak Password!", error);
             } else {
               createToast("Password Change Failed!", 0, "Try Again", action);
               console.error("Password Change Failed!", error);
@@ -1340,7 +1339,7 @@ function signedInSetUp(loadData) {
     document.getElementById("changepass").style.display = "none";
   }
   if (loadData) {
-    let userDataLoaded = loadFirebaseJSON("/users/" + firebase.auth().currentUser.uid).then(response => {
+    let userDataLoaded = loadFirebaseJSON("/users/" + firebase.auth().currentUser.uid).then(function (response) {
       colleges = response.colleges;
       if (typeof colleges === "undefined") {
         colleges = [];
@@ -1368,13 +1367,13 @@ function signedInSetUp(loadData) {
       document.getElementById("income").getElementsByTagName("select")[0].value = userinfo.income;
       if (response.checkboxes) {
         checkboxes = response.checkboxes;
-        for (const category in checkboxes) {
-          for (const value in checkboxes[category]) {
+        for (const category of Object.keys(checkboxes)) {
+          for (const value of Object.keys(checkboxes[category])) {
             document.getElementById(removeSpaces(value)).checked = checkboxes[category][value];
           }
         }
       }
-    }, error => {
+    }, function (error) {
       createToast("Load User Data Failed!", 1, "Refresh", function () {
         location.reload();
       });
@@ -1429,27 +1428,27 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
     }
     unsubscribe();
   } else {//Welcome Modal
-    let scoreLoaded = loadJSON("UserData/" + scoreNames[0] + ".json").then(response => {
+    let scoreLoaded = loadJSON("UserData/" + scoreNames[0] + ".json").then(function (response) {
       scores[0] = JSON.parse(response);
-    }, error => {
+    }, function (error) {
       createToast("Load " + scoreNames[0] + " Score Failed!", 1, "Refresh", function () {
         location.reload();
       });
       console.error("Load " + scoreNames[0] + " Score Failed!", error);
     });
     allLoaded.push(scoreLoaded);
-    let collegesLoaded = loadJSON("./UserData/colleges.json").then(response => {
+    let collegesLoaded = loadJSON("./UserData/colleges.json").then(function (response) {
       colleges = JSON.parse(response);
-    }, error => {
+    }, function (error) {
       createToast("Load College List Failed!", 1, "Refresh", function () {
         location.reload();
       });
       console.error("Load College List Failed!", error);
     });
     allLoaded.push(collegesLoaded);
-    let checkboxesLoaded = loadJSON("./checkboxes.json").then(response => {
+    let checkboxesLoaded = loadJSON("./checkboxes.json").then(function (response) {
       checkboxes = JSON.parse(response);
-    }, error => {
+    }, function (error) {
       createToast("Load Checkboxes Failed!", 1, "Refresh", function () {
         location.reload();
       });
@@ -1459,7 +1458,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
     let welcomemodal = document.getElementById("welcomemodal");
     welcomemodal.style.display = "block";
     let content = welcomemodal.getElementsByClassName("content")[0];
-    document.getElementById("welcomemodallogin").addEventListener("click", () => {
+    document.getElementById("welcomemodallogin").addEventListener("click", function () {
       openLogInModal();
       content.classList.add("out");
       welcomemodal.classList.add("out");
@@ -1469,7 +1468,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
         welcomemodal.classList.remove("out");
       }, { once: true });
     });
-    document.getElementById("setupwizard").addEventListener("click", () => {
+    document.getElementById("setupwizard").addEventListener("click", function () {
       openSetupWizardModal();
       content.classList.add("out");
       welcomemodal.classList.add("out");
@@ -1485,7 +1484,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
     tableLoadOnce = 0;
     Promise.all(allLoaded).then(function () {
       /*Load Overrides, Subscores, and Notes*/
-      for (const category in headers) {
+      for (const category of Object.keys(headers)) {
         let button = document.getElementById(removeSpaces(category));
         let showhide = button !== null && !button.classList.contains("clicked") && !button.classList.contains("doubleclicked");
         if (category in scores[0] || category === "Acceptance") {
@@ -1522,7 +1521,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
           }
         }
       }
-      for (const category in scores[0]) {
+      for (const category of Object.keys(scores[0])) {
         let catSliderDiv = createSlider(scores[0][category][0]);
         document.getElementById("table").getElementsByClassName(removeSpaces(category))[0].appendChild(catSliderDiv);
         catSliderDiv.getElementsByClassName("slider")[0].addEventListener("change", function () {
@@ -1533,291 +1532,295 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
           updateApplyTable();
           writeUserData(1);
         });
-        for (const key in scores[0][category][1]) {
-          let sliderDiv = createSlider(scores[0][category][1][key][0]);
-          document.getElementsByClassName(key + " " + removeSpaces(category))[0].appendChild(sliderDiv);
-          let range = sliderDiv.getElementsByClassName("slider")[0];
-          range.addEventListener("change", function () {
-            scores[0][category][1][key][0] = parseInt(this.value);
-            for (const college of colleges) {
-              updateRowMatchScores(college.ID, 0);
+        if (scores[0][category].length > 1) {
+          for (const key of Object.keys(scores[0][category][1])) {
+            let sliderDiv = createSlider(scores[0][category][1][key][0]);
+            document.getElementsByClassName(key + " " + removeSpaces(category))[0].appendChild(sliderDiv);
+            let range = sliderDiv.getElementsByClassName("slider")[0];
+            range.addEventListener("change", function () {
+              scores[0][category][1][key][0] = parseInt(this.value);
+              for (const college of colleges) {
+                updateRowMatchScores(college.ID, 0);
+              }
+              updateApplyTable();
+              writeUserData(1);
+            });
+            let plus = document.createElement("span");
+            let datachange = document.createElement("div");
+            datachange.style.display = "none";
+            datachangePlusPairs.push([datachange, plus]);
+            plus.setAttribute("tabindex", 0);
+            plus.classList.add("plus");
+            plus.classList.add("icon");
+            plus.classList.add("material-icons");
+            plus.innerText = "expand_more";
+            document.getElementsByClassName(key + " " + removeSpaces(category))[0].getElementsByClassName("scorecontrol")[0].insertBefore(plus, range);
+            let scoreVals = [1, 2, 3, 4, 5];
+            if (scores[0][category][1][key].length === 3) {//custom score ordering defined
+              scoreVals = scores[0][category][1][key][2];
             }
-            updateApplyTable();
-            writeUserData(1);
-          });
-          let plus = document.createElement("span");
-          let datachange = document.createElement("div");
-          datachange.style.display = "none";
-          datachangePlusPairs.push([datachange, plus]);
-          plus.setAttribute("tabindex", 0);
-          plus.classList.add("plus");
-          plus.classList.add("icon");
-          plus.classList.add("material-icons");
-          plus.innerText = "expand_more";
-          document.getElementsByClassName(key + " " + removeSpaces(category))[0].getElementsByClassName("scorecontrol")[0].insertBefore(plus, range);
-          let scoreVals = [1, 2, 3, 4, 5];
-          if (scores[0][category][1][key].length === 3) {//custom score ordering defined
-            scoreVals = scores[0][category][1][key][2];
-          }
-          datachange.classList.add("popup");
-          datachange.classList.add("datachange");
-          let h2 = document.createElement("h2");
-          h2.innerText = "Change Range";
-          datachange.appendChild(h2);
-          let h3 = document.createElement("h3");
-          h3.innerText = "Redefine what makes a good score.";
-          datachange.appendChild(h3);
-          let barbox = document.createElement("div");
-          barbox.classList.add("barbox");
-          for (let i = 0; i < 5; i++) {
-            let bar = document.createElement("bar");
-            bar.classList.add("bar");
-            bar.style.backgroundColor = "var(--high" + (scoreVals[i] - 1) + ")";
-            if (i > 0 && i < 4) {
+            datachange.classList.add("popup");
+            datachange.classList.add("datachange");
+            let h2 = document.createElement("h2");
+            h2.innerText = "Change Range";
+            datachange.appendChild(h2);
+            let p = document.createElement("p");
+            p.innerText = "Redefine what makes a good FLOAT score.";
+            p.classList.add("datachangeDesc");
+            datachange.appendChild(p);
+            let barbox = document.createElement("div");
+            barbox.classList.add("barbox");
+            for (let i = 0; i < 5; i++) {
+              let bar = document.createElement("bar");
+              bar.classList.add("bar");
+              bar.style.backgroundColor = "var(--high" + (scoreVals[i] - 1) + ")";
+              if (i > 0 && i < 4) {
+                let range = scores[0][category][1][key][1];
+                if (range.length === 2) {//min and max defined
+                  let width = (range[1] - range[0]) / 5;
+                  range = [range[0] + width, range[0] + 2 * width, range[1] - 2 * width, range[1] - width];
+                }
+                bar.style.width = (200 - 2 * 10 - 2 * 20) * ((range[i] - range[i - 1]) / (range[3] - range[0])) + "px";
+              }
+              barbox.appendChild(bar);
+            }
+            datachange.appendChild(barbox);
+            let breakline1 = document.createElement("div");
+            breakline1.classList.add("break");
+            datachange.appendChild(breakline1);
+            let reset = document.createElement("button");
+            reset.classList.add("redbutton");
+            reset.innerText = "Reset";
+            const resetScore = function() {//declare with const to avoid hoisting function becasue it's inside an if
+              loadJSON("UserData/" + scoreNames[0] + ".json").then(function (response) {
+                scores[0][category][1][key] = JSON.parse(response)[category][1][key];
+                writeUserData(1);
+                datachange.style.display = "none";
+                updateSliders();
+              }, function (error) {
+                createToast("Load " + scoreNames[0] + " Score Failed!", 1, "Try Again", resetScore);
+                console.error("Load " + scoreNames[0] + " Score Failed!", error);
+              });
+            };
+            reset.addEventListener("click", resetScore);
+            datachange.appendChild(reset);
+            let dropdown = document.createElement("select");
+            dropdown.classList.add("dropdown");
+            let short = document.createElement("option");
+            short.value = "short";
+            short.innerText = "Short Range";
+            dropdown.appendChild(short);
+            let long = document.createElement("option");
+            long.value = "long";
+            long.innerText = "Long Range";
+            dropdown.appendChild(long);
+            dropdown.addEventListener("change", function () {
+              let rangeVals = this.parentElement.getElementsByClassName("rangeval");
               let range = scores[0][category][1][key][1];
-              if (range.length === 2) {//min and max defined
+              if (this.value === "long") {
+                range[0] = Math.min(range[0], range[1]);
+                range[1] = Math.max(range[0], range[1]);
                 let width = (range[1] - range[0]) / 5;
                 range = [range[0] + width, range[0] + 2 * width, range[1] - 2 * width, range[1] - width];
+                scores[0][category][1][key][1] = range;
+                for (let i = 0; i < 4; i++) {
+                  rangeVals[i].value = Math.round(range[i] * 100) / 100;
+                  if (i > 0) {
+                    rangeVals[i].min = range[i - 1];
+                  }
+                  if (i < 3) {
+                    rangeVals[i].max = range[i + 1];
+                  }
+                  rangeVals[i].style.display = "inline";
+                }
+              } else if (this.value === "short") {
+                let width = (range[3] - range[0]) / 3;
+                range = [range[0] - width, range[3] + width];
+                scores[0][category][1][key][1] = range;
+                for (let i = 0; i < 2; i++) {
+                  rangeVals[i].value = Math.round(range[i] * 100) / 100;
+                }
+                rangeVals[0].max = range[1];
+                rangeVals[1].min = range[0];
+                rangeVals[1].max = "";
+                for (let i = 2; i < 4; i++) {
+                  rangeVals[i].style.display = "none";
+                }
               }
-              bar.style.width = (200 - 2 * 10 - 2 * 20) * ((range[i] - range[i - 1]) / (range[3] - range[0])) + "px";
-            }
-            barbox.appendChild(bar);
-          }
-          datachange.appendChild(barbox);
-          let breakline1 = document.createElement("div");
-          breakline1.classList.add("break");
-          datachange.appendChild(breakline1);
-          let reset = document.createElement("button");
-          reset.classList.add("redbutton");
-          reset.innerText = "Reset";
-          function resetScore() {
-            loadJSON("UserData/" + scoreNames[0] + ".json").then(response => {
-              scores[0][category][1][key] = JSON.parse(response)[category][1][key];
-              writeUserData(1);
-              datachange.style.display = "none";
-              updateSliders();
-            }, error => {
-              createToast("Load " + scoreNames[0] + " Score Failed!", 1, "Try Again", resetScore);
-              console.error("Load " + scoreNames[0] + " Score Failed!", error);
             });
-          }
-          reset.addEventListener("click", resetScore);
-          datachange.appendChild(reset);
-          let dropdown = document.createElement("select");
-          dropdown.classList.add("dropdown");
-          let short = document.createElement("option");
-          short.value = "short";
-          short.innerText = "Short Range";
-          dropdown.appendChild(short);
-          let long = document.createElement("option");
-          long.value = "long";
-          long.innerText = "Long Range";
-          dropdown.appendChild(long);
-          dropdown.addEventListener("change", function () {
-            let rangeVals = this.parentElement.getElementsByClassName("rangeval");
-            let range = scores[0][category][1][key][1];
-            if (this.value === "long") {
-              range[0] = Math.min(range[0], range[1]);
-              range[1] = Math.max(range[0], range[1]);
-              let width = (range[1] - range[0]) / 5;
-              range = [range[0] + width, range[0] + 2 * width, range[1] - 2 * width, range[1] - width];
-              scores[0][category][1][key][1] = range;
-              for (let i = 0; i < 4; i++) {
-                rangeVals[i].value = Math.round(range[i] * 100) / 100;
-                if (i > 0) {
-                  rangeVals[i].min = range[i - 1];
-                }
-                if (i < 3) {
-                  rangeVals[i].max = range[i + 1];
-                }
-                rangeVals[i].style.display = "inline";
-              }
-            } else if (this.value === "short") {
-              let width = (range[3] - range[0]) / 3;
-              range = [range[0] - width, range[3] + width];
-              scores[0][category][1][key][1] = range;
-              for (let i = 0; i < 2; i++) {
-                rangeVals[i].value = Math.round(range[i] * 100) / 100;
-              }
-              rangeVals[0].max = range[1];
-              rangeVals[1].min = range[0];
-              rangeVals[1].max = "";
-              for (let i = 2; i < 4; i++) {
-                rangeVals[i].style.display = "none";
-              }
+            datachange.appendChild(dropdown);
+            let breakline2 = document.createElement("div");
+            breakline2.classList.add("break");
+            datachange.appendChild(breakline2);
+            let tempHeaderData = headers[category][Object.keys(headers[category]).find(keyh => headers[category][keyh][0] === key)];
+            let isPercent = 0;
+            if (Array.isArray(tempHeaderData) && tempHeaderData[1] === "%") {
+              isPercent = 1;
             }
-          });
-          datachange.appendChild(dropdown);
-          let breakline2 = document.createElement("div");
-          breakline2.classList.add("break");
-          datachange.appendChild(breakline2);
-          let tempHeaderData = headers[category][Object.keys(headers[category]).find(keyh => headers[category][keyh][0] === key)];
-          let isPercent = 0;
-          if (Array.isArray(tempHeaderData) && tempHeaderData[1] === "%") {
-            isPercent = 1;
-          }
-          for (let i = 0; i < 4; i++) {
-            let rangeVal = document.createElement("input");
-            rangeVal.type = "number";
-            rangeVal.step = "any";
-            rangeVal.size = "8";
-            rangeVal.classList.add("rangeval");
-            rangeVal.addEventListener("input", function () {
-              if ((this.hasAttribute("min") && parseInt(this.value) < parseInt(this.min)) || (this.hasAttribute("max") && parseInt(this.value) > parseInt(this.max))) {
-                this.style.backgroundColor = "var(--high0)";
-              } else {
-                this.style.backgroundColor = "var(--light2)";
-                let bars = this.parentElement.getElementsByClassName("bar");
-                for (let j = 0; j < 5; j++) {
-                  if (j > 0 && j < 4) {
-                    let range = scores[0][category][1][key][1];
-                    range[i] = parseInt(this.value);
-                    if (isPercent) {
-                      range[i] /= 100;
+            for (let i = 0; i < 4; i++) {
+              let rangeVal = document.createElement("input");
+              rangeVal.type = "number";
+              rangeVal.step = "any";
+              rangeVal.size = "8";
+              rangeVal.classList.add("rangeval");
+              rangeVal.addEventListener("input", function () {
+                if ((this.hasAttribute("min") && parseInt(this.value) < parseInt(this.min)) || (this.hasAttribute("max") && parseInt(this.value) > parseInt(this.max))) {
+                  this.style.backgroundColor = "var(--high0)";
+                } else {
+                  this.style.backgroundColor = "var(--light2)";
+                  let bars = this.parentElement.getElementsByClassName("bar");
+                  for (let j = 0; j < 5; j++) {
+                    if (j > 0 && j < 4) {
+                      let range = scores[0][category][1][key][1];
+                      range[i] = parseInt(this.value);
+                      if (isPercent) {
+                        range[i] /= 100;
+                      }
+                      if (range.length === 2) {//min and max defined
+                        let width = (range[1] - range[0]) / 5;
+                        range = [range[0] + width, range[0] + 2 * width, range[1] - 2 * width, range[1] - width];
+                      }
+                      bars[j].style.width = (200 - 2 * 10 - 2 * 20) * ((range[j] - range[j - 1]) / (range[3] - range[0])) + "px";
                     }
+                  }
+                }
+              });
+              rangeVal.addEventListener("change", function () {
+                if (this.hasAttribute("min")) {
+                  this.value = Math.max(this.value, this.min);
+                }
+                if (this.hasAttribute("max")) {
+                  this.value = Math.min(this.value, this.max);
+                }
+                this.style.backgroundColor = "var(--light2)";
+                scores[0][category][1][key][1][i] = parseInt(this.value);
+                if (isPercent) {
+                  scores[0][category][1][key][1][i] /= 100;
+                }
+                let rangeVals = this.parentElement.getElementsByClassName("rangeval");
+                for (let i = 0; i < 4; i++) {
+                  if (i > 0 && i < scores[0][category][1][key][1].length) {
+                    rangeVals[i].min = scores[0][category][1][key][1][i - 1];
+                    if (isPercent) {
+                      rangeVals[i].min *= 100;
+                    }
+                  }
+                  if (i < 3 && i < scores[0][category][1][key][1].length - 1) {
+                    rangeVals[i].max = scores[0][category][1][key][1][i + 1];
+                    if (isPercent) {
+                      rangeVals[i].max *= 100;
+                    }
+                  }
+                }
+              });
+              datachange.appendChild(rangeVal);
+            }
+            let breakline3 = document.createElement("div");
+            breakline3.classList.add("break");
+            datachange.appendChild(breakline3);
+            for (let i = 0; i < 5; i++) {
+              let div = document.createElement("div");
+              let score = document.createElement("p");
+              score.classList.add("scorelabel");
+              score.innerText = scoreVals[i];
+              div.appendChild(score);
+              let scoreSlider = document.createElement("input");
+              scoreSlider.type = "range";
+              scoreSlider.min = 1;
+              scoreSlider.max = 5;
+              scoreSlider.classList.add("slider");
+              scoreSlider.classList.add("vert");
+              scoreSlider.value = scoreVals[i];
+              scoreSlider.addEventListener("input", function () {
+                score.innerText = this.value;
+                this.parentElement.parentElement.getElementsByClassName("bar")[i].style.backgroundColor = "var(--high" + (this.value - 1) + ")";
+              });
+              scoreSlider.addEventListener("change", function () {
+                if (scores[0][category][1][key].length === 2) {
+                  let defaultScores = [1, 2, 3, 4, 5];
+                  defaultScores[i] = parseInt(this.value);
+                  scores[0][category][1][key][2] = defaultScores;
+                } else {
+                  scores[0][category][1][key][2][i] = parseInt(this.value);
+                  let equals = 1;
+                  for (let j = 0; j < 5; j++) { //check if [1, 2, 3, 4, 5]
+                    if (j + 1 !== scores[0][category][1][key][2][j]) {
+                      equals = 0;
+                    }
+                  }
+                  if (equals) {
+                    scores[0][category][1][key].pop();
+                  }
+                }
+              });
+              div.appendChild(scoreSlider);
+              datachange.appendChild(div);
+            }
+            document.body.appendChild(datachange);
+            plus.addEventListener("click", function () {
+              if (datachange.style.display === "none") {
+                let scoreVals2 = [1, 2, 3, 4, 5];
+                if (scores[0][category][1][key].length === 3) {//custom score ordering defined
+                  scoreVals2 = scores[0][category][1][key][2];
+                }
+                datachange.style.top = plus.getBoundingClientRect().y + 16 + 26 + (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0) + "px";
+                updateDatachangePosition(datachange, plus);
+                let bars = datachange.getElementsByClassName("bar");
+                for (let i = 0; i < 5; i++) {
+                  bars[i].style.backgroundColor = "var(--high" + (scoreVals2[i] - 1) + ")";
+                  if (i > 0 && i < 4) {
+                    let range = scores[0][category][1][key][1];
                     if (range.length === 2) {//min and max defined
                       let width = (range[1] - range[0]) / 5;
                       range = [range[0] + width, range[0] + 2 * width, range[1] - 2 * width, range[1] - width];
                     }
-                    bars[j].style.width = (200 - 2 * 10 - 2 * 20) * ((range[j] - range[j - 1]) / (range[3] - range[0])) + "px";
+                    bars[i].style.width = (200 - 2 * 10 - 2 * 20) * ((range[i] - range[i - 1]) / (range[3] - range[0])) + "px";
                   }
                 }
-              }
-            });
-            rangeVal.addEventListener("change", function () {
-              if (this.hasAttribute("min")) {
-                this.value = Math.max(this.value, this.min);
-              }
-              if (this.hasAttribute("max")) {
-                this.value = Math.min(this.value, this.max);
-              }
-              this.style.backgroundColor = "var(--light2)";
-              scores[0][category][1][key][1][i] = parseInt(this.value);
-              if (isPercent) {
-                scores[0][category][1][key][1][i] /= 100;
-              }
-              let rangeVals = this.parentElement.getElementsByClassName("rangeval");
-              for (let i = 0; i < 4; i++) {
-                if (i > 0 && i < scores[0][category][1][key][1].length) {
-                  rangeVals[i].min = scores[0][category][1][key][1][i - 1];
-                  if (isPercent) {
-                    rangeVals[i].min *= 100;
+                if (scores[0][category][1][key][1].length === 2) {
+                  short.selected = "selected";
+                }
+                if (scores[0][category][1][key][1].length === 4) {
+                  long.selected = "selected";
+                }
+                let rangeVals = datachange.getElementsByClassName("rangeval");
+                for (let i = 0; i < 4; i++) {
+                  if (i < scores[0][category][1][key][1].length) {
+                    rangeVals[i].value = scores[0][category][1][key][1][i];
+                    if (isPercent) {
+                      rangeVals[i].value *= 100;
+                    }
+                    rangeVals[i].style.display = "inline";
+                  } else {
+                    rangeVals[i].style.display = "none";
+                  }
+                  if (i > 0 && i < scores[0][category][1][key][1].length) {
+                    rangeVals[i].min = scores[0][category][1][key][1][i - 1];
+                    if (isPercent) {
+                      rangeVals[i].min *= 100;
+                    }
+                  }
+                  if (i < 3 && i < scores[0][category][1][key][1].length - 1) {
+                    rangeVals[i].max = scores[0][category][1][key][1][i + 1];
+                    if (isPercent) {
+                      rangeVals[i].max *= 100;
+                    }
                   }
                 }
-                if (i < 3 && i < scores[0][category][1][key][1].length - 1) {
-                  rangeVals[i].max = scores[0][category][1][key][1][i + 1];
-                  if (isPercent) {
-                    rangeVals[i].max *= 100;
-                  }
+                let scoreSliders = datachange.getElementsByClassName("vert");
+                let scoreLabels = datachange.getElementsByClassName("scorelabel");
+                for (let i = 0; i < 5; i++) {
+                  scoreSliders[i].value = scoreVals2[i];
+                  scoreLabels[i].innerText = scoreVals2[i];
                 }
-              }
-            });
-            datachange.appendChild(rangeVal);
-          }
-          let breakline3 = document.createElement("div");
-          breakline3.classList.add("break");
-          datachange.appendChild(breakline3);
-          for (let i = 0; i < 5; i++) {
-            let div = document.createElement("div");
-            let score = document.createElement("p");
-            score.classList.add("scorelabel");
-            score.innerText = scoreVals[i];
-            div.appendChild(score);
-            let scoreSlider = document.createElement("input");
-            scoreSlider.type = "range";
-            scoreSlider.min = 1;
-            scoreSlider.max = 5;
-            scoreSlider.classList.add("slider");
-            scoreSlider.classList.add("vert");
-            scoreSlider.value = scoreVals[i];
-            scoreSlider.addEventListener("input", function () {
-              score.innerText = this.value;
-              this.parentElement.parentElement.getElementsByClassName("bar")[i].style.backgroundColor = "var(--high" + (this.value - 1) + ")";
-            });
-            scoreSlider.addEventListener("change", function () {
-              if (scores[0][category][1][key].length === 2) {
-                let defaultScores = [1, 2, 3, 4, 5];
-                defaultScores[i] = parseInt(this.value);
-                scores[0][category][1][key][2] = defaultScores;
+                document.body.appendChild(datachange);//move to front
+                datachange.style.display = "flex";
               } else {
-                scores[0][category][1][key][2][i] = parseInt(this.value);
-                let equals = 1;
-                for (let j = 0; j < 5; j++) { //check if [1, 2, 3, 4, 5]
-                  if (j + 1 !== scores[0][category][1][key][2][j]) {
-                    equals = 0;
-                  }
-                }
-                if (equals) {
-                  scores[0][category][1][key].pop();
-                }
+                writeUserData(1);
+                datachange.style.display = "none";
               }
             });
-            div.appendChild(scoreSlider);
-            datachange.appendChild(div);
           }
-          document.body.appendChild(datachange);
-          plus.addEventListener("click", function () {
-            if (datachange.style.display === "none") {
-              let scoreVals2 = [1, 2, 3, 4, 5];
-              if (scores[0][category][1][key].length === 3) {//custom score ordering defined
-                scoreVals2 = scores[0][category][1][key][2];
-              }
-              datachange.style.top = plus.getBoundingClientRect().y + 16 + 26 + (window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0) + "px";
-              updateDatachangePosition(datachange, plus);
-              let bars = datachange.getElementsByClassName("bar");
-              for (let i = 0; i < 5; i++) {
-                bars[i].style.backgroundColor = "var(--high" + (scoreVals2[i] - 1) + ")";
-                if (i > 0 && i < 4) {
-                  let range = scores[0][category][1][key][1];
-                  if (range.length === 2) {//min and max defined
-                    let width = (range[1] - range[0]) / 5;
-                    range = [range[0] + width, range[0] + 2 * width, range[1] - 2 * width, range[1] - width];
-                  }
-                  bars[i].style.width = (200 - 2 * 10 - 2 * 20) * ((range[i] - range[i - 1]) / (range[3] - range[0])) + "px";
-                }
-              }
-              if (scores[0][category][1][key][1].length === 2) {
-                short.selected = "selected";
-              }
-              if (scores[0][category][1][key][1].length === 4) {
-                long.selected = "selected";
-              }
-              let rangeVals = datachange.getElementsByClassName("rangeval");
-              for (let i = 0; i < 4; i++) {
-                if (i < scores[0][category][1][key][1].length) {
-                  rangeVals[i].value = scores[0][category][1][key][1][i];
-                  if (isPercent) {
-                    rangeVals[i].value *= 100;
-                  }
-                } else {
-                  rangeVals[i].style.display = "none";
-                }
-                if (i > 0 && i < scores[0][category][1][key][1].length) {
-                  rangeVals[i].min = scores[0][category][1][key][1][i - 1];
-                  if (isPercent) {
-                    rangeVals[i].min *= 100;
-                  }
-                }
-                if (i < 3 && i < scores[0][category][1][key][1].length - 1) {
-                  rangeVals[i].max = scores[0][category][1][key][1][i + 1];
-                  if (isPercent) {
-                    rangeVals[i].max *= 100;
-                  }
-                }
-              }
-              let scoreSliders = datachange.getElementsByClassName("vert");
-              let scoreLabels = datachange.getElementsByClassName("scorelabel");
-              for (let i = 0; i < 5; i++) {
-                scoreSliders[i].value = scoreVals2[i];
-                scoreLabels[i].innerText = scoreVals2[i];
-              }
-              document.body.appendChild(datachange);//move to front
-              datachange.style.display = "flex";
-            } else {
-              writeUserData(1);
-              datachange.style.display = "none";
-            }
-          });
         }
       }
     });
@@ -1840,8 +1843,8 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
         updateApplyTable();
       });
       updateSliders();
-      for (const category in checkboxes) {
-        for (const value in checkboxes[category]) {
+      for (const category of Object.keys(checkboxes)) {
+        for (const value of Object.keys(checkboxes[category])) {
           document.getElementById(value).addEventListener("click", function () {
             checkboxes[category][value] = this.checked ? 1 : 0;
             writeUserData(1);
@@ -1912,6 +1915,11 @@ document.addEventListener("click", function (e) {
     suggestions.style.display = "none";
   }
 });
+document.body.addEventListener("keydown", function (e) {//enable enter while tabbing over spans
+  if ((e.key === "Enter" || e.key === " " || e.key === "Spacebar") && document.activeElement !== null && document.activeElement.tagName === "SPAN") {
+    document.activeElement.click();
+  }
+});
 
 //Header
 document.getElementById("signuplogin").addEventListener("click", openLogInModal);
@@ -1920,8 +1928,8 @@ document.getElementById("aboutus").addEventListener("click", function () {
 });
 
 //Modal close methods
-document.querySelectorAll(".close").forEach(item => {
-  item.addEventListener("click", event => {
+document.querySelectorAll(".close").forEach(function (item) {
+  item.addEventListener("click", function (event) {
     let content = item.parentElement;
     let modal = content.parentElement;
     content.classList.add("out");
@@ -1946,8 +1954,8 @@ document.querySelectorAll(".cancel").forEach(function (item) {
     }, { once: true });
   });
 });
-document.addEventListener("keydown", (e) => {
-  if (e.keyCode === 27) {//ESC
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Escape") {
     for (const modal of document.getElementsByClassName("modal")) {
       let content = modal.getElementsByClassName("content")[0];
       content.classList.add("out");
@@ -1966,7 +1974,7 @@ document.addEventListener("keydown", (e) => {
 
 //On setup wizard modal close
 const observer = new MutationObserver(function (list) {
-  if (setupmodal.style.display === "none") {
+  if (document.getElementById("setupmodal").style.display === "none") {
     document.getElementsByClassName("Acceptance descriptions")[0].appendChild(document.getElementById("testscore"));//userinfo
     document.getElementsByClassName("Acceptance descriptions")[0].appendChild(document.getElementById("gpa"));
     document.getElementsByClassName("Cost descriptions")[0].appendChild(document.getElementById("income"));
@@ -1980,7 +1988,6 @@ const observer = new MutationObserver(function (list) {
     if (document.getElementById("welcomecolleges")) {
       document.getElementById("welcomecolleges").remove();
     }
-    //observer.disconnect();
   }
 });
 observer.observe(document.getElementById("setupmodal"), { attributes: true, attributeFilter: ["style"] });
@@ -2120,12 +2127,12 @@ document.getElementById("tableholder").addEventListener("scroll", function () {
 /* Search Setup */
 
 let search = [];
-document.getElementById("textinput").addEventListener("focus", function() {
+document.getElementById("textinput").addEventListener("focus", function () {
   let textarea = document.getElementById("textinput");
   textarea.placeholder = "Loading college search data...";
-  loadFirebaseJSON("/search").then(response => {
+  loadFirebaseJSON("/search").then(function (response) {
     textarea.placeholder = "Add a college";
-    for (const key in response) {
+    for (const key of Object.keys(response)) {
       if (Array.isArray(response[key])) {
         for (let i = 0; i < response[key].length; i++) {
           let arr = [key, response[key][i]];
@@ -2196,22 +2203,22 @@ document.getElementById("textinput").addEventListener("focus", function() {
     });
     textarea.addEventListener("keydown", function (e) {
       let items = document.getElementById("suggestions").getElementsByTagName("div");
-      if (e.keyCode === 40) {//Down
+      if (e.key === "ArrowDown" || e.key === "Down") {
         currentFocus = (currentFocus + 1) % 10;
-      } else if (e.keyCode === 38) {//Up
+      } else if (e.key === "ArrowUp" || e.key === "Up") {
         if (currentFocus === -1) {
           currentFocus = 9;
         } else {
           currentFocus = (currentFocus + 10 - 1) % 10;
         }
       }
-      if (e.keyCode === 40 || e.keyCode === 38) {
+      if (e.key === "ArrowDown" || e.key === "Down" || e.key === "ArrowUp" || e.key === "Up") {
         let removeActive = suggestions.getElementsByClassName("currentFocus")[0];
         if (typeof removeActive !== "undefined") {
           removeActive.classList.remove("currentFocus");
         }
         items[currentFocus].classList.add("currentFocus");
-      } else if (e.keyCode === 13 && currentFocus !== -1) {
+      } else if (e.key === "Enter" && currentFocus !== -1) {
         let itemVal = suggestions.getElementsByTagName("div")[currentFocus].getElementsByTagName("input")[0].value;
         if (typeof getFromColleges(itemVal) === "undefined") {
           textarea.value = "";
@@ -2227,6 +2234,10 @@ document.getElementById("textinput").addEventListener("focus", function() {
         } else {
           createToast("College already on your list!");
         }
+      } if (e.key === "ArrowDown" || e.key === "Down" || e.key === "ArrowUp" || e.key === "Up" || e.key === "ArrowLeft" || e.key === "Left" || e.key === "ArrowRight" || e.key === "Right") {
+        suggestions.style.display = "block";
+      } else if (e.key == "Escape") {
+        suggestions.style.display = "none";
       }
     });
     textarea.addEventListener("focusin", function () {
@@ -2234,7 +2245,7 @@ document.getElementById("textinput").addEventListener("focus", function() {
         suggestions.style.display = "block";
       }
     });
-  }, error => {
+  }, function (error) {
     createToast("Load Search Data Failed!", 1, "Refresh", function () {
       location.reload();
     });

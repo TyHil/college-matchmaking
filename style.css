@@ -522,6 +522,11 @@ table th p {
   font-weight: normal;
   display: inline-block;
 }
+.popup .datachangeDesc {
+  color: gray;
+  margin: 0.3125rem 0.625rem;
+  text-align: center;
+}
 
 /*Modal and Popup Buttons*/
 .modal .buttons, .popup button, .popup a {
