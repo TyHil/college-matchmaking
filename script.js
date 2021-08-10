@@ -1825,9 +1825,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
       }
       for (const category of Object.keys(checkboxes)) {
         for (const value of Object.keys(checkboxes[category])) {
-          console.log(category, value, "set");
           document.getElementById(value).addEventListener("click", function () {
-            console.log(category, value, "click");
             checkboxes[category][value] = this.checked ? 1 : 0;
             writeUserData(1);
           });
