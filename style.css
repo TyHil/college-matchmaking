@@ -17,7 +17,7 @@
   height: 0.625rem;
 }
 ::-webkit-scrollbar-track {
-  background: var(--light0);  
+  background: var(--light0);
 }
 ::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.24);
@@ -374,8 +374,8 @@ table th p {
 }
 .modal {
   display: none;
-  position: fixed; 
-  left: 0; 
+  position: fixed;
+  left: 0;
   top: 0;
   width: 100%;
   height: 100%;
@@ -465,7 +465,7 @@ table th p {
   animation: slideup 0.4s;
 }
 .modal .content .close {
-  float: right; 
+  float: right;
 }
 .modal h1 {
   margin: 0;
@@ -558,8 +558,8 @@ table th p {
 
 /*Modal and toast close*/
 .modal .content .close, .toast .close {
-  color: grey; 
-  font-size: 1.5rem;  
+  color: grey;
+  font-size: 1.5rem;
   font-weight: bold;
   cursor: pointer;
 }
@@ -611,7 +611,7 @@ table th p {
   float: right;
 }
 .overslider {
-  display: block; 
+  display: block;
   width: 3.75rem;
 }
 

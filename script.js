@@ -16,7 +16,11 @@ let firebaseConfig = {
 
 //Firebase initialization
 firebase.initializeApp(firebaseConfig);
-firebase.analytics();
+firebase.analytics.isSupported().then(function (result) {
+  if (result) {
+    firebase.analytics();
+  }
+});
 const databaseRef = firebase.database().ref();
 let ui = new firebaseui.auth.AuthUI(firebase.auth());
 
