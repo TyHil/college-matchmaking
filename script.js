@@ -131,7 +131,20 @@ function JaroWrinker(s1, s2) {
 
 /* Open Modal Functions */
 
+function disableScroll() {
+  console.log("disable");
+  document.body.style.marginRight = window.innerWidth - document.documentElement.clientWidth + "px";
+  document.body.classList.add("disableScroll");
+}
+
+function enableScroll() {
+  console.log("enable");
+  document.body.style.marginRight = 0;
+  document.body.classList.remove("disableScroll");
+}
+
 function openConfirmModal(h1, p, red, confirm = 0) {
+  disableScroll();
   let confirmmodal = document.getElementById("confirmmodal");
   confirmmodal.getElementsByTagName("h1")[0].innerText = h1;
   confirmmodal.getElementsByTagName("p")[0].innerText = p;
@@ -151,6 +164,7 @@ function openConfirmModal(h1, p, red, confirm = 0) {
     content.classList.add("out");
     confirmmodal.classList.add("out");
     content.addEventListener("animationend", function () {
+      enableScroll();
       confirmmodal.style.display = "none";
       content.classList.remove("out");
       confirmmodal.classList.remove("out");
@@ -159,6 +173,7 @@ function openConfirmModal(h1, p, red, confirm = 0) {
 }
 
 function openQuestionModal(h1, p, placeholder, confirm = 0) {
+  disableScroll();
   let questionmodal = document.getElementById("questionmodal");
   questionmodal.getElementsByTagName("h1")[0].innerText = h1;
   questionmodal.getElementsByTagName("p")[0].innerText = p;
@@ -175,6 +190,7 @@ function openQuestionModal(h1, p, placeholder, confirm = 0) {
     content.classList.add("out");
     questionmodal.classList.add("out");
     content.addEventListener("animationend", function () {
+      enableScroll();
       questionmodal.style.display = "none";
       content.classList.remove("out");
       questionmodal.classList.remove("out");
@@ -191,12 +207,14 @@ function openQuestionModal(h1, p, placeholder, confirm = 0) {
 
 function openLogInModal() {
   if (!ui.isPendingRedirect()) {
+    disableScroll();
     document.getElementById("loginmodal").style.display = "block";
     ui.start("#firebaseui-auth-container", uiConfig);
   }
 }
 
 function openSetupWizardModal() {
+  disableScroll();
   let setupmodal = document.getElementById("setupmodal");
   setupmodal.style.display = "block";
   let content = setupmodal.getElementsByClassName("content")[0];
@@ -266,6 +284,7 @@ function openSetupWizardModal() {
           content.classList.add("out");
           setupmodal.classList.add("out");
           content.addEventListener("animationend", function () {
+            enableScroll();
             setupmodal.style.display = "none";
             content.classList.remove("out");
             setupmodal.classList.remove("out");
@@ -277,6 +296,7 @@ function openSetupWizardModal() {
         content.classList.add("out");
         setupmodal.classList.add("out");
         content.addEventListener("animationend", function () {
+          enableScroll();
           setupmodal.style.display = "none";
           content.classList.remove("out");
           setupmodal.classList.remove("out");
@@ -1003,6 +1023,7 @@ let headersLoaded = loadJSON("./headers.json").then(function (response) {//load 
       question.title = "Match scores info";
       question.innerText = "help";
       question.addEventListener("click", function () {
+        disableScroll();
         document.getElementById("matchscoremodal").style.display = "block";
       });
       categoryth.appendChild(question);
@@ -1393,6 +1414,7 @@ let isNewUser = 0;
 let uiConfig = {
   callbacks: {
     signInSuccessWithAuthResult: function (authResult) {//User successfully signed in
+      enableScroll();
       document.getElementById("loginmodal").style.display = "none";
       isNewUser = authResult.additionalUserInfo.isNewUser;
       if (isNewUser) {
@@ -1459,6 +1481,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
       console.error("Load Checkboxes Failed!", error);
     });
     allLoaded.push(checkboxesLoaded);
+    disableScroll();
     let welcomemodal = document.getElementById("welcomemodal");
     welcomemodal.style.display = "block";
     let content = welcomemodal.getElementsByClassName("content")[0];
@@ -1467,6 +1490,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
       content.classList.add("out");
       welcomemodal.classList.add("out");
       content.addEventListener("animationend", function () {
+        enableScroll();
         welcomemodal.style.display = "none";
         content.classList.remove("out");
         welcomemodal.classList.remove("out");
@@ -1477,6 +1501,7 @@ let unsubscribe = firebase.auth().onAuthStateChanged(function (user) {
       content.classList.add("out");
       welcomemodal.classList.add("out");
       content.addEventListener("animationend", function () {
+        enableScroll();
         welcomemodal.style.display = "none";
         content.classList.remove("out");
         welcomemodal.classList.remove("out");
@@ -1871,6 +1896,7 @@ document.addEventListener("click", function (e) {
       content.classList.add("out");
       modal.classList.add("out");
       content.addEventListener("animationend", function () {
+        enableScroll();
         modal.style.display = "none";
         content.classList.remove("out");
         modal.classList.remove("out");
@@ -1928,6 +1954,7 @@ document.body.addEventListener("keydown", function (e) {//enable enter while tab
 //Header
 document.getElementById("signuplogin").addEventListener("click", openLogInModal);
 document.getElementById("aboutus").addEventListener("click", function () {
+  disableScroll();
   document.getElementById("aboutusmodal").style.display = "block";
 });
 
@@ -1939,6 +1966,7 @@ document.querySelectorAll(".close").forEach(function (item) {
     content.classList.add("out");
     modal.classList.add("out");
     content.addEventListener("animationend", function () {
+      enableScroll();
       modal.style.display = "none";
       content.classList.remove("out");
       modal.classList.remove("out");
@@ -1952,6 +1980,7 @@ document.querySelectorAll(".cancel").forEach(function (item) {
     content.classList.add("out");
     modal.classList.add("out");
     content.addEventListener("animationend", function () {
+      enableScroll();
       modal.style.display = "none";
       content.classList.remove("out");
       modal.classList.remove("out");
@@ -1965,6 +1994,7 @@ document.addEventListener("keydown", function (e) {
       content.classList.add("out");
       modal.classList.add("out");
       content.addEventListener("animationend", function () {
+        enableScroll();
         modal.style.display = "none";
         content.classList.remove("out");
         modal.classList.remove("out");
@@ -2222,8 +2252,8 @@ document.getElementById("textinput").addEventListener("focus", function () {
           removeActive.classList.remove("currentFocus");
         }
         items[currentFocus].classList.add("currentFocus");
-      } else if (e.key === "Enter" && currentFocus !== -1) {
-        let itemVal = suggestions.getElementsByTagName("div")[currentFocus].getElementsByTagName("input")[0].value;
+      } else if (e.key === "Enter") {
+        let itemVal = suggestions.getElementsByTagName("div")[Math.max(currentFocus, 0)].getElementsByTagName("input")[0].value;
         if (typeof getFromColleges(itemVal) === "undefined") {
           textarea.value = "";
           colleges.push({ "ID": itemVal });

@@ -66,6 +66,10 @@ body {
   color: var(--dark0);
   background-color: var(--light0);
 }
+body.disableScroll {
+  height: 100%;
+  overflow: hidden;
+}
 
 /*Buttons*/
 button {
